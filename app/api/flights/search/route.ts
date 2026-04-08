@@ -162,7 +162,7 @@ async function searchSerpAPI(
       priceFor:     `for ${adults} adult${adults > 1 ? 's' : ''}`,
       aircraft:     firstLeg.airplane ?? '',
       fareType:     firstLeg.travel_class ?? 'Economy',
-      affiliateUrl: buildAffiliateUrl({ origin: from, destination: to, date, adults, marker }),
+      affiliateUrl: buildAffiliateUrl({ origin: from, destination: to, date, adults, marker: marker ?? undefined }),
       waUrl:        buildWhatsAppUrl({
         airline:  firstLeg.airline || meta.name,
         flightNo,
@@ -235,7 +235,7 @@ async function searchTravelpayoutsFallback(
       priceFor:     `for ${adults} adult${adults > 1 ? 's' : ''}`,
       aircraft:     '',
       fareType:     'Economy',
-      affiliateUrl: buildAffiliateUrl({ origin: from, destination: to, date, adults, marker }),
+      affiliateUrl: buildAffiliateUrl({ origin: from, destination: to, date, adults, marker: marker ?? undefined }),
       waUrl:        buildWhatsAppUrl({ airline: meta.name, flightNo: `${code}-${e.flight_number}`, from, to, date, price: fmtPrice, adults, waNumber: WA_NUMBER }),
     })
   }
@@ -272,7 +272,7 @@ async function searchTravelpayoutsFallback(
       priceFor:     `for ${adults} adult${adults > 1 ? 's' : ''}`,
       aircraft:     '',
       fareType:     'Economy',
-      affiliateUrl: buildAffiliateUrl({ origin: from, destination: to, date, adults, marker }),
+      affiliateUrl: buildAffiliateUrl({ origin: from, destination: to, date, adults, marker: marker ?? undefined }),
       waUrl:        buildWhatsAppUrl({ airline: meta.name, flightNo: `${code}-${d.flight_number}`, from, to, date, price: fmtPrice, adults, waNumber: WA_NUMBER }),
     })
   }
