@@ -107,7 +107,7 @@ export default function SearchClient() {
   const [isLoading, setIsLoading] = useState(true)
   const [flights, setFlights]     = useState<FlightOffer[]>(DEMO)
   const [apiError, setApiError]   = useState<string | null>(null)
-  const [dataSource, setDataSource] = useState<'serpapi'|'travelpayouts'|'demo'>('demo')
+  const [dataSource, setDataSource] = useState<'duffel'|'serpapi'|'travelpayouts'|'demo'>('demo')
 
   useEffect(() => {
     setIsLoading(true)
@@ -123,17 +123,16 @@ export default function SearchClient() {
         if (data.error) throw new Error(data.error)
         if (data.flights?.length) {
           setFlights(data.flights)
-          setDataSource(data.source ?? 'serpapi')
+          setDataSource(data.source ?? 'duffel')
         } else {
-          setFlights(DEMO)
-          setDataSource('demo')
+          setFlights([])
+          setDataSource('duffel')
         }
       })
       .catch(err => {
         console.error('Flight search error:', err)
         setApiError(err.message)
-        setFlights(DEMO)
-        setDataSource('demo')
+        setFlights([])
       })
       .finally(() => setIsLoading(false))
   }, [from, to, date, adults])
@@ -330,19 +329,9 @@ export default function SearchClient() {
             )}
 
             {/* Data source + error banner */}
-            {!isLoading && apiError && (
-              <div className="srp-api-warn">
-                ⚠️ Showing sample fares — live search temporarily unavailable.
-              </div>
-            )}
-            {!isLoading && !apiError && dataSource === 'serpapi' && (
+            {!isLoading && !apiError && dataSource === 'duffel' && (
               <div className="srp-live-badge">
-                <span className="srp-live-dot" /> Live fares from Google Flights · Prices in PKR
-              </div>
-            )}
-            {!isLoading && !apiError && dataSource === 'travelpayouts' && (
-              <div className="srp-live-badge srp-live-badge--tp">
-                📊 Fares updated every few hours · Book via WhatsApp for confirmed price
+                <span className="srp-live-dot" /> Live fares from airlines · Real-time prices in PKR
               </div>
             )}
 
