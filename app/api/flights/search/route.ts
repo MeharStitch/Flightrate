@@ -52,9 +52,21 @@ function fmtTime(iso: string): string {
   return iso.slice(11, 16)
 }
 
-// PKR conversion for non-PKR currencies
-function toPKR(amount: number): number {
-  return Math.round(amount * USD_TO_PKR)
+// Approximate FX rates to PKR
+const FX_TO_PKR: Record<string, number> = {
+  USD: USD_TO_PKR,          // ~280
+  GBP: USD_TO_PKR * 1.27,  // ~355
+  EUR: USD_TO_PKR * 1.09,  // ~305
+  AED: USD_TO_PKR * 0.272, // ~76
+  SAR: USD_TO_PKR * 0.267, // ~75
+  QAR: USD_TO_PKR * 0.274, // ~77
+  KWD: USD_TO_PKR * 3.25,  // ~910
+  PKR: 1,
+}
+
+function toPKR(amount: number, currency = 'USD'): number {
+  const rate = FX_TO_PKR[currency] ?? USD_TO_PKR
+  return Math.round(amount * rate)
 }
 
 // ─── Duffel search ────────────────────────────────────────────────────────────
@@ -145,11 +157,9 @@ async function searchDuffel(
     const currency = offer.total_currency ?? 'USD'
     const amount   = parseFloat(offer.total_amount ?? '0')
 
-    // total_amount is for ALL passengers — divide per adult for display, then multiply back
+    // total_amount is for ALL passengers — divide per adult for display
     const perAdult = amount / adults
-    const priceRaw = currency === 'PKR'
-      ? Math.round(perAdult)
-      : toPKR(perAdult)
+    const priceRaw = toPKR(perAdult, currency)
 
     const fmtPrice = formatPKR(priceRaw)
 
