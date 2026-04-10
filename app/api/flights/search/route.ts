@@ -70,7 +70,7 @@ function extractAirlineCode(flightNumber: string): string {
   return match ? match[1].toUpperCase() : ''
 }
 
-const WA_NUMBER = process.env.WA_NUMBER ?? '923001234567'
+const WA_NUMBER = process.env.WA_NUMBER ?? '923240763099'
 
 // ─── SerpAPI → Google Flights ─────────────────────────────────────────────────
 async function searchSerpAPI(

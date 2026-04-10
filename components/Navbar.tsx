@@ -18,7 +18,6 @@ export default function Navbar() {
 
   const links = [
     { label: 'Search Flights', href: '#search-flights' },
-    { label: 'Price Tracker',  href: '#price-tracker' },
     { label: 'Routes',         href: '#routes' },
     { label: 'About',          href: '#about' },
     { label: 'Contact',        href: '#contact' },
@@ -48,7 +47,7 @@ export default function Navbar() {
 
           <div className="nav-right">
             <a
-              href="https://wa.me/923001234567"
+              href="https://wa.me/923240763099"
               className="btn-wa-nav"
               target="_blank"
               rel="noreferrer"
@@ -75,7 +74,7 @@ export default function Navbar() {
           <a key={l.label} href={l.href} onClick={() => setOpen(false)}>{l.label}</a>
         ))}
         <a
-          href="https://wa.me/923001234567"
+          href="https://wa.me/923240763099"
           target="_blank"
           rel="noreferrer"
           className="mobile-wa-link"

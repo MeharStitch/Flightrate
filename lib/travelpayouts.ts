@@ -166,7 +166,7 @@ export function buildWhatsAppUrl(opts: {
   date: string
   price: string
   adults: number
-  waNumber: string   // e.g. "923001234567"
+  waNumber: string   // e.g. "923240763099"
 }): string {
   const { airline, flightNo, from, to, date, price, adults, waNumber } = opts
   const msg = [

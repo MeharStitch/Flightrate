@@ -1,7 +1,7 @@
 'use client'
 
 function wa(msg: string) {
-  window.open('https://wa.me/923001234567?text=' + encodeURIComponent('Hi FlightRate! Looking for best fare: ' + msg), '_blank')
+  window.open('https://wa.me/923240763099?text=' + encodeURIComponent('Hi FlightRate! Looking for best fare: ' + msg), '_blank')
 }
 
 type Trend = 'down' | 'up' | 'stable'

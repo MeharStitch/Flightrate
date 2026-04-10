@@ -23,7 +23,7 @@ function cityName(code: string) {
 /* ── WhatsApp booking deep-link ── */
 function bookWA(f: FlightOffer, p: SearchParams) {
   const msg = `Hi FlightRate! I want to book:\n✈ ${f.airline} ${f.flightNo}\n📍 ${f.depCode} → ${f.arrCode}\n🗓 ${p.date}\n💰 ${f.price}/person\n👥 ${p.adults} adult${p.adults > 1 ? 's' : ''} · ${p.travelClass}`
-  window.open('https://wa.me/923001234567?text=' + encodeURIComponent(msg), '_blank')
+  window.open('https://wa.me/923240763099?text=' + encodeURIComponent(msg), '_blank')
 }
 
 /* ── Demo data (6 flights) — replaced by real API later ── */
