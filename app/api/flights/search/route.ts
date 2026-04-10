@@ -1,17 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import {
-  toPKR,
-  formatDuration,
-  formatPKR,
-  formatTime,
-  buildWhatsAppUrl,
-  buildAffiliateUrl,
-  searchByCalendar,
-  searchDirect,
-  USD_TO_PKR,
-  type TPCalendarEntry,
-  type TPDirectEntry,
-} from '@/lib/travelpayouts'
+import { formatDuration, formatPKR, buildWhatsAppUrl, USD_TO_PKR } from '@/lib/travelpayouts'
 import type { FlightOffer } from '@/types/flight'
 
 // ─── Airline meta ─────────────────────────────────────────────────────────────
@@ -45,26 +33,31 @@ const BAGGAGE: Record<string, string> = {
 
 const MEAL_AIRLINES = new Set(['EK','QR','EY','PK','WY','GF','KU','SV','TK','UL','BG'])
 
+const WA_NUMBER = process.env.WA_NUMBER ?? '923240763099'
+
 function getMeta(code: string) {
   return AIRLINE_META[code] ?? { name: code, color: '#374151' }
 }
 
-const WA_NUMBER = process.env.WA_NUMBER ?? '923240763099'
-
-// ─── Parse ISO 8601 duration → minutes (e.g. "PT3H25M" → 205) ────────────────
+// ISO 8601 duration → minutes  e.g. "PT3H25M" → 205
 function parseDuration(iso: string): number {
-  const m = iso.match(/PT(?:(\d+)H)?(?:(\d+)M)?/)
+  const m = iso?.match(/PT(?:(\d+)H)?(?:(\d+)M)?/)
   if (!m) return 180
   return (parseInt(m[1] || '0') * 60) + parseInt(m[2] || '0')
 }
 
-// ─── Format datetime string → "HH:MM" ────────────────────────────────────────
+// "2026-04-20T14:30:00" → "14:30"
 function fmtTime(iso: string): string {
   if (!iso) return '--:--'
   return iso.slice(11, 16)
 }
 
-// ─── Duffel → real airline inventory ─────────────────────────────────────────
+// PKR conversion for non-PKR currencies
+function toPKR(amount: number): number {
+  return Math.round(amount * USD_TO_PKR)
+}
+
+// ─── Duffel search ────────────────────────────────────────────────────────────
 async function searchDuffel(
   from: string,
   to: string,
@@ -88,11 +81,12 @@ async function searchDuffel(
       },
       body: JSON.stringify({
         data: {
-          slices: [{ origin: from, destination: to, departure_date: date }],
+          slices:      [{ origin: from, destination: to, departure_date: date }],
           passengers,
           cabin_class: 'economy',
         },
       }),
+      // cache for 5 min — Duffel offers expire but prices stay stable short-term
       next: { revalidate: 300 },
     }
   )
@@ -102,12 +96,36 @@ async function searchDuffel(
     throw new Error(`Duffel ${res.status}: ${body.slice(0, 300)}`)
   }
 
-  const json = await res.json()
+  const json   = await res.json()
   const offers: any[] = json?.data?.offers ?? []
 
   if (!offers.length) return []
 
-  const results: FlightOffer[] = offers.slice(0, 20).map((offer: any, idx: number) => {
+  // Deduplicate: same airline + dep time + price = same fare class, keep cheapest
+  const seen = new Map<string, number>()
+  const deduped: any[] = []
+
+  for (const offer of offers) {
+    const slice    = offer.slices?.[0]
+    const first    = slice?.segments?.[0]
+    const code     = first?.operating_carrier?.iata_code ?? first?.marketing_carrier?.iata_code ?? ''
+    const depTime  = fmtTime(first?.departing_at ?? '')
+    const key2     = `${code}-${depTime}-${slice?.segments?.length}`
+    const price    = parseFloat(offer.total_amount ?? '0')
+
+    if (!seen.has(key2) || price < (seen.get(key2) ?? Infinity)) {
+      seen.set(key2, price)
+      const existing = deduped.findIndex(o => {
+        const s = o.slices?.[0]?.segments?.[0]
+        const c = s?.operating_carrier?.iata_code ?? s?.marketing_carrier?.iata_code ?? ''
+        return `${c}-${fmtTime(s?.departing_at ?? '')}-${o.slices?.[0]?.segments?.length}` === key2
+      })
+      if (existing >= 0) deduped[existing] = offer
+      else deduped.push(offer)
+    }
+  }
+
+  return deduped.map((offer: any, idx: number) => {
     const slice    = offer.slices?.[0]
     const segments: any[] = slice?.segments ?? []
     const first    = segments[0]
@@ -115,7 +133,7 @@ async function searchDuffel(
 
     const code     = first?.operating_carrier?.iata_code ?? first?.marketing_carrier?.iata_code ?? ''
     const meta     = getMeta(code)
-    const flightNo = `${code} ${first?.operating_carrier_flight_number ?? ''}`
+    const flightNo = `${code} ${first?.operating_carrier_flight_number ?? ''}`.trim()
     const stops    = segments.length - 1
     const stopTxt  = stops === 0
       ? 'Non-stop'
@@ -127,25 +145,28 @@ async function searchDuffel(
     const currency = offer.total_currency ?? 'USD'
     const amount   = parseFloat(offer.total_amount ?? '0')
 
-    // Convert to PKR
+    // total_amount is for ALL passengers — divide per adult for display, then multiply back
+    const perAdult = amount / adults
     const priceRaw = currency === 'PKR'
-      ? Math.round(amount)
-      : Math.round(toPKR(amount / adults))   // toPKR converts USD→PKR per person
+      ? Math.round(perAdult)
+      : toPKR(perAdult)
 
     const fmtPrice = formatPKR(priceRaw)
 
-    // Baggage from offer passenger data
-    const bags = first?.passengers?.[0]?.baggages?.find((b: any) => b.type === 'checked')
-    const bagStr = bags
-      ? `${bags.quantity}×${bags.quantity > 0 ? '23kg' : 'none'}`
+    // Baggage
+    const bags   = first?.passengers?.[0]?.baggages?.find((b: any) => b.type === 'checked')
+    const bagStr = bags && bags.quantity > 0
+      ? `${bags.quantity}×23kg`
       : (BAGGAGE[code] ?? '23kg')
 
+    const airlineName = first?.marketing_carrier?.name || meta.name
+
     return {
-      id:           `duffel-${idx}-${offer.id ?? code}`,
-      airline:      first?.marketing_carrier?.name ?? meta.name,
+      id:           `duffel-${idx}-${offer.id?.slice(-6) ?? code}`,
+      airline:      airlineName,
       airlineCode:  code,
       airlineColor: meta.color,
-      flightNo:     flightNo.trim(),
+      flightNo,
       dep:          fmtTime(first?.departing_at ?? ''),
       depCode:      from,
       arr:          fmtTime(last?.arriving_at ?? ''),
@@ -160,123 +181,18 @@ async function searchDuffel(
       priceTotal:   formatPKR(priceRaw * adults),
       priceFor:     `for ${adults} adult${adults > 1 ? 's' : ''}`,
       aircraft:     first?.aircraft?.iata_code ?? '',
-      fareType:     offer.cabin_class ?? 'Economy',
+      fareType:     offer.cabin_class ?? 'economy',
       affiliateUrl: '',
       waUrl: buildWhatsAppUrl({
-        airline:  first?.marketing_carrier?.name ?? meta.name,
-        flightNo: flightNo.trim(),
+        airline: airlineName,
+        flightNo,
         from, to, date,
-        price:    fmtPrice,
+        price:   fmtPrice,
         adults,
         waNumber: WA_NUMBER,
       }),
-    }
+    } satisfies FlightOffer
   })
-
-  return results
-}
-
-// ─── Travelpayouts fallback ───────────────────────────────────────────────────
-async function searchTravelpayoutsFallback(
-  from: string,
-  to: string,
-  date: string,
-  adults: number,
-): Promise<FlightOffer[]> {
-  const marker = process.env.TRAVELPAYOUTS_MARKER
-
-  const [calEntries, directEntries] = await Promise.allSettled([
-    searchByCalendar({ origin: from, destination: to, date }),
-    searchDirect({ origin: from, destination: to, date }),
-  ])
-
-  const calData: TPCalendarEntry[] = calEntries.status === 'fulfilled' ? calEntries.value : []
-  const dirData: TPDirectEntry[]   = directEntries.status === 'fulfilled' ? directEntries.value : []
-
-  if (!calData.length && !dirData.length) return []
-
-  const durationByAirline: Record<string, number> = {}
-  for (const d of dirData) {
-    if (d.airline && d.duration_to) durationByAirline[d.airline.toUpperCase()] = d.duration_to
-  }
-
-  const ROUTE_DURATION: Record<string, number> = {
-    'ISB-DXB': 155, 'LHE-DXB': 155, 'KHI-DXB': 120,
-    'ISB-DMM': 195, 'LHE-DMM': 195, 'KHI-DMM': 165,
-    'ISB-RUH': 210, 'LHE-RUH': 210, 'KHI-RUH': 175,
-    'ISB-KWI': 195, 'LHE-KWI': 195, 'KHI-KWI': 165,
-    'ISB-BAH': 195, 'KHI-BAH': 165,
-    'ISB-MCT': 200, 'KHI-MCT': 155,
-    'ISB-DOH': 200, 'LHE-DOH': 200, 'KHI-DOH': 155,
-    'ISB-AUH': 160, 'KHI-AUH': 125,
-  }
-  const routeDur = (f: string, t: string) =>
-    ROUTE_DURATION[`${f}-${t}`] ?? ROUTE_DURATION[`${t}-${f}`] ?? 180
-
-  const calcArr = (depISO: string, mins: number) => {
-    if (!depISO) return '--:--'
-    const d = new Date(depISO)
-    d.setMinutes(d.getMinutes() + mins)
-    return d.toLocaleTimeString('en-PK', { hour: '2-digit', minute: '2-digit', hour12: false })
-  }
-
-  const seenIds = new Set<string>()
-  const merged: FlightOffer[] = []
-
-  for (const e of calData) {
-    const code  = (e.airline ?? '').toUpperCase()
-    const key   = `${code}-${e.flight_number}`
-    if (seenIds.has(key)) continue
-    seenIds.add(key)
-    const priceRaw = toPKR(e.price)
-    const durMins  = durationByAirline[code] || routeDur(from, to)
-    const meta     = getMeta(code)
-    const fmtPrice = formatPKR(priceRaw)
-    merged.push({
-      id: `tp-cal-${key}-${merged.length}`,
-      airline: meta.name, airlineCode: code, airlineColor: meta.color,
-      flightNo: `${code}-${e.flight_number}`,
-      dep: formatTime(e.departure_at), depCode: from,
-      arr: calcArr(e.departure_at, durMins + (e.transfers > 0 ? 60 : 0)), arrCode: to,
-      dur: formatDuration(durMins), stops: e.transfers ?? 0,
-      stopTxt: e.transfers === 0 ? 'Non-stop' : `${e.transfers} stop${e.transfers > 1 ? 's' : ''}`,
-      bag: BAGGAGE[code] ?? '23kg', meal: MEAL_AIRLINES.has(code),
-      price: fmtPrice, priceRaw,
-      priceTotal: formatPKR(priceRaw * adults),
-      priceFor: `for ${adults} adult${adults > 1 ? 's' : ''}`,
-      aircraft: '', fareType: 'Economy',
-      affiliateUrl: buildAffiliateUrl({ origin: from, destination: to, date, adults, marker }),
-      waUrl: buildWhatsAppUrl({ airline: meta.name, flightNo: `${code}-${e.flight_number}`, from, to, date, price: fmtPrice, adults, waNumber: WA_NUMBER }),
-    })
-  }
-
-  for (const d of dirData) {
-    const code = (d.airline ?? '').toUpperCase()
-    const key  = `${code}-${d.flight_number}`
-    if (seenIds.has(key)) continue
-    seenIds.add(key)
-    const priceRaw = toPKR(d.price)
-    const durMins  = d.duration_to || routeDur(from, to)
-    const meta     = getMeta(code)
-    const fmtPrice = formatPKR(priceRaw)
-    merged.push({
-      id: `tp-dir-${key}`,
-      airline: meta.name, airlineCode: code, airlineColor: meta.color,
-      flightNo: `${code}-${d.flight_number}`,
-      dep: formatTime(d.departure_at), depCode: from,
-      arr: calcArr(d.departure_at, durMins), arrCode: to,
-      dur: formatDuration(durMins), stops: 0, stopTxt: 'Non-stop',
-      bag: BAGGAGE[code] ?? '23kg', meal: MEAL_AIRLINES.has(code),
-      price: fmtPrice, priceRaw,
-      priceTotal: formatPKR(priceRaw * adults),
-      priceFor: `for ${adults} adult${adults > 1 ? 's' : ''}`,
-      aircraft: '', fareType: 'Economy',
-      affiliateUrl: buildAffiliateUrl({ origin: from, destination: to, date, adults, marker }),
-      waUrl: buildWhatsAppUrl({ airline: meta.name, flightNo: `${code}-${d.flight_number}`, from, to, date, price: fmtPrice, adults, waNumber: WA_NUMBER }),
-    })
-  }
-
-  return merged
 }
 
 // ─── Badge helper ─────────────────────────────────────────────────────────────
@@ -286,10 +202,10 @@ function applyBadges(flights: FlightOffer[]): FlightOffer[] {
   sorted[0].badge    = 'cheap'
   sorted[0].badgeTxt = '💰 Lowest Fare'
   if (sorted.length > 1) {
-    const bestIdx = sorted.findIndex((f, i) => i > 0 && f.stops === 0)
-    const idx     = bestIdx > 0 ? bestIdx : 1
-    sorted[idx].badge    = 'best'
-    sorted[idx].badgeTxt = '⭐ Best Pick'
+    const idx = sorted.findIndex((f, i) => i > 0 && f.stops === 0)
+    const best = idx > 0 ? idx : 1
+    sorted[best].badge    = 'best'
+    sorted[best].badgeTxt = '⭐ Best Pick'
   }
   return sorted
 }
@@ -310,52 +226,32 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    let flights: FlightOffer[] = []
-    let source = 'duffel'
-
-    // ── 1. Duffel — real bookable inventory ───────────────────────────────────
-    if (process.env.DUFFEL_API_KEY) {
-      try {
-        flights = await searchDuffel(from, to, date, adults)
-        console.log(`[search] Duffel returned ${flights.length} flights for ${from}→${to}`)
-      } catch (err: any) {
-        console.warn('[search] Duffel failed, trying Travelpayouts:', err.message)
-      }
-    }
-
-    // ── 2. Travelpayouts fallback ─────────────────────────────────────────────
-    if (!flights.length && process.env.TRAVELPAYOUTS_TOKEN) {
-      source = 'travelpayouts'
-      try {
-        flights = await searchTravelpayoutsFallback(from, to, date, adults)
-        console.log(`[search] Travelpayouts returned ${flights.length} flights for ${from}→${to}`)
-      } catch (err: any) {
-        console.warn('[search] Travelpayouts also failed:', err.message)
-      }
-    }
+    const flights = await searchDuffel(from, to, date, adults)
+    console.log(`[search] Duffel returned ${flights.length} flights for ${from}→${to} on ${date}`)
 
     if (!flights.length) {
       return NextResponse.json({
         flights: [], count: 0,
         searchedAt: new Date().toISOString(),
-        route: `${from} → ${to}`, date, adults, source,
-        note: 'No flights found for this route and date.',
+        route: `${from} → ${to}`, date, adults,
+        source: 'duffel',
+        note: 'No flights found. Try a different date or route.',
       })
     }
 
     const result = applyBadges(flights)
 
     return NextResponse.json({
-      flights: result,
-      count:   result.length,
+      flights:    result,
+      count:      result.length,
       searchedAt: new Date().toISOString(),
-      route:   `${from} → ${to}`,
-      date, adults, source,
-      ...(source === 'travelpayouts' && { fxRate: USD_TO_PKR }),
+      route:      `${from} → ${to}`,
+      date, adults,
+      source: 'duffel',
     })
 
   } catch (err: any) {
-    console.error('[/api/flights/search]', err.message)
-    return NextResponse.json({ error: err.message }, { status: 502 })
+    console.error('[/api/flights/search] Duffel error:', err.message)
+    return NextResponse.json({ error: 'Flight search unavailable. Please try again.' }, { status: 502 })
   }
 }
