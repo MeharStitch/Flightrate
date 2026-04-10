@@ -69,172 +69,83 @@ function toPKR(amount: number, currency = 'USD'): number {
   return Math.round(amount * rate)
 }
 
-// ─── Sky Scrapper (RapidAPI) airport lookup cache ────────────────────────────
-// Pre-populated for common Pakistan ↔ Gulf routes to avoid extra API calls
-const AIRPORT_IDS: Record<string, { skyId: string; entityId: string }> = {
-  // Pakistan
-  KHI: { skyId: 'KHI', entityId: '95673320' },
-  LHE: { skyId: 'LHE', entityId: '95673627' },
-  ISB: { skyId: 'ISB', entityId: '95673416' },
-  PEW: { skyId: 'PEW', entityId: '95673491' },
-  MUX: { skyId: 'MUX', entityId: '95673643' },
-  SKT: { skyId: 'SKT', entityId: '95673726' },
-  UET: { skyId: 'UET', entityId: '95673556' },
-  // UAE
-  DXB: { skyId: 'DXB', entityId: '95673506' },
-  AUH: { skyId: 'AUH', entityId: '95673461' },
-  SHJ: { skyId: 'SHJ', entityId: '95673529' },
-  // Gulf
-  DOH: { skyId: 'DOH', entityId: '95673505' },
-  KWI: { skyId: 'KWI', entityId: '95673584' },
-  BAH: { skyId: 'BAH', entityId: '95673466' },
-  MCT: { skyId: 'MCT', entityId: '95673618' },
-  // Saudi
-  RUH: { skyId: 'RUH', entityId: '95673711' },
-  JED: { skyId: 'JED', entityId: '95673574' },
-  MED: { skyId: 'MED', entityId: '95673613' },
-  DMM: { skyId: 'DMM', entityId: '95673507' },
-  // Other
-  LHR: { skyId: 'LHR', entityId: '95565050' },
-  CDG: { skyId: 'CDG', entityId: '95565041' },
-  IST: { skyId: 'IST', entityId: '95673564' },
-  DEL: { skyId: 'DEL', entityId: '95673476' },
-  BOM: { skyId: 'BOM', entityId: '95673470' },
+// ─── SerpAPI → Google Flights (primary — 15-20 results) ──────────────────────
+function extractAirlineCode(flightNumber: string): string {
+  const match = flightNumber.trim().match(/^([A-Z0-9]{2,3})\s*\d+/i)
+  return match ? match[1].toUpperCase() : ''
 }
 
-// Runtime fallback lookup cache
-const runtimeAirportCache = new Map<string, { skyId: string; entityId: string }>()
-
-async function lookupAirport(
-  iata: string,
-  key: string,
-): Promise<{ skyId: string; entityId: string }> {
-  // 1. Static cache
-  if (AIRPORT_IDS[iata]) return AIRPORT_IDS[iata]
-  // 2. Runtime cache
-  if (runtimeAirportCache.has(iata)) return runtimeAirportCache.get(iata)!
-
-  // 3. Live lookup
-  const res = await fetch(
-    `https://sky-scrapper.p.rapidapi.com/api/v1/flights/searchAirport?query=${iata}&locale=en-US`,
-    {
-      headers: {
-        'x-rapidapi-key':  key,
-        'x-rapidapi-host': 'sky-scrapper.p.rapidapi.com',
-      },
-      cache: 'no-store',
-    },
-  )
-  const data = await res.json()
-  const place = (data?.data ?? [])[0]
-  if (!place?.entityId) throw new Error(`Airport not found: ${iata}`)
-
-  const result = { skyId: place.skyId ?? iata, entityId: String(place.entityId) }
-  runtimeAirportCache.set(iata, result)
-  return result
-}
-
-// ─── Sky Scrapper search ──────────────────────────────────────────────────────
-async function searchSkyScrapper(
+async function searchSerpAPI(
   from: string,
   to: string,
   date: string,
   adults: number,
 ): Promise<FlightOffer[]> {
-  const key = process.env.RAPIDAPI_KEY
-  if (!key) throw new Error('RAPIDAPI_KEY not set')
+  const key = process.env.SERPAPI_KEY
+  if (!key) throw new Error('SERPAPI_KEY not set')
 
-  // Lookup entityIds in parallel
-  const [orig, dest] = await Promise.all([
-    lookupAirport(from, key),
-    lookupAirport(to, key),
-  ])
+  const url = new URL('https://serpapi.com/search.json')
+  url.searchParams.set('engine',        'google_flights')
+  url.searchParams.set('departure_id',  from)
+  url.searchParams.set('arrival_id',    to)
+  url.searchParams.set('outbound_date', date)
+  url.searchParams.set('currency',      'PKR')
+  url.searchParams.set('hl',            'en')
+  url.searchParams.set('gl',            'pk')
+  url.searchParams.set('adults',        String(adults))
+  url.searchParams.set('type',          '2')
+  url.searchParams.set('api_key',       key)
 
-  const url = new URL('https://sky-scrapper.p.rapidapi.com/api/v2/flights/searchFlightsComplete')
-  url.searchParams.set('originSkyId',        orig.skyId)
-  url.searchParams.set('destinationSkyId',   dest.skyId)
-  url.searchParams.set('originEntityId',     orig.entityId)
-  url.searchParams.set('destinationEntityId',dest.entityId)
-  url.searchParams.set('date',               date)
-  url.searchParams.set('adults',             String(adults))
-  url.searchParams.set('currency',           'PKR')
-  url.searchParams.set('market',             'en-PK')
-  url.searchParams.set('countryCode',        'PK')
-  url.searchParams.set('sortBy',             'best')
-  url.searchParams.set('cabinClass',         'economy')
+  const res = await fetch(url.toString(), { cache: 'no-store' })
+  if (!res.ok) throw new Error(`SerpAPI ${res.status}`)
 
-  const res = await fetch(url.toString(), {
-    headers: {
-      'x-rapidapi-key':  key,
-      'x-rapidapi-host': 'sky-scrapper.p.rapidapi.com',
-    },
-    cache: 'no-store',
-  })
+  const data = await res.json()
+  if (data.error) throw new Error(`SerpAPI: ${data.error}`)
 
-  if (!res.ok) {
-    const body = await res.text()
-    throw new Error(`SkyScrapper ${res.status}: ${body.slice(0, 300)}`)
-  }
+  const raw: any[] = [...(data.best_flights ?? []), ...(data.other_flights ?? [])]
+  if (!raw.length) return []
 
-  const json = await res.json()
-  const itineraries: any[] = json?.data?.itineraries ?? []
-  if (!itineraries.length) return []
-
-  return itineraries.map((item: any, idx: number) => {
-    const leg      = item.legs?.[0]
-    const segments: any[] = leg?.segments ?? []
-    const first    = segments[0]
-    const last     = segments[segments.length - 1]
-
-    const carrier  = leg?.carriers?.marketing?.[0] ?? {}
-    const code     = carrier.alternateId ?? ''
-    const meta     = getMeta(code)
-    const flightNo = first
-      ? `${first.marketingCarrier?.alternateId ?? code} ${first.flightNumber ?? ''}`.trim()
-      : code
-
-    const stops    = leg?.stopCount ?? (segments.length - 1)
-    const stopTxt  = stops === 0
-      ? 'Non-stop'
-      : stops === 1
-        ? `1 Stop · ${segments[0]?.destination?.flightPlaceId ?? ''}`
-        : `${stops} Stops`
-
-    const durMins  = leg?.durationInMinutes ?? 180
-    const priceRaw = Math.round(item.price?.raw ?? 0)
+  return raw.map((item: any, idx: number) => {
+    const legs    = item.flights as any[]
+    const first   = legs[0]
+    const last    = legs[legs.length - 1]
+    const flightNo = first.flight_number ?? ''
+    const code    = extractAirlineCode(flightNo)
+    const meta    = getMeta(code)
+    const stops   = legs.length - 1
+    const stopTxt = stops === 0 ? 'Non-stop'
+      : stops === 1 ? `1 Stop · ${legs[0].arrival_airport?.id ?? ''}` : `${stops} Stops`
+    const depTime = (first.departure_airport?.time ?? '').split(' ')[1]?.slice(0, 5) || '--:--'
+    const arrTime = (last.arrival_airport?.time ?? '').split(' ')[1]?.slice(0, 5) || '--:--'
+    const durMins = item.total_duration ?? 180
+    const priceRaw = Math.round(item.price ?? 0)
     const fmtPrice = formatPKR(priceRaw)
 
-    const bags     = BAGGAGE[code] ?? '23kg'
-    const airlineName = carrier.name || meta.name
-
     return {
-      id:           `sky-${idx}-${code}-${item.id?.slice(-6) ?? idx}`,
-      airline:      airlineName,
+      id:           `serp-${idx}-${code}-${flightNo.replace(/\s/g, '')}`,
+      airline:      first.airline || meta.name,
       airlineCode:  code,
       airlineColor: meta.color,
       flightNo,
-      dep:          fmtTime(leg?.departure ?? ''),
+      dep:          depTime,
       depCode:      from,
-      arr:          fmtTime(leg?.arrival ?? ''),
+      arr:          arrTime,
       arrCode:      to,
       dur:          formatDuration(durMins),
-      stops,
-      stopTxt,
-      bag:          bags,
+      stops, stopTxt,
+      bag:          BAGGAGE[code] ?? '23kg',
       meal:         MEAL_AIRLINES.has(code),
       price:        fmtPrice,
       priceRaw,
       priceTotal:   formatPKR(priceRaw * adults),
       priceFor:     `for ${adults} adult${adults > 1 ? 's' : ''}`,
-      aircraft:     first?.operatingCarrier?.alternateId ?? '',
-      fareType:     'economy',
+      aircraft:     first.airplane ?? '',
+      fareType:     first.travel_class ?? 'Economy',
       affiliateUrl: '',
       waUrl: buildWhatsAppUrl({
-        airline:  airlineName,
+        airline: first.airline || meta.name,
         flightNo, from, to, date,
-        price:    fmtPrice,
-        adults,
-        waNumber: WA_NUMBER,
+        price: fmtPrice, adults, waNumber: WA_NUMBER,
       }),
     } satisfies FlightOffer
   })
@@ -399,14 +310,14 @@ export async function GET(req: NextRequest) {
 
   try {
     let flights: FlightOffer[] = []
-    let source = 'skyscrapper'
+    let source = 'serpapi'
 
-    // 1. Sky Scrapper (RapidAPI) — primary, most results
+    // 1. SerpAPI — Google Flights (primary, most results)
     try {
-      flights = await searchSkyScrapper(from, to, date, adults)
-      console.log(`[search] SkyScrapper: ${flights.length} flights for ${from}→${to}`)
+      flights = await searchSerpAPI(from, to, date, adults)
+      console.log(`[search] SerpAPI: ${flights.length} flights for ${from}→${to}`)
     } catch (e: any) {
-      console.warn('[search] SkyScrapper failed:', e.message)
+      console.warn('[search] SerpAPI failed:', e.message)
     }
 
     // 2. Duffel — fallback (real bookable inventory)
