@@ -204,6 +204,88 @@ async function searchDuffel(
   })
 }
 
+// ─── SerpAPI → Google Flights (primary — 15-20 results) ──────────────────────
+function extractAirlineCode(flightNumber: string): string {
+  const match = flightNumber.trim().match(/^([A-Z0-9]{2,3})\s*\d+/i)
+  return match ? match[1].toUpperCase() : ''
+}
+
+async function searchSerpAPI(
+  from: string,
+  to: string,
+  date: string,
+  adults: number,
+): Promise<FlightOffer[]> {
+  const key = process.env.SERPAPI_KEY
+  if (!key) throw new Error('SERPAPI_KEY not set')
+
+  const url = new URL('https://serpapi.com/search.json')
+  url.searchParams.set('engine',        'google_flights')
+  url.searchParams.set('departure_id',  from)
+  url.searchParams.set('arrival_id',    to)
+  url.searchParams.set('outbound_date', date)
+  url.searchParams.set('currency',      'PKR')
+  url.searchParams.set('hl',            'en')
+  url.searchParams.set('gl',            'pk')
+  url.searchParams.set('adults',        String(adults))
+  url.searchParams.set('type',          '2')
+  url.searchParams.set('api_key',       key)
+
+  const res = await fetch(url.toString(), { cache: 'no-store' })
+  if (!res.ok) throw new Error(`SerpAPI ${res.status}`)
+
+  const data = await res.json()
+  if (data.error) throw new Error(`SerpAPI: ${data.error}`)
+
+  const raw: any[] = [...(data.best_flights ?? []), ...(data.other_flights ?? [])]
+  if (!raw.length) return []
+
+  return raw.map((item: any, idx: number) => {
+    const legs    = item.flights as any[]
+    const first   = legs[0]
+    const last    = legs[legs.length - 1]
+    const flightNo = first.flight_number ?? ''
+    const code    = extractAirlineCode(flightNo)
+    const meta    = getMeta(code)
+    const stops   = legs.length - 1
+    const stopTxt = stops === 0 ? 'Non-stop'
+      : stops === 1 ? `1 Stop · ${legs[0].arrival_airport?.id ?? ''}` : `${stops} Stops`
+    const depTime = (first.departure_airport?.time ?? '').split(' ')[1]?.slice(0, 5) || '--:--'
+    const arrTime = (last.arrival_airport?.time ?? '').split(' ')[1]?.slice(0, 5) || '--:--'
+    const durMins = item.total_duration ?? 180
+    const priceRaw = Math.round(item.price ?? 0)
+    const fmtPrice = formatPKR(priceRaw)
+
+    return {
+      id:           `serp-${idx}-${code}-${flightNo.replace(/\s/g, '')}`,
+      airline:      first.airline || meta.name,
+      airlineCode:  code,
+      airlineColor: meta.color,
+      flightNo,
+      dep:          depTime,
+      depCode:      from,
+      arr:          arrTime,
+      arrCode:      to,
+      dur:          formatDuration(durMins),
+      stops, stopTxt,
+      bag:          BAGGAGE[code] ?? '23kg',
+      meal:         MEAL_AIRLINES.has(code),
+      price:        fmtPrice,
+      priceRaw,
+      priceTotal:   formatPKR(priceRaw * adults),
+      priceFor:     `for ${adults} adult${adults > 1 ? 's' : ''}`,
+      aircraft:     first.airplane ?? '',
+      fareType:     first.travel_class ?? 'Economy',
+      affiliateUrl: '',
+      waUrl: buildWhatsAppUrl({
+        airline: first.airline || meta.name,
+        flightNo, from, to, date,
+        price: fmtPrice, adults, waNumber: WA_NUMBER,
+      }),
+    } satisfies FlightOffer
+  })
+}
+
 // ─── Badge helper ─────────────────────────────────────────────────────────────
 function applyBadges(flights: FlightOffer[]): FlightOffer[] {
   if (!flights.length) return flights
@@ -235,32 +317,47 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const flights = await searchDuffel(from, to, date, adults)
-    console.log(`[search] Duffel returned ${flights.length} flights for ${from}→${to} on ${date}`)
+    let flights: FlightOffer[] = []
+    let source = 'serpapi'
+
+    // 1. SerpAPI — Google Flights (primary, most results)
+    try {
+      flights = await searchSerpAPI(from, to, date, adults)
+      console.log(`[search] SerpAPI: ${flights.length} flights for ${from}→${to}`)
+    } catch (e: any) {
+      console.warn('[search] SerpAPI failed:', e.message)
+    }
+
+    // 2. Duffel — real bookable inventory (fallback)
+    if (!flights.length) {
+      source = 'duffel'
+      try {
+        flights = await searchDuffel(from, to, date, adults)
+        console.log(`[search] Duffel: ${flights.length} flights for ${from}→${to}`)
+      } catch (e: any) {
+        console.warn('[search] Duffel failed:', e.message)
+      }
+    }
 
     if (!flights.length) {
       return NextResponse.json({
         flights: [], count: 0,
         searchedAt: new Date().toISOString(),
-        route: `${from} → ${to}`, date, adults,
-        source: 'duffel',
+        route: `${from} → ${to}`, date, adults, source,
         note: 'No flights found. Try a different date or route.',
       })
     }
 
-    const result = applyBadges(flights)
-
     return NextResponse.json({
-      flights:    result,
-      count:      result.length,
+      flights:    applyBadges(flights),
+      count:      flights.length,
       searchedAt: new Date().toISOString(),
       route:      `${from} → ${to}`,
-      date, adults,
-      source: 'duffel',
+      date, adults, source,
     })
 
   } catch (err: any) {
-    console.error('[/api/flights/search] Duffel error:', err.message)
-    return NextResponse.json({ error: 'Flight search unavailable. Please try again.' }, { status: 502 })
+    console.error('[/api/flights/search]', err.message)
+    return NextResponse.json({ error: 'Flight search unavailable.' }, { status: 502 })
   }
 }
