@@ -477,7 +477,7 @@ export default function SearchClient() {
             ))}
 
             <p className="srp-disclaimer">
-              Prices indicative · Updated periodically · Fares via Travelpayouts · WhatsApp booking for guaranteed rate
+              Live fares from airlines · Prices in PKR · Book via WhatsApp for confirmed ticket
             </p>
             </>)}
           </div>

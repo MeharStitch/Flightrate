@@ -93,13 +93,12 @@ async function searchDuffel(
       },
       body: JSON.stringify({
         data: {
-          slices:      [{ origin: from, destination: to, departure_date: date }],
+          slices:     [{ origin: from, destination: to, departure_date: date }],
           passengers,
-          cabin_class: 'economy',
+          // no cabin_class filter — get all available classes for max inventory
         },
       }),
-      // cache for 5 min — Duffel offers expire but prices stay stable short-term
-      next: { revalidate: 300 },
+      cache: 'no-store',
     }
   )
 
