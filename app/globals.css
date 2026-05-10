@@ -2144,3 +2144,114 @@ footer::before {
   .srp-route { flex-wrap: wrap; gap: 8px; }
   .srp-time { font-size: 1rem; }
 }
+
+/* ── Programmatic SEO Route Pages ───────────────────────────────────────────── */
+.route-page {
+  max-width: 800px; margin: 0 auto; padding: 20px 16px 60px;
+  font-family: var(--font-jakarta, sans-serif); color: #111827;
+}
+.route-breadcrumb {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 0.78rem; color: #6B7280; margin-bottom: 24px;
+}
+.route-breadcrumb a { color: #003F88; text-decoration: none; }
+.route-breadcrumb a:hover { text-decoration: underline; }
+
+.route-hero { margin-bottom: 24px; }
+.route-h1 {
+  font-size: clamp(1.4rem, 4vw, 2rem); font-weight: 900;
+  color: #0F172A; line-height: 1.2; margin-bottom: 8px;
+}
+.route-codes {
+  font-size: 0.75em; font-weight: 600; color: #6B7280;
+  margin-left: 8px; vertical-align: middle;
+}
+.route-sub { font-size: 0.95rem; color: #6B7280; }
+
+.route-search-cta { margin-bottom: 32px; }
+.route-search-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: #003F88; color: white; padding: 14px 24px;
+  border-radius: 10px; font-weight: 700; font-size: 0.95rem;
+  text-decoration: none; transition: background 0.2s;
+  margin-right: 10px; margin-bottom: 10px;
+}
+.route-search-btn:hover { background: #002a5e; }
+.route-wa-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: #25D366; color: white; padding: 14px 24px;
+  border-radius: 10px; font-weight: 700; font-size: 0.95rem;
+  text-decoration: none; transition: background 0.2s;
+  margin-bottom: 10px;
+}
+.route-wa-btn:hover { background: #128C7E; }
+
+.route-facts {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;
+  margin-bottom: 32px;
+}
+@media (min-width: 520px) { .route-facts { grid-template-columns: repeat(4, 1fr); } }
+.route-fact {
+  display: flex; flex-direction: column; align-items: center;
+  background: #F8FAFC; border: 1px solid #E2E8F0;
+  border-radius: 10px; padding: 16px 12px; text-align: center; gap: 4px;
+}
+.rf-icon  { font-size: 1.4rem; }
+.rf-label { font-size: 0.68rem; font-weight: 600; color: #9CA3AF; text-transform: uppercase; letter-spacing: 0.05em; }
+.rf-val   { font-size: 0.88rem; font-weight: 800; color: #111827; }
+
+.route-section { margin-bottom: 36px; }
+.route-section h2 {
+  font-size: 1.1rem; font-weight: 800; color: #0F172A;
+  margin-bottom: 14px; padding-bottom: 8px;
+  border-bottom: 2px solid #E5E7EB;
+}
+
+.route-airlines { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+.route-airline-chip {
+  display: flex; align-items: center; gap: 6px;
+  background: #F1F5F9; border: 1px solid #E2E8F0;
+  border-radius: 8px; padding: 6px 12px;
+  font-size: 0.82rem; font-weight: 600; color: #374151;
+}
+.route-note { font-size: 0.78rem; color: #9CA3AF; margin-top: 8px; }
+
+.route-tips { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.route-tips li {
+  background: #F8FAFC; border-left: 3px solid #003F88;
+  padding: 10px 14px; border-radius: 0 8px 8px 0;
+  font-size: 0.88rem; color: #374151; line-height: 1.5;
+}
+
+.route-faqs { display: flex; flex-direction: column; gap: 8px; }
+.route-faq {
+  border: 1px solid #E5E7EB; border-radius: 8px; overflow: hidden;
+}
+.route-faq summary {
+  padding: 14px 16px; font-weight: 700; font-size: 0.88rem;
+  cursor: pointer; color: #111827; user-select: none;
+  list-style: none; display: flex; justify-content: space-between;
+}
+.route-faq summary::-webkit-details-marker { display: none; }
+.route-faq summary::after { content: '+'; font-size: 1.2rem; color: #003F88; }
+.route-faq[open] summary::after { content: '−'; }
+.route-faq p {
+  padding: 0 16px 14px; font-size: 0.85rem; color: #4B5563; line-height: 1.6; margin: 0;
+}
+
+.route-related { display: flex; flex-wrap: wrap; gap: 8px; }
+.route-related-link {
+  padding: 8px 14px; background: #EFF6FF; border: 1px solid #BFDBFE;
+  border-radius: 8px; font-size: 0.82rem; font-weight: 600;
+  color: #1D4ED8; text-decoration: none; transition: background 0.15s;
+}
+.route-related-link:hover { background: #DBEAFE; }
+
+.route-final-cta {
+  background: linear-gradient(135deg, #003F88, #0056C7);
+  border-radius: 14px; padding: 32px 24px; text-align: center; color: white;
+}
+.route-final-cta h3 { font-size: 1.2rem; font-weight: 800; margin-bottom: 8px; }
+.route-final-cta p  { font-size: 0.88rem; opacity: 0.85; margin-bottom: 20px; }
+.route-final-cta .route-search-btn { background: white; color: #003F88; }
+.route-final-cta .route-search-btn:hover { background: #F1F5F9; }

@@ -10,24 +10,30 @@ const plusJakarta = Plus_Jakarta_Sans({
 
 export const metadata: Metadata = {
   title: {
-    default:  'FlightRate — Pakistan\'s Smartest Flight Booking',
-    template: '%s — FlightRate',
+    default:  'Cheap Flights from Pakistan — Compare All Airlines | FlightRate',
+    template: '%s | FlightRate',
   },
-  description: 'Compare all airlines across Pakistan & Gulf. AI-powered fare prediction. Book in 7 minutes via WhatsApp.',
-  keywords: ['cheap flights Pakistan', 'PIA flights', 'Emirates Pakistan', 'ISB DXB', 'Pakistan Gulf flights', 'flight booking WhatsApp'],
+  description: 'Find cheapest flights from Karachi, Lahore, Islamabad to Dubai, Riyadh, Doha & more. Compare all airlines in PKR. Book via WhatsApp in 7 minutes.',
+  keywords: [
+    'cheap flights Pakistan', 'Pakistan to Dubai flights', 'Karachi to Dubai flight',
+    'Islamabad to Dubai flights', 'Lahore to Riyadh flights', 'Pakistan Gulf flights',
+    'PIA flights', 'Emirates Pakistan', 'cheap airline tickets Pakistan',
+    'flight booking Pakistan WhatsApp', 'Pakistan Saudi Arabia flights',
+    'Karachi Dubai ticket price PKR', 'سستی پروازیں پاکستان',
+  ],
   authors: [{ name: 'FlightRate', url: 'https://flightrate.pk' }],
   metadataBase: new URL('https://flightrate.pk'),
   openGraph: {
     type:        'website',
     siteName:    'FlightRate',
-    title:       'FlightRate — Pakistan\'s Smartest Flight Booking',
-    description: 'Compare all airlines across Pakistan & Gulf. Book in 7 minutes via WhatsApp.',
+    title:       'Cheap Flights from Pakistan — Compare All Airlines | FlightRate',
+    description: 'Compare all airlines. PKR prices. Book via WhatsApp in 7 minutes.',
     url:         'https://flightrate.pk',
   },
   twitter: {
     card:        'summary',
-    title:       'FlightRate — Pakistan\'s Smartest Flight Booking',
-    description: 'Compare fares. AI fare prediction. Book via WhatsApp in 7 minutes.',
+    title:       'Cheap Flights from Pakistan | FlightRate',
+    description: 'Compare fares from Karachi, Lahore, Islamabad to Gulf. Book via WhatsApp.',
   },
   icons: {
     icon:  [{ url: '/icon', sizes: '32x32', type: 'image/png' }],
