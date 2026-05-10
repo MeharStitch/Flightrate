@@ -38,7 +38,7 @@ export default function Footer() {
   const cols = [
     { title: 'Product', links: ['Search Flights','Price Tracker','Fare Alerts','Route Insights','AI Prediction'] },
     { title: 'Routes',  links: ['ISB → DXB','KHI → DMM','LHE → RUH','ISB → KWI','All Routes'] },
-    { title: 'Company', links: ['About Us','How It Works','Contact','Privacy Policy','Terms of Use'] },
+    { title: 'Company', links: [] },
   ]
 
   return (
@@ -80,15 +80,17 @@ export default function Footer() {
           </ul>
         </div>
 
-        {/* Link columns */}
-        {cols.map(col => (
-          <div key={col.title} className="foot-col">
-            <h5>{col.title}</h5>
-            <ul>
-              {col.links.map(l => <li key={l}><a href="#">{l}</a></li>)}
-            </ul>
-          </div>
-        ))}
+        {/* Company column */}
+        <div className="foot-col">
+          <h5>Company</h5>
+          <ul>
+            <li><a href="/#about">About Us</a></li>
+            <li><a href="/#how-it-works">How It Works</a></li>
+            <li><a href="https://wa.me/923240763099" target="_blank" rel="noopener">Contact</a></li>
+            <li><Link href="/privacy-policy">Privacy Policy</Link></li>
+            <li><Link href="/terms">Terms of Use</Link></li>
+          </ul>
+        </div>
       </div>
 
       <hr className="foot-divider" />
@@ -146,11 +148,11 @@ export default function Footer() {
       <hr className="foot-divider" />
 
       <div className="foot-bottom">
-        <p>© 2025 FlightRate · flightrate.pk · Made for Pakistani Travelers ✈</p>
+        <p>© 2026 FlightRate · flightrate.pk · Made for Pakistani Travelers ✈</p>
         <div className="foot-links">
-          {['Privacy Policy','Terms of Use','Contact'].map(l => (
-            <a key={l} href="#">{l}</a>
-          ))}
+          <Link href="/privacy-policy">Privacy Policy</Link>
+          <Link href="/terms">Terms of Use</Link>
+          <a href="https://wa.me/923240763099" target="_blank" rel="noopener">Contact</a>
         </div>
       </div>
     </footer>
