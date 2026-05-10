@@ -1,3 +1,24 @@
+import Link from 'next/link'
+
+const POPULAR_ROUTES = [
+  { label: 'Karachi → Dubai',       href: '/flights/karachi-to-dubai' },
+  { label: 'Lahore → Dubai',        href: '/flights/lahore-to-dubai' },
+  { label: 'Islamabad → Dubai',     href: '/flights/islamabad-to-dubai' },
+  { label: 'Karachi → Riyadh',      href: '/flights/karachi-to-riyadh' },
+  { label: 'Lahore → Riyadh',       href: '/flights/lahore-to-riyadh' },
+  { label: 'Islamabad → Riyadh',    href: '/flights/islamabad-to-riyadh' },
+  { label: 'Karachi → Doha',        href: '/flights/karachi-to-doha' },
+  { label: 'Lahore → Doha',         href: '/flights/lahore-to-doha' },
+  { label: 'Islamabad → Doha',      href: '/flights/islamabad-to-doha' },
+  { label: 'Karachi → Jeddah',      href: '/flights/karachi-to-jeddah' },
+  { label: 'Peshawar → Dubai',      href: '/flights/peshawar-to-dubai' },
+  { label: 'Sialkot → Dubai',       href: '/flights/sialkot-to-dubai' },
+  { label: 'Karachi → Kuwait City', href: '/flights/karachi-to-kuwait-city' },
+  { label: 'Karachi → Muscat',      href: '/flights/karachi-to-muscat' },
+  { label: 'Multan → Riyadh',       href: '/flights/multan-to-riyadh' },
+  { label: 'All Routes →',          href: '/flights' },
+]
+
 const AIRLINES = [
   'PIA Pakistan','Emirates','flydubai','Air Arabia',
   'Qatar Airways','Serene Air','FlyJinnah','Oman Air','Gulf Air','Kuwait Airways',
@@ -45,6 +66,18 @@ export default function Footer() {
             </svg>
             Chat on WhatsApp
           </a>
+        </div>
+
+        {/* Popular routes column */}
+        <div className="foot-col">
+          <h5>Popular Routes</h5>
+          <ul>
+            {POPULAR_ROUTES.map(r => (
+              <li key={r.href}>
+                <Link href={r.href}>{r.label}</Link>
+              </li>
+            ))}
+          </ul>
         </div>
 
         {/* Link columns */}

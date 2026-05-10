@@ -80,6 +80,7 @@ async function searchSerpAPI(
   to: string,
   date: string,
   adults: number,
+  returnDate?: string,
 ): Promise<FlightOffer[]> {
   const key = process.env.SERPAPI_KEY
   if (!key) throw new Error('SERPAPI_KEY not set')
@@ -93,7 +94,8 @@ async function searchSerpAPI(
   url.searchParams.set('hl',            'en')
   url.searchParams.set('gl',            'pk')
   url.searchParams.set('adults',        String(adults))
-  url.searchParams.set('type',          '2')
+  url.searchParams.set('type',          returnDate ? '1' : '2')
+  if (returnDate) url.searchParams.set('return_date', returnDate)
   url.searchParams.set('api_key',       key)
 
   const res = await fetch(url.toString(), { cache: 'no-store' })
@@ -295,11 +297,12 @@ function applyBadges(flights: FlightOffer[]): FlightOffer[] {
 
 // ─── Route handler ────────────────────────────────────────────────────────────
 export async function GET(req: NextRequest) {
-  const sp     = new URL(req.url).searchParams
-  const from   = sp.get('from')?.toUpperCase()
-  const to     = sp.get('to')?.toUpperCase()
-  const date   = sp.get('date')
-  const adults = Math.max(1, Math.min(9, parseInt(sp.get('adults') || '1')))
+  const sp         = new URL(req.url).searchParams
+  const from       = sp.get('from')?.toUpperCase()
+  const to         = sp.get('to')?.toUpperCase()
+  const date       = sp.get('date')
+  const returnDate = sp.get('returnDate') || undefined
+  const adults     = Math.max(1, Math.min(9, parseInt(sp.get('adults') || '1')))
 
   if (!from || !to || !date) {
     return NextResponse.json({ error: 'Missing params: from, to, date' }, { status: 400 })
@@ -314,7 +317,7 @@ export async function GET(req: NextRequest) {
 
     // 1. SerpAPI — Google Flights (primary, most results)
     try {
-      flights = await searchSerpAPI(from, to, date, adults)
+      flights = await searchSerpAPI(from, to, date, adults, returnDate)
       console.log(`[search] SerpAPI: ${flights.length} flights for ${from}→${to}`)
     } catch (e: any) {
       console.warn('[search] SerpAPI failed:', e.message)

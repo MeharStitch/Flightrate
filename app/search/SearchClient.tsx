@@ -98,11 +98,13 @@ export default function SearchClient() {
   const router = useRouter()
 
   /* Search state — initialised from URL params */
-  const [from, setFrom]   = useState(url.get('from') || 'ISB')
-  const [to, setTo]       = useState(url.get('to')   || 'DXB')
-  const [date, setDate]   = useState(url.get('date') || new Date().toISOString().split('T')[0])
-  const adults            = parseInt(url.get('adults') || '1')
-  const travelClass       = (url.get('class') || 'ECONOMY') as SearchParams['travelClass']
+  const [from, setFrom]           = useState(url.get('from') || 'ISB')
+  const [to, setTo]               = useState(url.get('to')   || 'DXB')
+  const [date, setDate]           = useState(url.get('date') || new Date().toISOString().split('T')[0])
+  const [returnDate, setReturnDate] = useState(url.get('returnDate') || '')
+  const adults                    = parseInt(url.get('adults') || '1')
+  const travelClass               = (url.get('class') || 'ECONOMY') as SearchParams['travelClass']
+  const isRoundTrip               = !!returnDate
 
   /* UI state */
   const [sort, setSort]           = useState('Cheapest')
@@ -119,9 +121,8 @@ export default function SearchClient() {
     setIsLoading(true)
     setApiError(null)
 
-    const params = new URLSearchParams({
-      from, to, date, adults: String(adults),
-    })
+    const params = new URLSearchParams({ from, to, date, adults: String(adults) })
+    if (returnDate) params.set('returnDate', returnDate)
 
     fetch(`/api/flights/search?${params}`)
       .then(r => r.json())
@@ -141,7 +142,7 @@ export default function SearchClient() {
         setFlights([])
       })
       .finally(() => setIsLoading(false))
-  }, [from, to, date, adults])
+  }, [from, to, date, adults, returnDate])
 
   const sp: SearchParams = { from, to, date, adults, travelClass }
 
@@ -227,13 +228,23 @@ export default function SearchClient() {
               <AirportSearch label="To" placeholder="To…" defaultValue={to} onChange={setTo} />
             </div>
             <div className="srp-date-wrap">
-              <span className="srp-date-label">Date</span>
+              <span className="srp-date-label">{isRoundTrip ? 'Depart' : 'Date'}</span>
               <input
                 type="date" className="srp-date"
                 value={date} min={new Date().toISOString().split('T')[0]}
                 onChange={e => setDate(e.target.value)}
               />
             </div>
+            {isRoundTrip && (
+              <div className="srp-date-wrap">
+                <span className="srp-date-label">Return</span>
+                <input
+                  type="date" className="srp-date"
+                  value={returnDate} min={date}
+                  onChange={e => setReturnDate(e.target.value)}
+                />
+              </div>
+            )}
             <button className="srp-search-btn" onClick={handleSearch}>
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
                 <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
