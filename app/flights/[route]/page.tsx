@@ -195,11 +195,14 @@ export default async function RoutePage(
           <div className="route-airlines">
             {airlines.map(a => (
               <div key={a} className="route-airline-chip">
-                <img
-                  src={`https://www.gstatic.com/flights/airline_logos/70px/${getAirlineCode(a)}.png`}
-                  alt={a} width={24} height={24}
-                  onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none' }}
-                />
+                {getAirlineCode(a) && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={`https://www.gstatic.com/flights/airline_logos/70px/${getAirlineCode(a)}.png`}
+                    alt={a} width={24} height={24}
+                    style={{ objectFit: 'contain' }}
+                  />
+                )}
                 {a}
               </div>
             ))}
