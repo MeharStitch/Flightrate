@@ -1932,7 +1932,7 @@ footer::before {
 
 /* badge */
 .srp-badge {
-  position: absolute; top: 12px; right: 12px;
+  position: absolute; top: 12px; left: 12px;
   font-size: 0.67rem; font-weight: 800; letter-spacing: 0.04em;
   padding: 3px 10px; border-radius: 999px;
 }
