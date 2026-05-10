@@ -27,7 +27,8 @@ function cityName(code: string) {
 
 /* ── WhatsApp booking deep-link ── */
 function bookWA(f: FlightOffer, p: SearchParams) {
-  const msg = `Hi FlightRate! I want to book:\n✈ ${f.airline} ${f.flightNo}\n📍 ${f.depCode} → ${f.arrCode}\n🗓 ${p.date}\n💰 ${f.price}/person\n👥 ${p.adults} adult${p.adults > 1 ? 's' : ''} · ${p.travelClass}`
+  const shownPrice = 'PKR ' + (f.priceRaw + MARKUP).toLocaleString('en-PK')
+  const msg = `Hi FlightRate! I want to book:\n✈ ${f.airline} ${f.flightNo}\n📍 ${f.depCode} → ${f.arrCode}\n🗓 ${p.date}\n💰 ${shownPrice}/person\n👥 ${p.adults} adult${p.adults > 1 ? 's' : ''} · ${p.travelClass}`
   window.open('https://wa.me/923240763099?text=' + encodeURIComponent(msg), '_blank')
 }
 
@@ -371,7 +372,7 @@ export default function SearchClient() {
               </div>
             ) : (<>
             <div className="srp-disclaimer">
-              ⚠️ Prices shown include an estimated tax & fee buffer of PKR 7,000. Final fare may vary — please confirm exact price via WhatsApp before booking.
+              ⚠️ Please confirm exact price via WhatsApp before booking.
             </div>
             {sorted.map((f, i) => (
               <div

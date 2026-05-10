@@ -2121,10 +2121,18 @@ footer::before {
   .srp-search-btn { padding: 0 14px; font-size: 0.78rem; }
   .srp-summary-bar { padding: 10px 16px; gap: 6px; }
 
-  .srp-card-row { flex-wrap: wrap; gap: 12px; }
-  .srp-price-col { min-width: 100%; flex-direction: row; align-items: center; flex-wrap: wrap; gap: 8px; border-top: 1px solid rgba(0,0,0,0.06); padding-top: 12px; }
-  .srp-price { flex: 1; }
-  .srp-btn-wa { width: auto; }
+  .srp-card-row { flex-wrap: wrap; gap: 8px; }
+  .srp-price-col {
+    min-width: 100%; flex-direction: row; align-items: center;
+    flex-wrap: nowrap; gap: 10px;
+    border-top: 1px solid rgba(0,0,0,0.06); padding-top: 10px;
+  }
+  .srp-price { flex: 1; font-size: 1rem; }
+  .srp-per   { display: none; }
+  .srp-btn-wa {
+    flex-shrink: 0; width: auto; white-space: nowrap;
+    font-size: 0.72rem; padding: 8px 12px;
+  }
   .srp-exp-grid { grid-template-columns: repeat(2,1fr); }
 }
 
