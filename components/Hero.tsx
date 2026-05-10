@@ -145,6 +145,7 @@ export default function Hero({ isSearching = false }: Props) {
               label="From"
               placeholder="City or airport code..."
               defaultValue="Islamabad (ISB)"
+              value={from}
               onChange={code => setFrom(code)}
             />
             <button className={`swap-btn${swapping ? ' swap-spin' : ''}`} title="Swap airports" onClick={handleSwap}>
@@ -156,6 +157,7 @@ export default function Hero({ isSearching = false }: Props) {
               label="To"
               placeholder="City or airport code..."
               defaultValue="Dubai (DXB)"
+              value={to}
               onChange={code => setTo(code)}
             />
           </div>
