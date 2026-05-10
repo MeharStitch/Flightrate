@@ -383,8 +383,23 @@ export default function SearchClient() {
 
                 <div className="srp-card-row">
                   {/* Airline logo */}
-                  <div className="srp-logo" style={{ background: f.airlineColor }}>
-                    {f.airlineCode}
+                  <div className="srp-logo" style={{ background: f.airlineCode ? '#fff' : f.airlineColor }}>
+                    {f.airlineCode ? (
+                      <img
+                        src={`https://www.gstatic.com/flights/airline_logos/70px/${f.airlineCode}.png`}
+                        alt={f.airline}
+                        width={40} height={40}
+                        style={{ objectFit: 'contain', width: '100%', height: '100%' }}
+                        onError={e => {
+                          const el = e.currentTarget
+                          el.style.display = 'none'
+                          if (el.parentElement) {
+                            el.parentElement.style.background = f.airlineColor
+                            el.parentElement.textContent = f.airlineCode
+                          }
+                        }}
+                      />
+                    ) : f.airlineCode}
                   </div>
 
                   {/* Flight info */}
