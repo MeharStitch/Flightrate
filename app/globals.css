@@ -2528,3 +2528,151 @@ footer::before {
   font-weight: 800;
   color: var(--ch);
 }
+
+/* ─── ROUND TRIP STEP INDICATOR ─── */
+.srp-steps {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 12px 20px 0;
+}
+.srp-step {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  border-radius: 12px;
+  flex: 1;
+  border: 1.5px solid transparent;
+  transition: background 0.2s, border-color 0.2s;
+}
+.srp-step-active {
+  background: #EFF6FF;
+  border-color: var(--v);
+}
+.srp-step-done {
+  background: #F0FDF4;
+  border-color: #16A34A;
+}
+.srp-step-pending {
+  background: #F9FAFB;
+  border-color: #E5E7EB;
+  opacity: 0.7;
+}
+.srp-step-num {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+.srp-step-active .srp-step-num   { background: var(--v);   color: #fff; }
+.srp-step-done    .srp-step-num   { background: #16A34A;    color: #fff; }
+.srp-step-pending .srp-step-num   { background: #E5E7EB;    color: var(--gr); }
+.srp-step-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #111827;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.srp-step-label em {
+  font-style: normal;
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: var(--gr);
+}
+.srp-step-pending .srp-step-label { color: var(--gr); }
+.srp-step-arrow {
+  font-size: 1.3rem;
+  color: #D1D5DB;
+  flex-shrink: 0;
+}
+
+/* ─── SELECTED OUTBOUND BAR ─── */
+.srp-selected-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  max-width: 900px;
+  margin: 10px auto 0;
+  padding: 12px 18px;
+  background: #F0FDF4;
+  border: 1.5px solid #16A34A;
+  border-radius: 12px;
+}
+.srp-selected-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.srp-selected-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #16A34A;
+}
+.srp-selected-flight {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #111827;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.srp-change-btn {
+  flex-shrink: 0;
+  padding: 6px 14px;
+  border-radius: 8px;
+  border: 1.5px solid #16A34A;
+  background: #fff;
+  color: #16A34A;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.srp-change-btn:hover { background: #F0FDF4; }
+
+/* ─── ROUND TRIP BUTTONS ─── */
+.srp-btn-select {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  padding: 11px 18px;
+  border-radius: 10px;
+  border: none;
+  background: linear-gradient(135deg, var(--v), var(--v2));
+  color: #fff;
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.15s, transform 0.15s;
+  margin-top: 6px;
+  letter-spacing: 0.01em;
+}
+.srp-btn-select:hover { opacity: 0.9; transform: translateY(-1px); }
+.srp-btn-rt {
+  background: linear-gradient(135deg, #16A34A, #15803D);
+}
+.srp-btn-rt:hover { opacity: 0.9; transform: translateY(-1px); }
+
+@media (max-width: 640px) {
+  .srp-steps { padding: 10px 14px 0; gap: 6px; }
+  .srp-step  { padding: 8px 12px; gap: 8px; }
+  .srp-step-label { font-size: 0.74rem; }
+  .srp-selected-bar { margin: 8px 14px 0; }
+  .srp-selected-flight { font-size: 0.76rem; }
+}
