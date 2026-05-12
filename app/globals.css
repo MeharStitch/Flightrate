@@ -2277,3 +2277,79 @@ footer::before {
 .legal-page ul { padding-left: 20px; font-size: 0.92rem; }
 .legal-page ul li { margin-bottom: 6px; }
 .legal-page a { color: #003F88; text-decoration: underline; }
+
+/* ─── FLOATING WHATSAPP BUTTON ─── */
+.wa-float {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--w);
+  color: #fff;
+  padding: 14px 20px 14px 16px;
+  border-radius: 999px;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.9rem;
+  box-shadow: 0 4px 20px rgba(37,211,102,0.45), 0 2px 8px rgba(0,0,0,0.15);
+  transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+  animation: wa-pulse 2.5s ease-in-out infinite;
+}
+.wa-float:hover {
+  background: var(--wd);
+  transform: translateY(-2px) scale(1.04);
+  box-shadow: 0 8px 28px rgba(37,211,102,0.5), 0 2px 8px rgba(0,0,0,0.18);
+  animation: none;
+}
+.wa-float svg { flex-shrink: 0; }
+.wa-float-label { white-space: nowrap; }
+
+@keyframes wa-pulse {
+  0%, 100% { box-shadow: 0 4px 20px rgba(37,211,102,0.45), 0 2px 8px rgba(0,0,0,0.15); }
+  50%       { box-shadow: 0 4px 28px rgba(37,211,102,0.75), 0 2px 8px rgba(0,0,0,0.15); }
+}
+
+@media (max-width: 480px) {
+  .wa-float { bottom: 16px; right: 16px; padding: 13px 16px 13px 14px; font-size: 0.85rem; }
+  .wa-float-label { display: none; }
+}
+
+/* ─── ROUTE PAGE CTA BAR ─── */
+.route-cta-bar {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 20px 0 28px;
+}
+.route-wa-cta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--w);
+  color: #fff;
+  padding: 13px 22px;
+  border-radius: 999px;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.95rem;
+  transition: background 0.2s, transform 0.15s;
+  white-space: nowrap;
+}
+.route-wa-cta:hover { background: var(--wd); transform: translateY(-1px); }
+
+@media (max-width: 500px) {
+  .route-cta-bar { flex-direction: column; }
+  .route-wa-cta, .route-search-btn { width: 100%; justify-content: center; text-align: center; }
+}
+
+/* ─── PRICE FRESHNESS INDICATOR ─── */
+.rf-freshness {
+  display: block;
+  font-size: 0.68rem;
+  color: var(--e);
+  font-weight: 500;
+  margin-top: 2px;
+}

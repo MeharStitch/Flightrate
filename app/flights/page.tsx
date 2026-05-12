@@ -5,7 +5,7 @@ import { PK_CITIES, DEST_CITIES } from '@/lib/routes'
 export const metadata: Metadata = {
   title: 'Cheap Flights from Pakistan — All Routes | FlightRate',
   description: 'Find the cheapest flights from Karachi, Lahore, Islamabad to Dubai, Riyadh, Doha and more. Compare all airlines in PKR. Book via WhatsApp.',
-  alternates: { canonical: 'https://flightrate.pk/flights' },
+  alternates: { canonical: 'https://www.flightrate.pk/flights' },
 }
 
 export default function FlightsHubPage() {

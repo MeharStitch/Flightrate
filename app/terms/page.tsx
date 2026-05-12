@@ -4,7 +4,7 @@ import Link from 'next/link'
 export const metadata: Metadata = {
   title: 'Terms of Use | FlightRate',
   description: 'FlightRate terms of use — rules and conditions for using our flight search and booking service.',
-  alternates: { canonical: 'https://flightrate.pk/terms' },
+  alternates: { canonical: 'https://www.flightrate.pk/terms' },
 }
 
 export default function Terms() {

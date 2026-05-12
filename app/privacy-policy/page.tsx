@@ -4,7 +4,7 @@ import Link from 'next/link'
 export const metadata: Metadata = {
   title: 'Privacy Policy | FlightRate',
   description: 'FlightRate privacy policy — how we collect, use, and protect your information.',
-  alternates: { canonical: 'https://flightrate.pk/privacy-policy' },
+  alternates: { canonical: 'https://www.flightrate.pk/privacy-policy' },
 }
 
 export default function PrivacyPolicy() {

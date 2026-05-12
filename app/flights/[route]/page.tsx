@@ -21,8 +21,8 @@ export async function generateMetadata(
   if (!parsed) return { title: 'Route Not Found' }
 
   const { from, to } = parsed
-  const title       = `${from.name} to ${to.name} Flights (${from.code}-${to.code}) — Cheapest Fares | FlightRate`
-  const description = `Compare cheap flights from ${from.name} (${from.code}) to ${to.name} (${to.code}). Book via WhatsApp in 7 minutes. PKR prices, all airlines. Updated daily.`
+  const title       = `${from.name} to ${to.name} Cheap Flights — PKR Prices, All Airlines | FlightRate`
+  const description = `Cheapest ${from.name} to ${to.name} flights in PKR. Compare PIA, Emirates, flydubai & more. Confirm price & book via WhatsApp in 7 minutes. No hidden fees.`
 
   return {
     title,
@@ -37,11 +37,11 @@ export async function generateMetadata(
       `flights from ${from.name}`,
       `${to.name} se ${from.name} flight`,
     ],
-    alternates: { canonical: `https://flightrate.pk/flights/${route}` },
+    alternates: { canonical: `https://www.flightrate.pk/flights/${route}` },
     openGraph: {
       title,
       description,
-      url: `https://flightrate.pk/flights/${route}`,
+      url: `https://www.flightrate.pk/flights/${route}`,
       type: 'website',
     },
   }
@@ -75,6 +75,20 @@ function getFAQs(from: { name: string; code: string }, to: { name: string; code:
   ]
 }
 
+// ─── Fetch live price from Blob (cached 1h) ───────────────────────────────────
+async function getLivePrice(fromCode: string, toCode: string) {
+  try {
+    const res = await fetch(
+      `https://www.flightrate.pk/api/prices/${fromCode}-${toCode}`,
+      { next: { revalidate: 3600 } }
+    )
+    if (!res.ok) return null
+    return await res.json()
+  } catch {
+    return null
+  }
+}
+
 // ─── Page component ───────────────────────────────────────────────────────────
 export default async function RoutePage(
   { params }: { params: Promise<{ route: string }> }
@@ -88,7 +102,17 @@ export default async function RoutePage(
   const duration  = getRouteDuration(from.code, to.code)
   const faqs      = getFAQs(from, to)
 
-  // Tomorrow's date for default search
+  // Fetch live scraped price
+  const priceData  = await getLivePrice(from.code, to.code)
+  const livePrice  = priceData?.minPrice ?? null
+  const scrapedAt  = priceData?.scrapedAt ?? null
+  const isFresh    = priceData?.fresh ?? false
+  const priceLabel = livePrice
+    ? `PKR ${(livePrice + 7000).toLocaleString('en-PK')}`
+    : 'Check WhatsApp'
+  const hoursAgo   = priceData?.hoursOld ?? null
+
+  // Search date 7 days from now
   const tomorrow = new Date()
   tomorrow.setDate(tomorrow.getDate() + 7)
   const searchDate = tomorrow.toISOString().split('T')[0]
@@ -103,16 +127,26 @@ export default async function RoutePage(
     '@graph': [
       {
         '@type': 'WebPage',
-        '@id': `https://flightrate.pk/flights/${route}`,
-        url: `https://flightrate.pk/flights/${route}`,
+        '@id': `https://www.flightrate.pk/flights/${route}`,
+        url: `https://www.flightrate.pk/flights/${route}`,
         name: `${from.name} to ${to.name} Flights — FlightRate`,
         description: `Compare cheap flights ${from.name} to ${to.name}. Book via WhatsApp.`,
+        dateModified: scrapedAt ?? new Date().toISOString(),
+        ...(livePrice ? {
+          offers: {
+            '@type': 'Offer',
+            priceCurrency: 'PKR',
+            price: String(livePrice + 7000),
+            priceValidUntil: new Date(Date.now() + 86400000).toISOString().split('T')[0],
+            availability: 'https://schema.org/InStock',
+          }
+        } : {}),
         breadcrumb: {
           '@type': 'BreadcrumbList',
           itemListElement: [
-            { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://flightrate.pk' },
-            { '@type': 'ListItem', position: 2, name: 'Flights', item: 'https://flightrate.pk/flights' },
-            { '@type': 'ListItem', position: 3, name: `${from.name} to ${to.name}`, item: `https://flightrate.pk/flights/${route}` },
+            { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://www.flightrate.pk' },
+            { '@type': 'ListItem', position: 2, name: 'Flights', item: 'https://www.flightrate.pk/flights' },
+            { '@type': 'ListItem', position: 3, name: `${from.name} to ${to.name}`, item: `https://www.flightrate.pk/flights/${route}` },
           ],
         },
       },
@@ -155,13 +189,24 @@ export default async function RoutePage(
           </p>
         </div>
 
-        {/* Search CTA */}
-        <div className="route-search-cta">
+        {/* CTA bar */}
+        <div className="route-cta-bar">
           <a
             href={`/search?from=${from.code}&to=${to.code}&date=${searchDate}&adults=1&class=ECONOMY`}
             className="route-search-btn"
           >
-            ✈ Search {from.name} → {to.name} Flights
+            ✈ Search Live Fares
+          </a>
+          <a
+            href={`https://wa.me/923240763099?text=${encodeURIComponent(`Hi FlightRate! I need a flight from ${from.name} (${from.code}) to ${to.name} (${to.code}). Please share the best price.`)}`}
+            className="route-wa-cta"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+            </svg>
+            Get Best Price on WhatsApp
           </a>
         </div>
 
@@ -180,7 +225,12 @@ export default async function RoutePage(
           <div className="route-fact">
             <span className="rf-icon">💰</span>
             <span className="rf-label">Price From</span>
-            <span className="rf-val">PKR 35,000</span>
+            <span className="rf-val">{priceLabel}</span>
+            {hoursAgo !== null && (
+              <span className="rf-freshness">
+                {isFresh ? `Updated ${hoursAgo}h ago` : 'Price may be stale'}
+              </span>
+            )}
           </div>
           <div className="route-fact">
             <span className="rf-icon">⚡</span>

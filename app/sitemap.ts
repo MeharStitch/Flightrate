@@ -1,7 +1,7 @@
 import type { MetadataRoute } from 'next'
 import { getAllRoutes } from '@/lib/routes'
 
-const BASE = 'https://flightrate.pk'
+const BASE = 'https://www.flightrate.pk'
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const routes = getAllRoutes()

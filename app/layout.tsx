@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { Plus_Jakarta_Sans } from 'next/font/google'
+import WhatsAppFloat from '@/components/WhatsAppFloat'
 import './globals.css'
 
 const plusJakarta = Plus_Jakarta_Sans({
@@ -21,14 +22,14 @@ export const metadata: Metadata = {
     'flight booking Pakistan WhatsApp', 'Pakistan Saudi Arabia flights',
     'Karachi Dubai ticket price PKR', 'سستی پروازیں پاکستان',
   ],
-  authors: [{ name: 'FlightRate', url: 'https://flightrate.pk' }],
-  metadataBase: new URL('https://flightrate.pk'),
+  authors: [{ name: 'FlightRate', url: 'https://www.flightrate.pk' }],
+  metadataBase: new URL('https://www.flightrate.pk'),
   openGraph: {
     type:        'website',
     siteName:    'FlightRate',
     title:       'Cheap Flights from Pakistan — Compare All Airlines | FlightRate',
     description: 'Compare all airlines. PKR prices. Book via WhatsApp in 7 minutes.',
-    url:         'https://flightrate.pk',
+    url:         'https://www.flightrate.pk',
   },
   twitter: {
     card:        'summary',
@@ -45,7 +46,10 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className={plusJakarta.className}>{children}</body>
+      <body className={plusJakarta.className}>
+        {children}
+        <WhatsAppFloat />
+      </body>
     </html>
   )
 }
