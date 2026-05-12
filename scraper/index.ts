@@ -12,6 +12,30 @@ import { scrapeRoute }                            from './google-flights'
 import { saveRouteData, saveSummary }             from './storage'
 import { getRoutesForRun, type ScrapeRoute }      from './routes'
 
+const SITE_URL         = process.env.SITE_URL         || 'https://www.flightrate.pk'
+const REVALIDATE_SECRET = process.env.REVALIDATE_SECRET || ''
+
+async function triggerRevalidation(routes: string[]): Promise<void> {
+  if (!REVALIDATE_SECRET) {
+    console.log('  ⚠ REVALIDATE_SECRET not set — skipping ISR revalidation')
+    return
+  }
+  try {
+    const res = await fetch(`${SITE_URL}/api/revalidate`, {
+      method:  'POST',
+      headers: {
+        'Content-Type':       'application/json',
+        'x-revalidate-secret': REVALIDATE_SECRET,
+      },
+      body: JSON.stringify({ routes }),
+    })
+    const data = await res.json()
+    console.log(`  ✓ Revalidated ${data.revalidated} pages on ${SITE_URL}`)
+  } catch (err) {
+    console.error('  ✗ Revalidation failed:', (err as Error).message)
+  }
+}
+
 const MAX_RETRIES    = 3
 const DELAY_BETWEEN  = { min: 8000, max: 20000 }  // ms between routes
 const ROTATE_BROWSER = 8                            // new browser every N routes
@@ -111,6 +135,12 @@ async function main() {
 
   // Save run summary
   await saveSummary({ runAt, total: routes.length, success, failed, routes: successRoutes })
+
+  // Trigger ISR revalidation — pages go live immediately, no redeploy needed
+  if (successRoutes.length > 0) {
+    console.log(`\n🔄 Triggering ISR revalidation for ${successRoutes.length} routes...`)
+    await triggerRevalidation(successRoutes)
+  }
 
   console.log(`\n✅ Scrape complete!`)
   console.log(`   Success: ${success}/${routes.length}`)

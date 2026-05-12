@@ -70,6 +70,9 @@ jobs:
           PROXY_USER:            ''
           PROXY_PASS:            ''
           BLOB_READ_WRITE_TOKEN: ${{ secrets.BLOB_READ_WRITE_TOKEN }}
+          # Trigger ISR revalidation after scrape — pages update without redeploy
+          SITE_URL:              https://www.flightrate.pk
+          REVALIDATE_SECRET:     ${{ secrets.REVALIDATE_SECRET }}
 
       - name: Notify on failure
         if: failure()

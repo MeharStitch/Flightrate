@@ -6,6 +6,8 @@ import {
   getRouteAirlines, getRouteDuration,
   PK_CITIES, DEST_CITIES,
 } from '@/lib/routes'
+import PriceGraph from '@/components/PriceGraph'
+import PriceInsight from '@/components/PriceInsight'
 
 // ─── Static params — build all 88 route pages at deploy ─────────────────────
 export function generateStaticParams() {
@@ -80,7 +82,7 @@ async function getLivePrice(fromCode: string, toCode: string) {
   try {
     const res = await fetch(
       `https://www.flightrate.pk/api/prices/${fromCode}-${toCode}`,
-      { next: { revalidate: 3600 } }
+      { next: { revalidate: 3600, tags: [`price-${fromCode}-${toCode}`] } }
     )
     if (!res.ok) return null
     return await res.json()
@@ -111,6 +113,7 @@ export default async function RoutePage(
     ? `PKR ${(livePrice + 7000).toLocaleString('en-PK')}`
     : 'Check WhatsApp'
   const hoursAgo   = priceData?.hoursOld ?? null
+  const history    = priceData?.history ?? []
 
   // Search date 7 days from now
   const tomorrow = new Date()
@@ -158,6 +161,26 @@ export default async function RoutePage(
           acceptedAnswer: { '@type': 'Answer', text: f.a },
         })),
       },
+      ...(history.length >= 2 ? [{
+        '@type': 'Dataset',
+        name: `${from.name} to ${to.name} Flight Price History`,
+        description: `Daily lowest PKR fares for ${from.code}-${to.code} flights over the past 30 days, updated daily by FlightRate.pk`,
+        url: `https://www.flightrate.pk/flights/${route}`,
+        creator: { '@type': 'Organization', name: 'FlightRate', url: 'https://www.flightrate.pk' },
+        dateModified: scrapedAt ?? new Date().toISOString(),
+        temporalCoverage: `${history[0]?.date ?? ''}/${history[history.length - 1]?.date ?? ''}`,
+        variableMeasured: [{
+          '@type': 'PropertyValue',
+          name: 'Minimum Flight Price',
+          unitCode: 'PKR',
+          measurementTechnique: 'Web scraping of Google Flights, updated daily',
+        }],
+        distribution: {
+          '@type': 'DataDownload',
+          encodingFormat: 'application/json',
+          contentUrl: `https://www.flightrate.pk/api/prices/${from.code}-${to.code}`,
+        },
+      }] : []),
     ],
   }
 
@@ -238,6 +261,20 @@ export default async function RoutePage(
             <span className="rf-val">7 min via WhatsApp</span>
           </div>
         </div>
+
+        {/* Price history graph */}
+        {history.length >= 2 && (
+          <PriceGraph
+            history={history}
+            fromCity={from.name}
+            toCity={to.name}
+          />
+        )}
+
+        {/* Best time to book insight */}
+        {history.length >= 7 && (
+          <PriceInsight history={history} />
+        )}
 
         {/* Airlines */}
         <section className="route-section">

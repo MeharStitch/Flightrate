@@ -7,6 +7,8 @@ const plusJakarta = Plus_Jakarta_Sans({
   subsets: ['latin'],
   weight: ['400', '500', '600', '700', '800'],
   variable: '--font-jakarta',
+  display: 'swap',        // prevent invisible text during font load (CLS fix)
+  preload: true,
 })
 
 export const metadata: Metadata = {
@@ -46,6 +48,13 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
+      <head>
+        {/* Preconnect to external origins used on every page */}
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://www.gstatic.com" />
+        {/* wa.me redirect — warms up for the WhatsApp CTA */}
+        <link rel="dns-prefetch" href="https://wa.me" />
+      </head>
       <body className={plusJakarta.className}>
         {children}
         <WhatsAppFloat />
