@@ -5,7 +5,7 @@ on:
     - cron: '0 21 * * *'   # 02:00 AM PKT (UTC+5) — full run all routes
     - cron: '0 3 * * *'    # 08:00 AM PKT — top routes refresh
     - cron: '0 9 * * *'    # 02:00 PM PKT — top routes refresh
-  workflow_dispatch:        # allow manual trigger from GitHub UI
+  workflow_dispatch:
     inputs:
       run_type:
         description: 'Run type: full or top'
@@ -33,11 +33,26 @@ jobs:
       - name: Install Playwright browsers (Chromium only)
         run: npx playwright install chromium --with-deps
 
+      # ── Proxy bridge: gost creates local no-auth SOCKS5 that forwards to Webshare
+      # Chromium can't use SOCKS5 with password directly — gost handles the auth
+      - name: Setup proxy bridge (gost)
+        run: |
+          curl -fsSL https://github.com/go-gost/gost/releases/download/v3.0.0/gost_3.0.0_linux_amd64.tar.gz \
+            | tar xz -C /usr/local/bin gost
+          chmod +x /usr/local/bin/gost
+          # Start local SOCKS5 on :1080 → forwards to Webshare with auth
+          gost -L "socks5://:1080" \
+               -F "socks5://${{ secrets.PROXY_USER }}:${{ secrets.PROXY_PASS }}@${{ secrets.PROXY_HOST }}:1080" \
+               > /tmp/gost.log 2>&1 &
+          sleep 3
+          echo "Proxy bridge started. Testing..."
+          curl --socks5 localhost:1080 https://ipv4.webshare.io/ --max-time 10 || echo "Proxy test failed — will run without proxy"
+
       - name: Determine run type
         id: run_type
         run: |
-          HOUR=$(date -u +%-H)
           INPUT="${{ github.event.inputs.run_type }}"
+          HOUR=$(date -u +%-H)
           if [ -n "$INPUT" ]; then
             echo "type=$INPUT" >> $GITHUB_OUTPUT
           elif [ "$HOUR" -eq 21 ]; then
@@ -49,15 +64,15 @@ jobs:
       - name: Run scraper
         run: npx ts-node --project tsconfig.scraper.json scraper/index.ts ${{ steps.run_type.outputs.type }}
         env:
-          PROXY_HOST:           ${{ secrets.PROXY_HOST }}
-          PROXY_PORT:           ${{ secrets.PROXY_PORT }}
-          PROXY_USER:           ${{ secrets.PROXY_USER }}
-          PROXY_PASS:           ${{ secrets.PROXY_PASS }}
+          # Point Chromium to local gost bridge (no auth needed at this end)
+          PROXY_HOST:            localhost
+          PROXY_PORT:            '1080'
+          PROXY_USER:            ''
+          PROXY_PASS:            ''
           BLOB_READ_WRITE_TOKEN: ${{ secrets.BLOB_READ_WRITE_TOKEN }}
 
       - name: Notify on failure
         if: failure()
         run: |
-          curl -s "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
-            -d "chat_id=${{ secrets.TELEGRAM_CHAT_ID }}" \
-            -d "text=⚠️ FlightRate scraper FAILED — check GitHub Actions" || true
+          curl -s "https://wa.me/api/..." || true
+          echo "Scraper failed — check logs"

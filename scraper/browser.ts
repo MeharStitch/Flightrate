@@ -56,10 +56,12 @@ export async function launchBrowser(): Promise<Browser> {
   }
 
   if (useProxy) {
+    // If no password (gost local bridge), use SOCKS5 without auth
+    // If password set, use HTTP proxy directly
+    const protocol = PROXY_PASS ? 'http' : 'socks5'
     launchOpts.proxy = {
-      server:   `http://${PROXY_HOST}:${PROXY_PORT}`,
-      username: proxyUser,
-      password: PROXY_PASS,
+      server: `${protocol}://${PROXY_HOST}:${PROXY_PORT}`,
+      ...(PROXY_PASS ? { username: proxyUser, password: PROXY_PASS } : {}),
     }
   }
 
