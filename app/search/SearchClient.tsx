@@ -82,16 +82,47 @@ function makeReturnDemo(fromCode: string, toCode: string): FlightOffer[] {
 }
 
 /* ── WhatsApp messages ── */
+function fmtDate(iso: string) {
+  return new Date(iso + 'T12:00:00').toLocaleDateString('en-PK', {
+    weekday: 'short', day: 'numeric', month: 'long', year: 'numeric',
+  })
+}
+const LINE = '━━━━━━━━━━━━━━━━━━━━'
+const classLabel: Record<string, string> = {
+  ECONOMY: 'Economy', BUSINESS: 'Business Class',
+  FIRST: 'First Class', PREMIUM_ECONOMY: 'Premium Economy',
+}
+
 function bookOneWayWA(f: FlightOffer, p: SearchParams) {
   const price = (f.priceRaw + MARKUP).toLocaleString('en-PK')
+  const total = ((f.priceRaw + MARKUP) * p.adults).toLocaleString('en-PK')
+  const cls   = classLabel[p.travelClass] ?? p.travelClass
+  const stops = f.stops === 0 ? 'Non-stop ✅' : f.stopTxt
+
   const msg = [
-    `Hi FlightRate! I want to book:`,
-    `✈ ${f.airline} ${f.flightNo}`,
-    `📍 ${f.depCode} → ${f.arrCode}`,
-    `🗓 ${p.date} · ${f.dep} – ${f.arr}`,
-    `💰 PKR ${price}/person`,
-    `👥 ${p.adults} adult${p.adults > 1 ? 's' : ''} · ${p.travelClass}`,
-  ].join('\n')
+    `✈️ *FLIGHT BOOKING — FlightRate.pk*`,
+    LINE,
+    ``,
+    `🛫 *${f.airline}*`,
+    `    Flight *${f.flightNo}* · ${f.aircraft ?? 'Commercial'}`,
+    ``,
+    `📍 *${f.depCode}  →  ${f.arrCode}*`,
+    `    ${AIRPORTS[f.depCode] ?? f.depCode} → ${AIRPORTS[f.arrCode] ?? f.arrCode}`,
+    ``,
+    `🗓  *${fmtDate(p.date)}*`,
+    `⏰  Departs *${f.dep}*  →  Arrives *${f.arr}*`,
+    `⏱  Duration: ${f.dur}  ·  ${stops}`,
+    `🧳  Baggage: ${f.bag}${f.meal ? '  ·  🍽 Meal included' : ''}`,
+    ``,
+    LINE,
+    `💺  *${cls}*  ·  👥 ${p.adults} Adult${p.adults > 1 ? 's' : ''}`,
+    `💰  *PKR ${price}* /person (est. incl. taxes)`,
+    p.adults > 1 ? `💵  *Total: PKR ${total}*` : ``,
+    LINE,
+    ``,
+    `Hi, I'd like to book this flight. Please confirm availability and final price. 🙏`,
+  ].filter(l => l !== undefined).join('\n')
+
   window.open('https://wa.me/923240763099?text=' + encodeURIComponent(msg), '_blank')
 }
 
@@ -102,22 +133,36 @@ function bookRoundTripWA(
   const outPrice = (out.priceRaw + MARKUP).toLocaleString('en-PK')
   const retPrice = (ret.priceRaw + MARKUP).toLocaleString('en-PK')
   const total    = ((out.priceRaw + ret.priceRaw + MARKUP * 2) * p.adults).toLocaleString('en-PK')
+  const cls      = classLabel[p.travelClass] ?? p.travelClass
+
   const msg = [
-    `Hi FlightRate! I want to book a ROUND TRIP:`,
+    `✈️ *ROUND TRIP BOOKING — FlightRate.pk*`,
+    LINE,
     ``,
-    `✈ OUTBOUND: ${out.airline} ${out.flightNo}`,
-    `📍 ${out.depCode} → ${out.arrCode}`,
-    `🗓 ${p.date} · ${out.dep} – ${out.arr}`,
-    `💰 PKR ${outPrice}/person`,
+    `*🛫 OUTBOUND FLIGHT*`,
+    `🛫 *${out.airline}*  ·  ${out.flightNo}`,
+    `📍 *${out.depCode}  →  ${out.arrCode}*`,
+    `🗓  *${fmtDate(p.date)}*`,
+    `⏰  ${out.dep} → ${out.arr}  ·  ${out.dur}${out.stops === 0 ? '  ·  Non-stop ✅' : `  ·  ${out.stopTxt}`}`,
+    `💰  *PKR ${outPrice}* /person`,
     ``,
-    `✈ RETURN: ${ret.airline} ${ret.flightNo}`,
-    `📍 ${ret.depCode} → ${ret.arrCode}`,
-    `🗓 ${retDate} · ${ret.dep} – ${ret.arr}`,
-    `💰 PKR ${retPrice}/person`,
+    LINE,
     ``,
-    `👥 ${p.adults} adult${p.adults > 1 ? 's' : ''} · ${p.travelClass}`,
-    `💵 Total est.: PKR ${total}`,
+    `*🛬 RETURN FLIGHT*`,
+    `🛫 *${ret.airline}*  ·  ${ret.flightNo}`,
+    `📍 *${ret.depCode}  →  ${ret.arrCode}*`,
+    `🗓  *${fmtDate(retDate)}*`,
+    `⏰  ${ret.dep} → ${ret.arr}  ·  ${ret.dur}${ret.stops === 0 ? '  ·  Non-stop ✅' : `  ·  ${ret.stopTxt}`}`,
+    `💰  *PKR ${retPrice}* /person`,
+    ``,
+    LINE,
+    `💺  *${cls}*  ·  👥 ${p.adults} Adult${p.adults > 1 ? 's' : ''}`,
+    `💵  *Total est: PKR ${total}*`,
+    LINE,
+    ``,
+    `Hi, I'd like to book this round trip. Please confirm availability and final price. 🙏`,
   ].join('\n')
+
   window.open('https://wa.me/923240763099?text=' + encodeURIComponent(msg), '_blank')
 }
 
