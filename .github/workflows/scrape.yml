@@ -74,8 +74,20 @@ jobs:
           SITE_URL:              https://www.flightrate.pk
           REVALIDATE_SECRET:     ${{ secrets.REVALIDATE_SECRET }}
 
+      - name: Notify success
+        if: success()
+        run: |
+          curl -s -X POST https://ntfy.sh/flightrate-scraper \
+            -H "Title: ✅ Scraper Done" \
+            -H "Priority: default" \
+            -H "Tags: white_check_mark" \
+            -d "Run type: ${{ steps.run_type.outputs.type }} | $(date -u '+%d %b %H:%M UTC')" || true
+
       - name: Notify on failure
         if: failure()
         run: |
-          curl -s "https://wa.me/api/..." || true
-          echo "Scraper failed — check logs"
+          curl -s -X POST https://ntfy.sh/flightrate-scraper \
+            -H "Title: ❌ Scraper FAILED" \
+            -H "Priority: high" \
+            -H "Tags: x,rotating_light" \
+            -d "Run type: ${{ steps.run_type.outputs.type }} | Check GitHub Actions logs" || true
