@@ -30,6 +30,7 @@ export async function saveRouteData(data: RouteData): Promise<void> {
     access:          'public',
     contentType:     'application/json',
     addRandomSuffix: false,
+    allowOverwrite:  true,
   })
 
   console.log(`  ✓ Saved ${data.fromCode}-${data.toCode}: PKR ${data.minPrice.toLocaleString()}`)
@@ -62,5 +63,6 @@ export async function saveSummary(summary: {
     access:          'public',
     contentType:     'application/json',
     addRandomSuffix: false,
+    allowOverwrite:  true,
   })
 }
