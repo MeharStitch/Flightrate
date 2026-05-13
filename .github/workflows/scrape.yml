@@ -12,11 +12,31 @@ on:
         required: false
         default: 'full'
 
+# ── Job 1: Determine run type (shared between A and B) ─────────────────────────
 jobs:
-  scrape:
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      run_type: ${{ steps.rt.outputs.type }}
+    steps:
+      - id: rt
+        name: Determine run type
+        run: |
+          INPUT="${{ github.event.inputs.run_type }}"
+          HOUR=$(date -u +%-H)
+          if [ -n "$INPUT" ]; then
+            echo "type=$INPUT" >> $GITHUB_OUTPUT
+          elif [ "$HOUR" -eq 21 ]; then
+            echo "type=full" >> $GITHUB_OUTPUT
+          else
+            echo "type=top" >> $GITHUB_OUTPUT
+          fi
+
+# ── Shared step template (used by both scrape jobs) ────────────────────────────
+  scrape-a:
+    needs: setup
     runs-on: ubuntu-latest
     timeout-minutes: 90
-
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
@@ -33,61 +53,100 @@ jobs:
       - name: Install Playwright browsers (Chromium only)
         run: npx playwright install chromium --with-deps
 
-      # ── Proxy bridge: gost creates local no-auth SOCKS5 that forwards to Webshare
-      # Chromium can't use SOCKS5 with password directly — gost handles the auth
       - name: Setup proxy bridge (gost)
         run: |
           curl -fsSL https://github.com/go-gost/gost/releases/download/v3.0.0/gost_3.0.0_linux_amd64.tar.gz \
             | tar xz -C /usr/local/bin gost
           chmod +x /usr/local/bin/gost
-          # Start local SOCKS5 on :1080 → forwards to Webshare with auth
           gost -L "socks5://:1080" \
                -F "socks5://${{ secrets.PROXY_USER }}:${{ secrets.PROXY_PASS }}@${{ secrets.PROXY_HOST }}:1080" \
                > /tmp/gost.log 2>&1 &
           sleep 3
-          echo "Proxy bridge started. Testing..."
           curl --socks5 localhost:1080 https://ipv4.webshare.io/ --max-time 10 || echo "Proxy test failed — will run without proxy"
 
-      - name: Determine run type
-        id: run_type
+      - name: Run scraper (chunk A)
         run: |
-          INPUT="${{ github.event.inputs.run_type }}"
-          HOUR=$(date -u +%-H)
-          if [ -n "$INPUT" ]; then
-            echo "type=$INPUT" >> $GITHUB_OUTPUT
-          elif [ "$HOUR" -eq 21 ]; then
-            echo "type=full" >> $GITHUB_OUTPUT
+          TYPE="${{ needs.setup.outputs.run_type }}"
+          if [ "$TYPE" = "full" ]; then
+            npx ts-node --project tsconfig.scraper.json scraper/index.ts full --chunk a
           else
-            echo "type=top" >> $GITHUB_OUTPUT
+            npx ts-node --project tsconfig.scraper.json scraper/index.ts top
           fi
-
-      - name: Run scraper
-        run: npx ts-node --project tsconfig.scraper.json scraper/index.ts ${{ steps.run_type.outputs.type }}
         env:
-          # Point Chromium to local gost bridge (no auth needed at this end)
           PROXY_HOST:            localhost
           PROXY_PORT:            '1080'
           PROXY_USER:            ''
           PROXY_PASS:            ''
           BLOB_READ_WRITE_TOKEN: ${{ secrets.BLOB_READ_WRITE_TOKEN }}
-          # Trigger ISR revalidation after scrape — pages update without redeploy
           SITE_URL:              https://www.flightrate.pk
           REVALIDATE_SECRET:     ${{ secrets.REVALIDATE_SECRET }}
 
-      - name: Notify success
-        if: success()
-        run: |
-          curl -s -X POST https://ntfy.sh/flightrate-scraper \
-            -H "Title: ✅ Scraper Done" \
-            -H "Priority: default" \
-            -H "Tags: white_check_mark" \
-            -d "Run type: ${{ steps.run_type.outputs.type }} | $(date -u '+%d %b %H:%M UTC')" || true
+  scrape-b:
+    needs: setup
+    # Only run chunk B for full runs — top runs are small enough for one job
+    if: needs.setup.outputs.run_type == 'full'
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
 
-      - name: Notify on failure
-        if: failure()
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers (Chromium only)
+        run: npx playwright install chromium --with-deps
+
+      - name: Setup proxy bridge (gost)
         run: |
-          curl -s -X POST https://ntfy.sh/flightrate-scraper \
-            -H "Title: ❌ Scraper FAILED" \
-            -H "Priority: high" \
-            -H "Tags: x,rotating_light" \
-            -d "Run type: ${{ steps.run_type.outputs.type }} | Check GitHub Actions logs" || true
+          curl -fsSL https://github.com/go-gost/gost/releases/download/v3.0.0/gost_3.0.0_linux_amd64.tar.gz \
+            | tar xz -C /usr/local/bin gost
+          chmod +x /usr/local/bin/gost
+          gost -L "socks5://:1080" \
+               -F "socks5://${{ secrets.PROXY_USER }}:${{ secrets.PROXY_PASS }}@${{ secrets.PROXY_HOST }}:1080" \
+               > /tmp/gost.log 2>&1 &
+          sleep 3
+          curl --socks5 localhost:1080 https://ipv4.webshare.io/ --max-time 10 || echo "Proxy test failed — will run without proxy"
+
+      - name: Run scraper (chunk B)
+        run: npx ts-node --project tsconfig.scraper.json scraper/index.ts full --chunk b
+        env:
+          PROXY_HOST:            localhost
+          PROXY_PORT:            '1080'
+          PROXY_USER:            ''
+          PROXY_PASS:            ''
+          BLOB_READ_WRITE_TOKEN: ${{ secrets.BLOB_READ_WRITE_TOKEN }}
+          SITE_URL:              https://www.flightrate.pk
+          REVALIDATE_SECRET:     ${{ secrets.REVALIDATE_SECRET }}
+
+# ── Job 4: Notify after both jobs complete ─────────────────────────────────────
+  notify:
+    needs: [setup, scrape-a, scrape-b]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send notification
+        run: |
+          A="${{ needs.scrape-a.result }}"
+          B="${{ needs.scrape-b.result }}"
+          TYPE="${{ needs.setup.outputs.run_type }}"
+
+          if [ "$A" = "success" ] && ([ "$B" = "success" ] || [ "$B" = "skipped" ]); then
+            curl -s -X POST https://ntfy.sh/flightrate-scraper \
+              -H "Title: ✅ Scraper Done ($TYPE)" \
+              -H "Priority: default" \
+              -H "Tags: white_check_mark" \
+              -d "Both chunks complete | $(date -u '+%d %b %H:%M UTC')" || true
+          else
+            curl -s -X POST https://ntfy.sh/flightrate-scraper \
+              -H "Title: ❌ Scraper FAILED ($TYPE)" \
+              -H "Priority: high" \
+              -H "Tags: x,rotating_light" \
+              -d "A=$A B=$B | Check GitHub Actions logs" || true
+          fi

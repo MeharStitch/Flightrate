@@ -82,10 +82,17 @@ async function scrapeWithRetry(
 
 async function main() {
   const runType  = process.argv[2] === 'top' ? 'top' : 'full'
-  const routes   = getRoutesForRun(runType)
+  const chunkArg = process.argv.find(a => a.startsWith('--chunk=') || a === '--chunk')
+  const chunk    = process.argv[process.argv.indexOf('--chunk') + 1] as 'a' | 'b' | undefined
+  const chunkVal = chunkArg?.includes('=')
+    ? (chunkArg.split('=')[1] as 'a' | 'b')
+    : (chunk === 'a' || chunk === 'b' ? chunk : undefined)
+
+  const routes   = getRoutesForRun(runType, chunkVal)
   const runAt    = new Date().toISOString()
 
-  console.log(`\n🛫 FlightRate Scraper — ${runType.toUpperCase()} RUN`)
+  const chunkLabel = chunkVal ? ` [CHUNK ${chunkVal.toUpperCase()}]` : ''
+  console.log(`\n🛫 FlightRate Scraper — ${runType.toUpperCase()} RUN${chunkLabel}`)
   console.log(`   Routes: ${routes.length} | Started: ${runAt}\n`)
 
   let success = 0

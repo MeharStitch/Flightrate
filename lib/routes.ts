@@ -5,7 +5,7 @@ export interface RouteCity {
   name: string
   code: string
   country: string
-  urdu?: string          // Urdu name for Pakistan cities
+  urdu?: string
 }
 
 export const PK_CITIES: RouteCity[] = [
@@ -33,8 +33,17 @@ export const DEST_CITIES: RouteCity[] = [
   { slug: 'bahrain',     name: 'Bahrain',     code: 'BAH', country: 'Bahrain' },
 ]
 
-// All forward routes (PK → Gulf)
-export function getAllRoutes() {
+// Diaspora destinations — only paired with KHI/LHE/ISB (high-traffic only)
+export const DIASPORA_CITIES: RouteCity[] = [
+  { slug: 'manchester', name: 'Manchester', code: 'MAN', country: 'UK' },
+  { slug: 'toronto',    name: 'Toronto',    code: 'YYZ', country: 'Canada' },
+  { slug: 'new-york',   name: 'New York',   code: 'JFK', country: 'USA' },
+]
+
+const DIASPORA_PK = PK_CITIES.filter(c => ['KHI', 'LHE', 'ISB'].includes(c.code))
+
+// Pakistan → Gulf (88 routes)
+export function getForwardRoutes() {
   const routes: { from: RouteCity; to: RouteCity; slug: string }[] = []
   for (const from of PK_CITIES) {
     for (const to of DEST_CITIES) {
@@ -44,16 +53,42 @@ export function getAllRoutes() {
   return routes
 }
 
-// Parse a route slug → from/to city
-export function parseRouteSlug(slug: string): { from: RouteCity; to: RouteCity } | null {
-  const all = getAllRoutes()
-  const match = all.find(r => r.slug === slug)
-  if (!match) return null
-  return { from: match.from, to: match.to }
+// Gulf → Pakistan (88 routes — expat return market)
+export function getReverseRoutes() {
+  const routes: { from: RouteCity; to: RouteCity; slug: string }[] = []
+  for (const from of DEST_CITIES) {
+    for (const to of PK_CITIES) {
+      routes.push({ from, to, slug: `${from.slug}-to-${to.slug}` })
+    }
+  }
+  return routes
 }
 
-// Typical flight durations (minutes) for common routes
+// Pakistan → UK/Canada/USA diaspora (9 routes: KHI/LHE/ISB only)
+export function getDiasporaRoutes() {
+  const routes: { from: RouteCity; to: RouteCity; slug: string }[] = []
+  for (const from of DIASPORA_PK) {
+    for (const to of DIASPORA_CITIES) {
+      routes.push({ from, to, slug: `${from.slug}-to-${to.slug}` })
+    }
+  }
+  return routes
+}
+
+// All routes combined for static page generation
+export function getAllRoutes() {
+  return [...getForwardRoutes(), ...getReverseRoutes(), ...getDiasporaRoutes()]
+}
+
+// Parse a route slug → from/to city
+export function parseRouteSlug(slug: string): { from: RouteCity; to: RouteCity } | null {
+  const match = getAllRoutes().find(r => r.slug === slug)
+  return match ? { from: match.from, to: match.to } : null
+}
+
+// Typical flight durations (minutes)
 export const ROUTE_DURATION: Record<string, number> = {
+  // Pakistan → Gulf
   'KHI-DXB': 185, 'LHE-DXB': 210, 'ISB-DXB': 210, 'PEW-DXB': 195,
   'KHI-AUH': 200, 'LHE-AUH': 225, 'ISB-AUH': 225,
   'KHI-DOH': 205, 'LHE-DOH': 230, 'ISB-DOH': 230,
@@ -61,6 +96,25 @@ export const ROUTE_DURATION: Record<string, number> = {
   'KHI-JED': 270, 'LHE-JED': 290, 'ISB-JED': 285,
   'KHI-KWI': 235, 'LHE-KWI': 255, 'ISB-KWI': 250,
   'KHI-MCT': 175, 'LHE-MCT': 200, 'ISB-MCT': 200,
+  'KHI-SHJ': 190, 'LHE-SHJ': 215, 'ISB-SHJ': 215,
+  'KHI-BAH': 220, 'LHE-BAH': 245, 'ISB-BAH': 245,
+  'KHI-DMM': 235, 'LHE-DMM': 255, 'ISB-DMM': 255,
+  'KHI-MED': 255, 'LHE-MED': 275, 'ISB-MED': 275,
+  // Gulf → Pakistan (same duration, reversed)
+  'DXB-KHI': 185, 'DXB-LHE': 210, 'DXB-ISB': 210, 'DXB-PEW': 195,
+  'DXB-MUX': 210, 'DXB-SKT': 215, 'DXB-LYP': 220, 'DXB-UET': 200,
+  'RUH-KHI': 240, 'RUH-LHE': 260, 'RUH-ISB': 255,
+  'JED-KHI': 270, 'JED-LHE': 290, 'JED-ISB': 285,
+  'DOH-KHI': 205, 'DOH-LHE': 230, 'DOH-ISB': 230,
+  'AUH-KHI': 200, 'AUH-LHE': 225, 'AUH-ISB': 225,
+  'SHJ-KHI': 190, 'SHJ-LHE': 215, 'SHJ-ISB': 215,
+  'KWI-KHI': 235, 'MCT-KHI': 175, 'MCT-LHE': 200,
+  'BAH-KHI': 220, 'DMM-KHI': 235, 'DMM-LHE': 255,
+  'MED-KHI': 255, 'MED-LHE': 275,
+  // Pakistan → Diaspora
+  'KHI-MAN': 570, 'LHE-MAN': 600, 'ISB-MAN': 585,
+  'KHI-JFK': 960, 'LHE-JFK': 990, 'ISB-JFK': 975,
+  'KHI-YYZ': 1020,'LHE-YYZ': 1050,'ISB-YYZ': 1035,
 }
 
 // Airlines typically serving a route
@@ -78,14 +132,26 @@ export const ROUTE_AIRLINES: Record<string, string[]> = {
   'LHE-JED': ['Saudia', 'PIA', 'flynas'],
   'KHI-KWI': ['Kuwait Airways', 'PIA', 'Jazeera Airways'],
   'KHI-MCT': ['Oman Air', 'PIA'],
+  // Diaspora
+  'KHI-MAN': ['PIA', 'Qatar Airways', 'Emirates', 'Turkish Airlines'],
+  'LHE-MAN': ['PIA', 'Qatar Airways', 'Emirates', 'Turkish Airlines'],
+  'ISB-MAN': ['PIA', 'Qatar Airways', 'Emirates', 'British Airways'],
+  'KHI-JFK': ['Qatar Airways', 'Emirates', 'Turkish Airlines', 'British Airways'],
+  'LHE-JFK': ['Qatar Airways', 'Emirates', 'Turkish Airlines', 'British Airways'],
+  'ISB-JFK': ['Qatar Airways', 'Emirates', 'Turkish Airlines', 'British Airways'],
+  'KHI-YYZ': ['Qatar Airways', 'Emirates', 'Turkish Airlines', 'Air Canada'],
+  'LHE-YYZ': ['Qatar Airways', 'Emirates', 'Turkish Airlines', 'Air Canada'],
+  'ISB-YYZ': ['Qatar Airways', 'Emirates', 'Turkish Airlines', 'Air Canada'],
 }
 
 export function getRouteAirlines(fromCode: string, toCode: string): string[] {
-  return ROUTE_AIRLINES[`${fromCode}-${toCode}`] ?? ['PIA', 'Emirates', 'flydubai', 'Air Arabia']
+  const key = `${fromCode}-${toCode}`
+  const reverse = `${toCode}-${fromCode}`
+  return ROUTE_AIRLINES[key] ?? ROUTE_AIRLINES[reverse] ?? ['PIA', 'Emirates', 'flydubai', 'Air Arabia']
 }
 
 export function getRouteDuration(fromCode: string, toCode: string): string {
-  const mins = ROUTE_DURATION[`${fromCode}-${toCode}`] ?? 240
+  const mins = ROUTE_DURATION[`${fromCode}-${toCode}`] ?? ROUTE_DURATION[`${toCode}-${fromCode}`] ?? 240
   const h = Math.floor(mins / 60)
   const m = mins % 60
   return m > 0 ? `${h}h ${m}m` : `${h}h`

@@ -19,6 +19,8 @@ const AIRPORTS: Record<string, string> = {
   RUH: 'Riyadh',    JED: 'Jeddah',    DMM: 'Dammam',     KWI: 'Kuwait City',
   BAH: 'Bahrain',   MCT: 'Muscat',    AAN: 'Al Ain',     MED: 'Madinah',
   GYD: 'Baku',      IST: 'Istanbul',
+  MAN: 'Manchester', YYZ: 'Toronto',   JFK: 'New York',
+  LHR: 'London',    CDG: 'Paris',      FRA: 'Frankfurt',
 }
 
 function cityName(code: string) {
