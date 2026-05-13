@@ -1,24 +1,51 @@
 import type { MetadataRoute } from 'next'
-import { getAllRoutes } from '@/lib/routes'
+import { getForwardRoutes, getReverseRoutes, getDiasporaRoutes } from '@/lib/routes'
 
 const BASE = 'https://www.flightrate.pk'
 
-export default function sitemap(): MetadataRoute.Sitemap {
-  const routes = getAllRoutes()
-  const now    = new Date()
+// Top-traffic forward routes get highest priority
+const TOP_ROUTES = new Set([
+  'karachi-to-dubai', 'lahore-to-dubai', 'islamabad-to-dubai',
+  'karachi-to-riyadh', 'lahore-to-riyadh', 'islamabad-to-riyadh',
+  'karachi-to-jeddah', 'lahore-to-jeddah', 'islamabad-to-jeddah',
+  'karachi-to-doha', 'lahore-to-doha', 'islamabad-to-doha',
+  'peshawar-to-dubai', 'sialkot-to-dubai', 'karachi-to-kuwait-city',
+])
 
-  const static_pages: MetadataRoute.Sitemap = [
-    { url: BASE,           lastModified: now, changeFrequency: 'daily',   priority: 1.0 },
-    { url: `${BASE}/flights`, lastModified: now, changeFrequency: 'weekly',  priority: 0.9 },
-    { url: `${BASE}/search`,  lastModified: now, changeFrequency: 'daily',   priority: 0.8 },
+export default function sitemap(): MetadataRoute.Sitemap {
+  const now = new Date()
+
+  const staticPages: MetadataRoute.Sitemap = [
+    { url: BASE,                          lastModified: now, changeFrequency: 'daily',   priority: 1.0 },
+    { url: `${BASE}/flights`,             lastModified: now, changeFrequency: 'weekly',  priority: 0.9 },
+    { url: `${BASE}/search`,              lastModified: now, changeFrequency: 'daily',   priority: 0.8 },
+    { url: `${BASE}/privacy-policy`,      lastModified: now, changeFrequency: 'monthly', priority: 0.3 },
+    { url: `${BASE}/terms`,               lastModified: now, changeFrequency: 'monthly', priority: 0.3 },
   ]
 
-  const route_pages: MetadataRoute.Sitemap = routes.map(r => ({
+  // Pakistan → Gulf: highest priority (core product)
+  const forwardPages: MetadataRoute.Sitemap = getForwardRoutes().map(r => ({
     url:             `${BASE}/flights/${r.slug}`,
     lastModified:    now,
     changeFrequency: 'daily' as const,
+    priority:        TOP_ROUTES.has(r.slug) ? 0.9 : 0.8,
+  }))
+
+  // Pakistan → UK/Canada/USA: high value, lower competition
+  const diasporaPages: MetadataRoute.Sitemap = getDiasporaRoutes().map(r => ({
+    url:             `${BASE}/flights/${r.slug}`,
+    lastModified:    now,
+    changeFrequency: 'weekly' as const,
     priority:        0.8,
   }))
 
-  return [...static_pages, ...route_pages]
+  // Gulf → Pakistan: expat return market
+  const reversePages: MetadataRoute.Sitemap = getReverseRoutes().map(r => ({
+    url:             `${BASE}/flights/${r.slug}`,
+    lastModified:    now,
+    changeFrequency: 'daily' as const,
+    priority:        0.7,
+  }))
+
+  return [...staticPages, ...forwardPages, ...diasporaPages, ...reversePages]
 }

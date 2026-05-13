@@ -23,22 +23,51 @@ export async function generateMetadata(
   if (!parsed) return { title: 'Route Not Found' }
 
   const { from, to } = parsed
-  const title       = `${from.name} to ${to.name} Cheap Flights — PKR Prices, All Airlines | FlightRate`
-  const description = `Cheapest ${from.name} to ${to.name} flights in PKR. Compare PIA, Emirates, flydubai & more. Confirm price & book via WhatsApp in 7 minutes. No hidden fees.`
+  const isReverse  = to.country === 'Pakistan'                     // Gulf → Pakistan
+  const isDiaspora = from.country === 'Pakistan' && !['UAE','Qatar','Saudi Arabia','Kuwait','Oman','Bahrain'].includes(to.country)
+
+  const title = isReverse
+    ? `${from.name} to ${to.name} Flights — Cheap Tickets for Expats | FlightRate`
+    : isDiaspora
+      ? `${from.name} to ${to.name} Flights — Cheapest Fares in PKR | FlightRate`
+      : `${from.name} to ${to.name} Cheap Flights — PKR Prices, All Airlines | FlightRate`
+
+  const description = isReverse
+    ? `Flying from ${from.name} back to ${to.name}? Compare all airlines, PKR prices. Book via WhatsApp in 7 minutes. No hidden fees.`
+    : isDiaspora
+      ? `Cheapest ${from.name} to ${to.name} flights. Compare Qatar Airways, Emirates, PIA & more. PKR prices. Book via WhatsApp.`
+      : `Cheapest ${from.name} to ${to.name} flights in PKR. Compare PIA, Emirates, flydubai & more. Confirm price & book via WhatsApp in 7 minutes. No hidden fees.`
+
+  const keywords = isReverse ? [
+    `${from.name} to ${to.name} flights`,
+    `${from.code} to ${to.code} cheap ticket`,
+    `${from.name} ${to.name} flight price`,
+    `fly from ${from.country} to Pakistan`,
+    `expat flights ${from.name} Pakistan`,
+    `${to.name} se ${from.name} flight`,
+  ] : isDiaspora ? [
+    `${from.name} to ${to.name} flights`,
+    `cheap flights Pakistan ${to.name}`,
+    `${from.code} ${to.code} ticket price`,
+    `Pakistan to ${to.country} flights`,
+    `${from.name} ${to.name} flight PKR`,
+    `Qatar Airways ${from.name} ${to.name}`,
+    `Emirates ${from.name} ${to.name}`,
+  ] : [
+    `${from.name} to ${to.name} flights`,
+    `cheap flights ${from.name} ${to.name}`,
+    `${from.code} to ${to.code}`,
+    `${from.name} ${to.name} ticket price`,
+    `${from.name} ${to.country} flights`,
+    `Pakistan to ${to.country} flights`,
+    `flights from ${from.name}`,
+    `${to.name} se ${from.name} flight`,
+  ]
 
   return {
     title,
     description,
-    keywords: [
-      `${from.name} to ${to.name} flights`,
-      `cheap flights ${from.name} ${to.name}`,
-      `${from.code} to ${to.code}`,
-      `${from.name} ${to.name} ticket price`,
-      `${from.name} ${to.country} flights`,
-      `Pakistan to ${to.country} flights`,
-      `flights from ${from.name}`,
-      `${to.name} se ${from.name} flight`,
-    ],
+    keywords,
     alternates: { canonical: `https://www.flightrate.pk/flights/${route}` },
     openGraph: {
       title,
