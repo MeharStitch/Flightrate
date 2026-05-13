@@ -77,7 +77,10 @@ jobs:
           PROXY_PORT:            '1080'
           PROXY_USER:            ''
           PROXY_PASS:            ''
-          BLOB_READ_WRITE_TOKEN: ${{ secrets.BLOB_READ_WRITE_TOKEN }}
+          R2_ACCOUNT_ID:         ${{ secrets.R2_ACCOUNT_ID }}
+          R2_ACCESS_KEY_ID:      ${{ secrets.R2_ACCESS_KEY_ID }}
+          R2_SECRET_ACCESS_KEY:  ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          R2_BUCKET_NAME:        ${{ secrets.R2_BUCKET_NAME }}
           SITE_URL:              https://www.flightrate.pk
           REVALIDATE_SECRET:     ${{ secrets.REVALIDATE_SECRET }}
 
@@ -121,7 +124,10 @@ jobs:
           PROXY_PORT:            '1080'
           PROXY_USER:            ''
           PROXY_PASS:            ''
-          BLOB_READ_WRITE_TOKEN: ${{ secrets.BLOB_READ_WRITE_TOKEN }}
+          R2_ACCOUNT_ID:         ${{ secrets.R2_ACCOUNT_ID }}
+          R2_ACCESS_KEY_ID:      ${{ secrets.R2_ACCESS_KEY_ID }}
+          R2_SECRET_ACCESS_KEY:  ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          R2_BUCKET_NAME:        ${{ secrets.R2_BUCKET_NAME }}
           SITE_URL:              https://www.flightrate.pk
           REVALIDATE_SECRET:     ${{ secrets.REVALIDATE_SECRET }}
 

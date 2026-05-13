@@ -1,8 +1,11 @@
-import { list } from '@vercel/blob'
 import { NextResponse } from 'next/server'
 
-export const runtime = 'nodejs'
-export const revalidate = 3600 // cache 1 hour
+export const runtime  = 'nodejs'
+export const revalidate = 3600
+
+// R2 public URL — set in Vercel env vars as R2_PUBLIC_URL
+// e.g. https://pub-xxxxxxxx.r2.dev  or  https://prices.flightrate.pk
+const R2_PUBLIC = (process.env.R2_PUBLIC_URL ?? '').replace(/\/$/, '')
 
 export async function GET(
   _req: Request,
@@ -12,41 +15,36 @@ export async function GET(
   const [from, to] = route.toUpperCase().split('-')
 
   if (!from || !to) {
-    return NextResponse.json({ error: 'Invalid route format. Use FROM-TO e.g. KHI-DXB' }, { status: 400 })
+    return NextResponse.json({ error: 'Invalid route. Use FROM-TO e.g. KHI-DXB' }, { status: 400 })
+  }
+
+  if (!R2_PUBLIC) {
+    return NextResponse.json({
+      route, minPrice: null, flights: [], history: [],
+      scrapedAt: null, fresh: false,
+      message: 'R2_PUBLIC_URL not configured',
+    })
   }
 
   try {
-    const key = `prices/${from}-${to}.json`
-    const { blobs } = await list({ prefix: key })
+    const url = `${R2_PUBLIC}/prices/${from}-${to}.json`
+    const res = await fetch(url, { next: { revalidate: 3600 } })
 
-    if (blobs.length === 0) {
+    if (res.status === 404 || !res.ok) {
       return NextResponse.json({
-        route,
-        minPrice:  null,
-        flights:   [],
-        history:   [],
-        scrapedAt: null,
-        fresh:     false,
-        message:   'No price data yet — scraper will update tonight',
+        route, minPrice: null, flights: [], history: [],
+        scrapedAt: null, fresh: false,
+        message: 'No price data yet — scraper will update tonight',
       })
     }
 
-    const res  = await fetch(blobs[0].url, { next: { revalidate: 3600 } })
     const data = await res.json()
 
-    // Mark data as stale if older than 48 hours
-    const scrapedAt  = new Date(data.scrapedAt)
-    const hoursOld   = (Date.now() - scrapedAt.getTime()) / 3600000
-    const fresh      = hoursOld < 48
+    const hoursOld = (Date.now() - new Date(data.scrapedAt).getTime()) / 3600000
+    const fresh    = hoursOld < 48
 
-    return NextResponse.json({
-      ...data,
-      fresh,
-      hoursOld: Math.round(hoursOld),
-    }, {
-      headers: {
-        'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=86400',
-      },
+    return NextResponse.json({ ...data, fresh, hoursOld: Math.round(hoursOld) }, {
+      headers: { 'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=86400' },
     })
 
   } catch (err) {
