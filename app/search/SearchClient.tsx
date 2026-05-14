@@ -3,6 +3,7 @@ import { useSearchParams, useRouter } from 'next/navigation'
 import { useState, useEffect, useMemo } from 'react'
 import Navbar from '@/components/Navbar'
 import AirportSearch from '@/components/AirportSearch'
+import DatePicker from '@/components/DatePicker'
 import type { SearchParams, FlightOffer } from '@/types/flight'
 import React from 'react'
 
@@ -469,18 +470,19 @@ export default function SearchClient() {
             <div className="srp-ap-wrap">
               <AirportSearch label="To" placeholder="To…" defaultValue={to} onChange={setTo} />
             </div>
-            <div className="srp-date-wrap">
-              <span className="srp-date-label">{isRoundTrip ? 'Depart' : 'Date'}</span>
-              <input type="date" className="srp-date" value={date}
-                min={new Date().toISOString().split('T')[0]}
-                onChange={e => setDate(e.target.value)} />
-            </div>
+            <DatePicker
+              label={isRoundTrip ? 'Depart' : 'Date'}
+              value={date}
+              min={new Date().toISOString().split('T')[0]}
+              onChange={setDate}
+            />
             {isRoundTrip && (
-              <div className="srp-date-wrap">
-                <span className="srp-date-label">Return</span>
-                <input type="date" className="srp-date" value={returnDate} min={date}
-                  onChange={e => setReturnDate(e.target.value)} />
-              </div>
+              <DatePicker
+                label="Return"
+                value={returnDate}
+                min={date}
+                onChange={setReturnDate}
+              />
             )}
             <button className="srp-search-btn" onClick={handleSearch}>
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
