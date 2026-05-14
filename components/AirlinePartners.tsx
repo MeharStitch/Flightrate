@@ -21,10 +21,12 @@ export default function AirlinePartners() {
 
   return (
     <section className="partners-section reveal">
-      <div className="partners-header">
-        <div>
-          <h3 className="partners-title">Featured Partners</h3>
-          <p className="partners-sub">Pakistan · Gulf · International</p>
+      <div className="partners-inner">
+        <div className="partners-header">
+          <div>
+            <h3 className="partners-title">Featured Partners</h3>
+            <p className="partners-sub">Pakistan · Gulf · International</p>
+          </div>
         </div>
       </div>
 

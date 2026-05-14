@@ -10,7 +10,6 @@ import AIPrediction from '@/components/AIPrediction'
 import RouteInsights from '@/components/RouteInsights'
 import PopularRoutes from '@/components/PopularRoutes'
 import TopRoutesGrid from '@/components/TopRoutesGrid'
-import LiveBookingTicker from '@/components/LiveBookingTicker'
 import SocialProof from '@/components/SocialProof'
 import Footer from '@/components/Footer'
 
@@ -32,7 +31,6 @@ export default function Home() {
       <Navbar />
       <main>
         <Hero />
-        <LiveBookingTicker />
         <AirlinePartners />
         <TrustFeatures />
         <HowItWorks />

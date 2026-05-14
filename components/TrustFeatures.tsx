@@ -27,7 +27,7 @@ const FEATURES = [
       </svg>
     ),
     title: 'Refunds in 48 Hours',
-    desc: 'Eligible refunds processed to EasyPaisa, JazzCash or bank within 48 hours. No chasing required.',
+    desc: 'Eligible refunds processed within 48 hours of approval. No chasing required.',
     badge: 'Guaranteed',
   },
   {
@@ -40,14 +40,6 @@ const FEATURES = [
     desc: 'Found a lower fare elsewhere? Show us and we\'ll beat it or refund the difference. Simple.',
     badge: 'Price Match',
   },
-]
-
-const PAYMENT_METHODS = [
-  { label: 'EasyPaisa',     color: '#6DB33F' },
-  { label: 'JazzCash',      color: '#E4022A' },
-  { label: 'Bank Transfer', color: '#003F88' },
-  { label: 'Debit Card',    color: '#374151' },
-  { label: 'Credit Card',   color: '#374151' },
 ]
 
 export default function TrustFeatures() {
@@ -64,18 +56,6 @@ export default function TrustFeatures() {
             <p className="trust-desc">{f.desc}</p>
           </div>
         ))}
-      </div>
-
-      {/* Payment methods */}
-      <div className="payment-strip reveal">
-        <span className="payment-strip-label">We accept</span>
-        <div className="payment-methods">
-          {PAYMENT_METHODS.map(p => (
-            <span key={p.label} className="payment-chip" style={{ '--pm-color': p.color } as React.CSSProperties}>
-              {p.label}
-            </span>
-          ))}
-        </div>
       </div>
     </section>
   )

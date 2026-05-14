@@ -1275,10 +1275,13 @@ footer::before {
   background: linear-gradient(180deg, rgba(0,63,136,0.025) 0%, transparent 100%);
 }
 
+.partners-inner {
+  max-width: 1140px; margin: 0 auto;
+  padding: 0 clamp(16px,5vw,80px);
+}
+
 .partners-header {
   display: flex; align-items: center; gap: 32px;
-  max-width: 1140px; margin: 0 auto;
-  padding: 0 clamp(16px,5vw,48px);
   margin-bottom: 20px;
 }
 
