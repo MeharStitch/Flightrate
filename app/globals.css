@@ -2825,8 +2825,6 @@ footer::before {
 .dp-trigger-text { font-size: 0.88rem; font-weight: 600; }
 
 .dp-popup {
-  /* position + top + left + width set inline via JS (fixed, getBoundingClientRect) */
-  z-index: 9999;
   background: white;
   border: 1px solid #E2E8F0;
   border-radius: 16px;
