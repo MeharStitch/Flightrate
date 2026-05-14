@@ -13,17 +13,19 @@ function displayPrice(raw: number) {
 }
 
 const AIRPORTS: Record<string, string> = {
-  ISB: 'Islamabad', KHI: 'Karachi',   LHE: 'Lahore',    PEW: 'Peshawar',
-  SKT: 'Sialkot',   MUX: 'Multan',    UET: 'Quetta',     LYP: 'Faisalabad',
-  DXB: 'Dubai',     AUH: 'Abu Dhabi', SHJ: 'Sharjah',    DOH: 'Doha',
-  RUH: 'Riyadh',    JED: 'Jeddah',    DMM: 'Dammam',     KWI: 'Kuwait City',
-  BAH: 'Bahrain',   MCT: 'Muscat',    AAN: 'Al Ain',     MED: 'Madinah',
-  GYD: 'Baku',      IST: 'Istanbul',   AMS: 'Amsterdam',
-  MAN: 'Manchester', BHX: 'Birmingham', LHR: 'London',
-  CDG: 'Paris',     ORY: 'Paris',      MXP: 'Milan',
-  LIN: 'Milan',     FCO: 'Rome',       MAD: 'Madrid',
-  BCN: 'Barcelona', FRA: 'Frankfurt',  MUC: 'Munich',
-  JFK: 'New York',  ORD: 'Chicago',    YYZ: 'Toronto',
+  ISB: 'Islamabad Intl',     KHI: 'Jinnah Intl',          LHE: 'Allama Iqbal Intl',
+  PEW: 'Bacha Khan Intl',    SKT: 'Sialkot Intl',          MUX: 'Multan Intl',
+  UET: 'Quetta Intl',        LYP: 'Faisalabad Intl',
+  DXB: 'Dubai Intl',         AUH: 'Abu Dhabi Intl',        SHJ: 'Sharjah Intl',
+  DOH: 'Hamad Intl',         RUH: 'King Khalid Intl',      JED: 'King Abdulaziz Intl',
+  DMM: 'King Fahd Intl',     KWI: 'Kuwait Intl',           BAH: 'Bahrain Intl',
+  MCT: 'Muscat Intl',        AAN: 'Al Ain Intl',            MED: 'Prince Mohammad Intl',
+  GYD: 'Heydar Aliyev Intl', IST: 'Istanbul Airport',      AMS: 'Amsterdam Schiphol',
+  MAN: 'Manchester Airport', BHX: 'Birmingham Airport',    LHR: 'London Heathrow',
+  CDG: 'Paris Charles de Gaulle', ORY: 'Paris Orly',       MXP: 'Milan Malpensa',
+  LIN: 'Milan Linate',       FCO: 'Rome Fiumicino',        MAD: 'Madrid Barajas',
+  BCN: 'Barcelona El Prat',  FRA: 'Frankfurt Airport',     MUC: 'Munich Airport',
+  JFK: 'New York JFK',       ORD: "Chicago O'Hare",        YYZ: 'Toronto Pearson',
 }
 
 function cityName(code: string) {
