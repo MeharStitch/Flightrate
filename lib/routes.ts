@@ -36,8 +36,11 @@ export const DEST_CITIES: RouteCity[] = [
 // Diaspora destinations — only paired with KHI/LHE/ISB (high-traffic only)
 export const DIASPORA_CITIES: RouteCity[] = [
   { slug: 'manchester', name: 'Manchester', code: 'MAN', country: 'UK' },
+  { slug: 'london',     name: 'London',     code: 'LHR', country: 'UK' },
+  { slug: 'birmingham', name: 'Birmingham', code: 'BHX', country: 'UK' },
   { slug: 'toronto',    name: 'Toronto',    code: 'YYZ', country: 'Canada' },
   { slug: 'new-york',   name: 'New York',   code: 'JFK', country: 'USA' },
+  { slug: 'chicago',    name: 'Chicago',    code: 'ORD', country: 'USA' },
 ]
 
 const DIASPORA_PK = PK_CITIES.filter(c => ['KHI', 'LHE', 'ISB'].includes(c.code))
@@ -64,7 +67,7 @@ export function getReverseRoutes() {
   return routes
 }
 
-// Pakistan → UK/Canada/USA diaspora (9 routes: KHI/LHE/ISB only)
+// Pakistan → UK/Canada/USA diaspora (18 routes: KHI/LHE/ISB only)
 export function getDiasporaRoutes() {
   const routes: { from: RouteCity; to: RouteCity; slug: string }[] = []
   for (const from of DIASPORA_PK) {
@@ -75,9 +78,20 @@ export function getDiasporaRoutes() {
   return routes
 }
 
+// UK/Canada/USA → Pakistan (return legs — diaspora flying home)
+export function getReverseDiasporaRoutes() {
+  const routes: { from: RouteCity; to: RouteCity; slug: string }[] = []
+  for (const from of DIASPORA_CITIES) {
+    for (const to of DIASPORA_PK) {
+      routes.push({ from, to, slug: `${from.slug}-to-${to.slug}` })
+    }
+  }
+  return routes
+}
+
 // All routes combined for static page generation
 export function getAllRoutes() {
-  return [...getForwardRoutes(), ...getReverseRoutes(), ...getDiasporaRoutes()]
+  return [...getForwardRoutes(), ...getReverseRoutes(), ...getDiasporaRoutes(), ...getReverseDiasporaRoutes()]
 }
 
 // Parse a route slug → from/to city
@@ -113,8 +127,18 @@ export const ROUTE_DURATION: Record<string, number> = {
   'MED-KHI': 255, 'MED-LHE': 275,
   // Pakistan → Diaspora
   'KHI-MAN': 570, 'LHE-MAN': 600, 'ISB-MAN': 585,
+  'KHI-LHR': 510, 'LHE-LHR': 540, 'ISB-LHR': 495,
+  'KHI-BHX': 525, 'LHE-BHX': 510, 'ISB-BHX': 480,
   'KHI-JFK': 960, 'LHE-JFK': 990, 'ISB-JFK': 975,
   'KHI-YYZ': 1020,'LHE-YYZ': 1050,'ISB-YYZ': 1035,
+  'KHI-ORD': 1020,'LHE-ORD': 1050,'ISB-ORD': 1020,
+  // Reverse diaspora (same durations, getRouteDuration does reverse lookup)
+  'MAN-KHI': 570, 'MAN-LHE': 600, 'MAN-ISB': 585,
+  'LHR-KHI': 510, 'LHR-LHE': 540, 'LHR-ISB': 495,
+  'BHX-KHI': 525, 'BHX-LHE': 510, 'BHX-ISB': 480,
+  'JFK-KHI': 960, 'JFK-LHE': 990, 'JFK-ISB': 975,
+  'YYZ-KHI': 1020,'YYZ-LHE': 1050,'YYZ-ISB': 1035,
+  'ORD-KHI': 1020,'ORD-LHE': 1050,'ORD-ISB': 1020,
 }
 
 // Airlines typically serving a route
@@ -132,16 +156,26 @@ export const ROUTE_AIRLINES: Record<string, string[]> = {
   'LHE-JED': ['Saudia', 'PIA', 'flynas'],
   'KHI-KWI': ['Kuwait Airways', 'PIA', 'Jazeera Airways'],
   'KHI-MCT': ['Oman Air', 'PIA'],
-  // Diaspora
+  // Diaspora → UK
   'KHI-MAN': ['PIA', 'Qatar Airways', 'Emirates', 'Turkish Airlines'],
   'LHE-MAN': ['PIA', 'Qatar Airways', 'Emirates', 'Turkish Airlines'],
   'ISB-MAN': ['PIA', 'Qatar Airways', 'Emirates', 'British Airways'],
+  'KHI-LHR': ['PIA', 'British Airways', 'Qatar Airways', 'Emirates'],
+  'LHE-LHR': ['PIA', 'British Airways', 'Qatar Airways', 'Emirates'],
+  'ISB-LHR': ['PIA', 'British Airways', 'Qatar Airways', 'Emirates'],
+  'KHI-BHX': ['PIA', 'Qatar Airways', 'Emirates', 'Turkish Airlines'],
+  'LHE-BHX': ['PIA', 'Qatar Airways', 'Emirates', 'Turkish Airlines'],
+  'ISB-BHX': ['PIA', 'Qatar Airways', 'Emirates', 'Turkish Airlines'],
+  // Diaspora → USA/Canada
   'KHI-JFK': ['Qatar Airways', 'Emirates', 'Turkish Airlines', 'British Airways'],
   'LHE-JFK': ['Qatar Airways', 'Emirates', 'Turkish Airlines', 'British Airways'],
   'ISB-JFK': ['Qatar Airways', 'Emirates', 'Turkish Airlines', 'British Airways'],
   'KHI-YYZ': ['Qatar Airways', 'Emirates', 'Turkish Airlines', 'Air Canada'],
   'LHE-YYZ': ['Qatar Airways', 'Emirates', 'Turkish Airlines', 'Air Canada'],
   'ISB-YYZ': ['Qatar Airways', 'Emirates', 'Turkish Airlines', 'Air Canada'],
+  'KHI-ORD': ['Qatar Airways', 'Emirates', 'Turkish Airlines', 'United Airlines'],
+  'LHE-ORD': ['Qatar Airways', 'Emirates', 'Turkish Airlines', 'United Airlines'],
+  'ISB-ORD': ['Qatar Airways', 'Emirates', 'Turkish Airlines', 'United Airlines'],
 }
 
 export function getRouteAirlines(fromCode: string, toCode: string): string[] {

@@ -1,5 +1,5 @@
 import type { MetadataRoute } from 'next'
-import { getForwardRoutes, getReverseRoutes, getDiasporaRoutes } from '@/lib/routes'
+import { getForwardRoutes, getReverseRoutes, getDiasporaRoutes, getReverseDiasporaRoutes } from '@/lib/routes'
 
 const BASE = 'https://www.flightrate.pk'
 
@@ -47,5 +47,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority:        0.7,
   }))
 
-  return [...staticPages, ...forwardPages, ...diasporaPages, ...reversePages]
+  // UK/Canada/USA → Pakistan: diaspora flying home
+  const reverseDiasporaPages: MetadataRoute.Sitemap = getReverseDiasporaRoutes().map(r => ({
+    url:             `${BASE}/flights/${r.slug}`,
+    lastModified:    now,
+    changeFrequency: 'weekly' as const,
+    priority:        0.75,
+  }))
+
+  return [...staticPages, ...forwardPages, ...diasporaPages, ...reverseDiasporaPages, ...reversePages]
 }

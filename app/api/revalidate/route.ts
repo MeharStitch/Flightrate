@@ -13,7 +13,8 @@ function routeToSlugs(route: string): string[] {
     dxb: 'dubai', auh: 'abu-dhabi', shj: 'sharjah', doh: 'doha',
     ruh: 'riyadh', jed: 'jeddah', dmm: 'dammam', med: 'madinah',
     kwi: 'kuwait-city', mct: 'muscat', bah: 'bahrain',
-    man: 'manchester', yyz: 'toronto', jfk: 'new-york',
+    man: 'manchester', lhr: 'london', bhx: 'birmingham',
+    yyz: 'toronto', jfk: 'new-york', ord: 'chicago',
   }
   const f = CITY[from] ?? from
   const t = CITY[to]   ?? to

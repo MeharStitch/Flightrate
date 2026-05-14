@@ -402,6 +402,8 @@ function getAirlineCode(name: string): string {
     'Qatar Airways': 'QR', 'Saudia': 'SV', 'flynas': 'XY', 'Kuwait Airways': 'KU',
     'Oman Air': 'WY', 'Etihad Airways': 'EY', 'Airblue': 'PA', 'Serene Air': 'WZ',
     'FlyJinnah': '9P', 'Gulf Air': 'GF', 'Jazeera Airways': 'J9',
+    'British Airways': 'BA', 'Turkish Airlines': 'TK',
+    'Air Canada': 'AC', 'United Airlines': 'UA',
   }
   return map[name] ?? ''
 }
