@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import AirportSearch from './AirportSearch'
+import DatePicker from './DatePicker'
 import type { SearchParams } from '@/types/flight'
 
 /* ── Count-up hook ── */
@@ -166,23 +167,19 @@ export default function Hero({ isSearching = false }: Props) {
           <div className="search-grid-row2">
             <div>
               <span className="sf-label">Departure</span>
-              <input
-                type="date"
-                className="sf-input"
+              <DatePicker
                 value={date}
                 min={new Date().toISOString().split('T')[0]}
-                onChange={e => setDate(e.target.value)}
+                onChange={setDate}
               />
             </div>
             {tab === 'Round Trip' && (
               <div>
                 <span className="sf-label">Return</span>
-                <input
-                  type="date"
-                  className="sf-input"
+                <DatePicker
                   value={returnDate}
                   min={date}
-                  onChange={e => setReturnDate(e.target.value)}
+                  onChange={setReturnDate}
                 />
               </div>
             )}
