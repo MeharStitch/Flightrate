@@ -17,10 +17,10 @@ export default function Navbar() {
   }, [])
 
   const links = [
-    { label: 'Search Flights', href: '#search-flights' },
-    { label: 'Routes',         href: '#routes' },
-    { label: 'About',          href: '#about' },
-    { label: 'Contact',        href: '#contact' },
+    { label: 'Search Flights', href: '/search' },
+    { label: 'Routes',         href: '/flights' },
+    { label: 'About',          href: '/about' },
+    { label: 'Contact',        href: 'https://wa.me/923240763099' },
   ]
 
   return (

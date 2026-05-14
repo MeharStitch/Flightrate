@@ -2676,3 +2676,134 @@ footer::before {
   .srp-selected-bar { margin: 8px 14px 0; }
   .srp-selected-flight { font-size: 0.76rem; }
 }
+
+/* ── Price Trend Bar ─────────────────────────────────────────────────────────── */
+.price-trend-bar {
+  padding: 12px 16px; border-radius: 10px;
+  font-size: 0.875rem; font-weight: 600; margin-bottom: 20px;
+}
+.price-trend-bar.trend-good { background: #F0FDF4; border: 1.5px solid #86EFAC; color: #166534; }
+.price-trend-bar.trend-bad  { background: #FEF9EE; border: 1.5px solid #FCD34D; color: #92400E; }
+
+/* ── Baggage Table ───────────────────────────────────────────────────────────── */
+.baggage-table-wrap { overflow-x: auto; margin-bottom: 10px; }
+.baggage-table {
+  width: 100%; border-collapse: collapse;
+  font-size: 0.85rem;
+}
+.baggage-table th {
+  background: #F1F5F9; text-align: left;
+  padding: 9px 14px; font-weight: 700; color: #374151;
+  border-bottom: 2px solid #E2E8F0; font-size: 0.78rem;
+  text-transform: uppercase; letter-spacing: 0.05em;
+}
+.baggage-table td {
+  padding: 9px 14px; border-bottom: 1px solid #F1F5F9; color: #374151;
+}
+.baggage-table tr:last-child td { border-bottom: none; }
+.baggage-table tr:hover td { background: #F8FAFC; }
+
+/* ── Cheapest Month Box ─────────────────────────────────────────────────────── */
+.cheapest-month-box {
+  background: #EFF6FF; border: 1.5px solid #BFDBFE;
+  border-radius: 10px; padding: 12px 16px;
+  font-size: 0.875rem; color: #1E40AF; margin-bottom: 14px;
+  line-height: 1.5;
+}
+
+/* ── Top Routes Grid (homepage) ─────────────────────────────────────────────── */
+.top-routes-section { background: var(--alt); }
+.top-routes-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px; margin-top: 24px;
+}
+@media (min-width: 520px) { .top-routes-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (min-width: 900px) { .top-routes-grid { grid-template-columns: repeat(4, 1fr); } }
+.top-route-link {
+  display: flex; align-items: center; justify-content: space-between;
+  background: white; border: 1px solid #E2E8F0;
+  border-radius: 10px; padding: 12px 14px;
+  text-decoration: none; transition: border-color 0.15s, box-shadow 0.15s;
+  gap: 8px;
+}
+.top-route-link:hover {
+  border-color: #93C5FD;
+  box-shadow: 0 2px 8px rgba(0,63,136,0.10);
+}
+.trl-label { font-size: 0.82rem; font-weight: 700; color: #111827; flex: 1; }
+.trl-code  { font-size: 0.7rem; font-weight: 600; color: #9CA3AF; }
+.trl-arrow { font-size: 0.85rem; color: #003F88; font-weight: 700; }
+.trl-view-all {
+  display: inline-block; font-size: 0.88rem; font-weight: 700;
+  color: #003F88; text-decoration: none;
+  padding: 10px 24px; border: 2px solid #003F88;
+  border-radius: 8px; transition: background 0.15s, color 0.15s;
+}
+.trl-view-all:hover { background: #003F88; color: white; }
+
+/* ── About Page ─────────────────────────────────────────────────────────────── */
+.about-page {
+  max-width: 900px; margin: 0 auto; padding: 100px 16px 80px;
+}
+.about-hero {
+  text-align: center; margin-bottom: 48px;
+}
+.about-label {
+  display: inline-block; background: var(--vf); color: var(--v);
+  font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em;
+  text-transform: uppercase; padding: 4px 12px; border-radius: 999px;
+  margin-bottom: 14px;
+}
+.about-hero h1 {
+  font-size: clamp(1.6rem, 4vw, 2.4rem); font-weight: 900;
+  color: #0F172A; margin-bottom: 16px; line-height: 1.2;
+}
+.about-lead {
+  font-size: 1.05rem; color: #4B5563; max-width: 640px;
+  margin: 0 auto; line-height: 1.7;
+}
+.about-grid {
+  display: grid; grid-template-columns: 1fr;
+  gap: 16px; margin-bottom: 48px;
+}
+@media (min-width: 640px) { .about-grid { grid-template-columns: repeat(2, 1fr); } }
+.about-card {
+  background: #F8FAFC; border: 1px solid #E2E8F0;
+  border-radius: 14px; padding: 24px;
+}
+.about-card-icon { font-size: 1.8rem; margin-bottom: 12px; }
+.about-card h2 {
+  font-size: 1rem; font-weight: 800; color: #0F172A;
+  margin-bottom: 12px;
+}
+.about-card p { font-size: 0.88rem; color: #4B5563; line-height: 1.65; margin-bottom: 10px; }
+.about-card p:last-child { margin-bottom: 0; }
+.about-card a { color: #003F88; text-decoration: underline; }
+.about-steps {
+  padding-left: 18px; display: flex; flex-direction: column; gap: 8px;
+  font-size: 0.88rem; color: #4B5563; line-height: 1.5;
+}
+.about-list {
+  padding-left: 18px; display: flex; flex-direction: column; gap: 6px;
+  font-size: 0.88rem; color: #4B5563; line-height: 1.5;
+}
+.about-cta {
+  background: linear-gradient(135deg, #003F88, #0056C7);
+  border-radius: 16px; padding: 40px 24px; text-align: center; color: white;
+}
+.about-cta h2 { font-size: 1.4rem; font-weight: 900; margin-bottom: 8px; }
+.about-cta p  { font-size: 0.9rem; opacity: 0.85; margin-bottom: 24px; }
+.about-cta-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.about-btn-primary {
+  background: white; color: #003F88; font-weight: 700; font-size: 0.9rem;
+  padding: 12px 24px; border-radius: 8px; text-decoration: none;
+  transition: background 0.15s;
+}
+.about-btn-primary:hover { background: #F1F5F9; }
+.about-btn-wa {
+  background: #25D366; color: white; font-weight: 700; font-size: 0.9rem;
+  padding: 12px 24px; border-radius: 8px; text-decoration: none;
+  transition: background 0.15s;
+}
+.about-btn-wa:hover { background: #1EB454; }

@@ -45,10 +45,55 @@ export const metadata: Metadata = {
   manifest: '/manifest.json',
 }
 
+const ORG_SCHEMA = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Organization',
+      '@id': 'https://www.flightrate.pk/#organization',
+      name: 'FlightRate',
+      url: 'https://www.flightrate.pk',
+      logo: {
+        '@type': 'ImageObject',
+        url: 'https://www.flightrate.pk/logo.png',
+        width: 200,
+        height: 60,
+      },
+      description: "Pakistan's flight price comparison platform. Compare all airlines in PKR and book via WhatsApp in 7 minutes. No hidden fees.",
+      areaServed: 'PK',
+      contactPoint: {
+        '@type': 'ContactPoint',
+        contactType: 'customer service',
+        availableLanguage: ['English', 'Urdu'],
+      },
+    },
+    {
+      '@type': 'WebSite',
+      '@id': 'https://www.flightrate.pk/#website',
+      url: 'https://www.flightrate.pk',
+      name: 'FlightRate',
+      description: 'Compare cheap flights from Pakistan in PKR. Book via WhatsApp in 7 minutes.',
+      publisher: { '@id': 'https://www.flightrate.pk/#organization' },
+      potentialAction: {
+        '@type': 'SearchAction',
+        target: {
+          '@type': 'EntryPoint',
+          urlTemplate: 'https://www.flightrate.pk/search?from={from}&to={to}',
+        },
+        'query-input': 'required name=from',
+      },
+    },
+  ],
+}
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(ORG_SCHEMA) }}
+        />
         {/* Preconnect to external origins used on every page */}
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://www.gstatic.com" />

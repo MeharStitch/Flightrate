@@ -78,6 +78,56 @@ export async function generateMetadata(
   }
 }
 
+// ─── Baggage allowances by airline ───────────────────────────────────────────
+const BAGGAGE: Record<string, { checkin: string; cabin: string }> = {
+  'Emirates':         { checkin: '30 kg', cabin: '7 kg' },
+  'Etihad Airways':   { checkin: '23 kg', cabin: '7 kg' },
+  'Qatar Airways':    { checkin: '23 kg', cabin: '7 kg' },
+  'PIA':              { checkin: '23 kg', cabin: '7 kg' },
+  'Saudia':           { checkin: '23 kg', cabin: '7 kg' },
+  'Oman Air':         { checkin: '23 kg', cabin: '7 kg' },
+  'Kuwait Airways':   { checkin: '23 kg', cabin: '7 kg' },
+  'Gulf Air':         { checkin: '23 kg', cabin: '7 kg' },
+  'British Airways':  { checkin: '23 kg', cabin: '12 kg' },
+  'Air Canada':       { checkin: '23 kg', cabin: '10 kg' },
+  'United Airlines':  { checkin: '23 kg', cabin: '9 kg' },
+  'Turkish Airlines': { checkin: '20 kg', cabin: '8 kg' },
+  'flydubai':         { checkin: '20 kg', cabin: '7 kg' },
+  'Air Arabia':       { checkin: '20 kg', cabin: '10 kg' },
+  'flynas':           { checkin: '20 kg', cabin: '7 kg' },
+  'Airblue':          { checkin: '20 kg', cabin: '7 kg' },
+  'Serene Air':       { checkin: '20 kg', cabin: '7 kg' },
+  'FlyJinnah':        { checkin: '20 kg', cabin: '7 kg' },
+  'Jazeera Airways':  { checkin: '20 kg', cabin: '7 kg' },
+}
+
+function getPriceTrend(history: { date: string; minPrice: number }[]): { pct: number; dir: 'down' | 'up' } | null {
+  if (history.length < 8) return null
+  const current = history[0].minPrice
+  const weekAvg = history.slice(1, 8).reduce((s, h) => s + h.minPrice, 0) / 7
+  const pct = Math.round(((current - weekAvg) / weekAvg) * 100)
+  if (Math.abs(pct) < 2) return null
+  return { pct: Math.abs(pct), dir: pct < 0 ? 'down' : 'up' }
+}
+
+function getCheapestMonth(history: { date: string; minPrice: number }[]): string | null {
+  if (history.length < 15) return null
+  const byMonth: Record<string, number[]> = {}
+  for (const h of history) {
+    const m = h.date.slice(0, 7)
+    ;(byMonth[m] ??= []).push(h.minPrice)
+  }
+  let cheapest = ''
+  let cheapestAvg = Infinity
+  for (const [m, prices] of Object.entries(byMonth)) {
+    const avg = prices.reduce((s, p) => s + p, 0) / prices.length
+    if (avg < cheapestAvg) { cheapestAvg = avg; cheapest = m }
+  }
+  if (!cheapest) return null
+  const [y, mo] = cheapest.split('-')
+  return new Date(+y, +mo - 1, 1).toLocaleString('en', { month: 'long', year: 'numeric' })
+}
+
 // ─── FAQ data per route ───────────────────────────────────────────────────────
 function getFAQs(from: { name: string; code: string }, to: { name: string; code: string }) {
   const airlines = getRouteAirlines(from.code, to.code)
@@ -141,8 +191,10 @@ export default async function RoutePage(
   const priceLabel = livePrice
     ? `PKR ${(livePrice + 7000).toLocaleString('en-PK')}`
     : 'Check WhatsApp'
-  const hoursAgo   = priceData?.hoursOld ?? null
-  const history    = priceData?.history ?? []
+  const hoursAgo      = priceData?.hoursOld ?? null
+  const history       = priceData?.history ?? []
+  const priceTrend    = getPriceTrend(history)
+  const cheapestMonth = getCheapestMonth(history)
 
   // Search date 7 days from now
   const tomorrow = new Date()
@@ -291,6 +343,15 @@ export default async function RoutePage(
           </div>
         </div>
 
+        {/* Price trend bar */}
+        {priceTrend && (
+          <div className={`price-trend-bar ${priceTrend.dir === 'down' ? 'trend-good' : 'trend-bad'}`}>
+            {priceTrend.dir === 'down'
+              ? `✅ Good time to book — prices are ${priceTrend.pct}% cheaper than last week`
+              : `⚠️ Prices are ${priceTrend.pct}% higher than last week — consider booking soon or waiting`}
+          </div>
+        )}
+
         {/* Price history graph */}
         {history.length >= 2 && (
           <PriceGraph
@@ -328,14 +389,45 @@ export default async function RoutePage(
           </p>
         </section>
 
+        {/* Baggage allowance table */}
+        <section className="route-section">
+          <h2>Baggage Allowance — {from.name} to {to.name}</h2>
+          <div className="baggage-table-wrap">
+            <table className="baggage-table">
+              <thead>
+                <tr><th>Airline</th><th>Check-in</th><th>Cabin</th></tr>
+              </thead>
+              <tbody>
+                {airlines.map(a => {
+                  const b = BAGGAGE[a]
+                  if (!b) return null
+                  return (
+                    <tr key={a}>
+                      <td>{a}</td>
+                      <td>{b.checkin}</td>
+                      <td>{b.cabin}</td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
+          </div>
+          <p className="route-note">Economy class standard allowances. Business class and extra baggage available on request.</p>
+        </section>
+
         {/* Tips */}
         <section className="route-section">
           <h2>Tips for Booking {from.name} to {to.name} Flights</h2>
+          {cheapestMonth && (
+            <div className="cheapest-month-box">
+              📅 Based on price data, <strong>{cheapestMonth}</strong> tends to have the lowest fares on this route. Book early for that month to lock in the best price.
+            </div>
+          )}
           <ul className="route-tips">
             <li>📅 <strong>Book 3–6 weeks ahead</strong> for the lowest fares on this route</li>
             <li>📆 <strong>Fly mid-week</strong> (Tue/Wed) — cheaper than weekends by up to 20%</li>
             <li>🕐 <strong>Early morning departures</strong> from {from.name} are typically cheapest</li>
-            <li>🧳 <strong>Check baggage allowance</strong> — PIA allows 23kg, Emirates 30kg</li>
+            <li>🧳 <strong>Check baggage carefully</strong> — economy allowances vary from 20–30 kg depending on airline</li>
             <li>💬 <strong>Message us on WhatsApp</strong> — our agent finds you the best deal in minutes</li>
           </ul>
         </section>
