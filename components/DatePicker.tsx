@@ -58,14 +58,19 @@ export default function DatePicker({ value, onChange, min, label }: Props) {
 
   useEffect(() => {
     if (!open) return
-    function handler(e: MouseEvent) {
+    function onMouse(e: MouseEvent) {
       if (
         triggerRef.current && !triggerRef.current.contains(e.target as Node) &&
         popupRef.current   && !popupRef.current.contains(e.target as Node)
       ) setOpen(false)
     }
-    document.addEventListener('mousedown', handler)
-    return () => document.removeEventListener('mousedown', handler)
+    function onScroll() { setOpen(false) }
+    document.addEventListener('mousedown', onMouse)
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => {
+      document.removeEventListener('mousedown', onMouse)
+      window.removeEventListener('scroll', onScroll)
+    }
   }, [open])
 
   function prevMonth() {
