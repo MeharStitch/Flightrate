@@ -99,11 +99,11 @@ export default function DatePicker({ value, onChange, min, label }: Props) {
 
   const POPUP_W = 280
   const popupStyle: React.CSSProperties = rect ? (() => {
-    const top  = rect.bottom + window.scrollY + 8
+    const top  = rect.bottom + 8
     let   left = rect.left + rect.width / 2 - POPUP_W / 2
     left = Math.max(12, Math.min(left, window.innerWidth - POPUP_W - 12))
-    return { position: 'absolute', top, left, width: POPUP_W, zIndex: 99999 }
-  })() : { position: 'absolute', top: 0, left: 0, width: POPUP_W, zIndex: 99999 }
+    return { position: 'fixed', top, left, width: POPUP_W, zIndex: 99999 }
+  })() : { position: 'fixed', top: 100, left: 100, width: POPUP_W, zIndex: 99999 }
 
   const popup = (
     <div ref={popupRef} className="dp-popup" style={popupStyle}>
