@@ -2893,3 +2893,104 @@ footer::before {
 .dp-foot-btn:hover { background: #F1F5F9; color: #111827; }
 .dp-foot-today { color: #003F88; }
 .dp-foot-today:hover { background: #EFF6FF; }
+
+/* ── Live Booking Ticker ─────────────────────────────────────────────────────── */
+.ticker-bar {
+  display: flex; align-items: center; gap: 10px;
+  background: #F0FDF4; border-top: 1px solid #BBF7D0; border-bottom: 1px solid #BBF7D0;
+  padding: 10px 20px; font-size: 0.82rem; color: #374151;
+  overflow: hidden;
+}
+.ticker-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: #16A34A; flex-shrink: 0;
+  animation: pulse-dot 1.5s ease-in-out infinite;
+}
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.5; transform: scale(0.8); }
+}
+.ticker-live {
+  font-size: 0.65rem; font-weight: 800; letter-spacing: 0.08em;
+  color: #16A34A; background: #DCFCE7; padding: 2px 7px;
+  border-radius: 999px; flex-shrink: 0;
+}
+.ticker-msg {
+  flex: 1; transition: opacity 0.4s ease, transform 0.4s ease;
+}
+.ticker-in  { opacity: 1; transform: translateY(0); }
+.ticker-out { opacity: 0; transform: translateY(-6px); }
+.ticker-route { font-weight: 700; color: #003F88; }
+.ticker-check { color: #16A34A; font-weight: 700; margin-left: 4px; }
+
+/* ── Trust Card updates ──────────────────────────────────────────────────────── */
+.trust-card-top {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  margin-bottom: 12px;
+}
+.trust-badge {
+  font-size: 0.65rem; font-weight: 700; letter-spacing: 0.05em;
+  background: var(--vf); color: var(--v);
+  padding: 3px 9px; border-radius: 999px; white-space: nowrap; flex-shrink: 0;
+}
+
+/* ── Payment Strip ───────────────────────────────────────────────────────────── */
+.payment-strip {
+  display: flex; align-items: center; gap: 14px;
+  flex-wrap: wrap; justify-content: center;
+  margin-top: 28px; padding-top: 24px;
+  border-top: 1px solid var(--border);
+}
+.payment-strip-label {
+  font-size: 0.72rem; font-weight: 700; color: #9CA3AF;
+  text-transform: uppercase; letter-spacing: 0.08em; white-space: nowrap;
+}
+.payment-methods { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+.payment-chip {
+  font-size: 0.78rem; font-weight: 700;
+  padding: 5px 14px; border-radius: 8px;
+  border: 1.5px solid currentColor;
+  color: var(--pm-color, #374151);
+}
+
+/* ── Review updates ──────────────────────────────────────────────────────────── */
+.rev-meta { flex: 1; }
+.rev-verified {
+  font-size: 0.65rem; font-weight: 700; color: #16A34A;
+  background: #DCFCE7; padding: 3px 8px; border-radius: 999px;
+  white-space: nowrap; flex-shrink: 0;
+}
+.rev-footer {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-top: 10px; padding-top: 10px; border-top: 1px solid #F1F5F9;
+}
+.rev-route { font-size: 0.75rem; font-weight: 700; color: #003F88; }
+.rev-date  { font-size: 0.72rem; color: #9CA3AF; }
+
+/* ── Anti-scam Trust Callout ─────────────────────────────────────────────────── */
+.trust-callout {
+  background: white; border: 1.5px solid #E2E8F0;
+  border-radius: 16px; padding: 24px; margin-top: 32px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+}
+.trust-callout-header {
+  display: flex; gap: 14px; align-items: flex-start; margin-bottom: 18px;
+}
+.trust-callout-icon { font-size: 2rem; flex-shrink: 0; }
+.trust-callout-header h3 {
+  font-size: 1rem; font-weight: 800; color: #0F172A; margin-bottom: 4px;
+}
+.trust-callout-header p { font-size: 0.85rem; color: #6B7280; }
+.trust-callout-points {
+  display: grid; grid-template-columns: 1fr;
+  gap: 10px;
+}
+@media (min-width: 640px) {
+  .trust-callout-points { grid-template-columns: repeat(2, 1fr); }
+}
+.trust-callout-point {
+  display: flex; gap: 10px; align-items: flex-start;
+  font-size: 0.84rem; color: #374151; line-height: 1.55;
+  background: #F8FAFC; border-radius: 10px; padding: 11px 13px;
+}
+.trust-callout-point span:first-child { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
