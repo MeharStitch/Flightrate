@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     'Islamabad to Dubai flights', 'Lahore to Riyadh flights', 'Pakistan Gulf flights',
     'PIA flights', 'Emirates Pakistan', 'cheap airline tickets Pakistan',
     'flight booking Pakistan WhatsApp', 'Pakistan Saudi Arabia flights',
-    'Karachi Dubai ticket price PKR', 'سستی پروازیں پاکستان',
+    'Karachi Dubai ticket price PKR', 'cheap Pakistan flights PKR',
   ],
   authors: [{ name: 'FlightRate', url: 'https://www.flightrate.pk' }],
   metadataBase: new URL('https://www.flightrate.pk'),

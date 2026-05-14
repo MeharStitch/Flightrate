@@ -5,18 +5,17 @@ export interface RouteCity {
   name: string
   code: string
   country: string
-  urdu?: string
 }
 
 export const PK_CITIES: RouteCity[] = [
-  { slug: 'karachi',    name: 'Karachi',    code: 'KHI', country: 'Pakistan', urdu: 'کراچی' },
-  { slug: 'lahore',     name: 'Lahore',     code: 'LHE', country: 'Pakistan', urdu: 'لاہور' },
-  { slug: 'islamabad',  name: 'Islamabad',  code: 'ISB', country: 'Pakistan', urdu: 'اسلام آباد' },
-  { slug: 'peshawar',   name: 'Peshawar',   code: 'PEW', country: 'Pakistan', urdu: 'پشاور' },
-  { slug: 'sialkot',    name: 'Sialkot',    code: 'SKT', country: 'Pakistan', urdu: 'سیالکوٹ' },
-  { slug: 'multan',     name: 'Multan',     code: 'MUX', country: 'Pakistan', urdu: 'ملتان' },
-  { slug: 'faisalabad', name: 'Faisalabad', code: 'LYP', country: 'Pakistan', urdu: 'فیصل آباد' },
-  { slug: 'quetta',     name: 'Quetta',     code: 'UET', country: 'Pakistan', urdu: 'کوئٹہ' },
+  { slug: 'karachi',    name: 'Karachi',    code: 'KHI', country: 'Pakistan' },
+  { slug: 'lahore',     name: 'Lahore',     code: 'LHE', country: 'Pakistan' },
+  { slug: 'islamabad',  name: 'Islamabad',  code: 'ISB', country: 'Pakistan' },
+  { slug: 'peshawar',   name: 'Peshawar',   code: 'PEW', country: 'Pakistan' },
+  { slug: 'sialkot',    name: 'Sialkot',    code: 'SKT', country: 'Pakistan' },
+  { slug: 'multan',     name: 'Multan',     code: 'MUX', country: 'Pakistan' },
+  { slug: 'faisalabad', name: 'Faisalabad', code: 'LYP', country: 'Pakistan' },
+  { slug: 'quetta',     name: 'Quetta',     code: 'UET', country: 'Pakistan' },
 ]
 
 export const DEST_CITIES: RouteCity[] = [

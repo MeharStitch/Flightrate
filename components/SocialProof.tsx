@@ -5,7 +5,7 @@ const REVIEWS = [
   {
     name: 'Ahsan Raza', city: 'Lahore', init: 'A', route: 'ISB → DXB', date: '2 days ago',
     grad: 'linear-gradient(135deg,#003F88,#0052B4)',
-    text: '"FlightRate ne sach mein mera paisa bacha diya! ISB se DXB ka ticket 12,000 rupay sasta mila aur booking bhi sirf 6 minute mein WhatsApp pe ho gayi. Bilkul zabardast service!"',
+    text: '"Saved PKR 12,000 on my ISB to DXB ticket compared to what I found on other sites. The WhatsApp booking took under 6 minutes. Genuinely the best flight booking experience I have had in Pakistan."',
   },
   {
     name: 'Sadia Noor', city: 'Karachi', init: 'S', route: 'KHI → DMM', date: '5 days ago',
@@ -15,7 +15,7 @@ const REVIEWS = [
   {
     name: 'Bilal Chaudhry', city: 'Islamabad', init: 'B', route: 'ISB → DOH', date: '1 week ago',
     grad: 'linear-gradient(135deg,#F59E0B,#FBBF24)',
-    text: '"SastaTicket pe bohot confusion hoti thi. FlightRate ka process bilkul alag hai — WhatsApp pe baat, EasyPaisa se payment, 7 minute mein ticket ready. Highly recommend!"',
+    text: '"Other booking sites were confusing and full of hidden charges. FlightRate is completely different — the agent explained everything clearly on WhatsApp, payment via EasyPaisa, ticket ready in 7 minutes. Highly recommend!"',
   },
   {
     name: 'Tariq Mahmood', city: 'London', init: 'T', route: 'LHR → KHI', date: '3 days ago',
@@ -25,7 +25,7 @@ const REVIEWS = [
   {
     name: 'Rabia Tariq', city: 'Dubai', init: 'R', route: 'DXB → LHE', date: '4 days ago',
     grad: 'linear-gradient(135deg,#EF4444,#F87171)',
-    text: '"Ghabra rahi thi ke online booking safe hai ya nahi. Agent ne WhatsApp pe pehle sab details confirm ki, phir payment li. Ticket 5 minute mein aa gaya. Bahut trustworthy!"',
+    text: '"I was nervous about online booking — worried it might be a scam. The agent confirmed every detail on WhatsApp before I paid anything. Ticket arrived in 5 minutes. Completely trustworthy service."',
   },
   {
     name: 'Usman Ali', city: 'Multan', init: 'U', route: 'MUX → RUH', date: '1 week ago',
