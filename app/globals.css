@@ -2989,3 +2989,35 @@ footer::before {
   background: #F8FAFC; border-radius: 10px; padding: 11px 13px;
 }
 .trust-callout-point span:first-child { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
+
+/* ── Route freshness signal ──────────────────────────────────────────────────── */
+.route-live-price { color: #003F88; font-size: 0.85em; }
+.route-freshness {
+  font-size: 0.78rem; color: #10B981; font-weight: 600;
+  margin-top: 6px; letter-spacing: 0.01em;
+}
+
+/* ── Cheapest Airlines comparison page ──────────────────────────────────────── */
+.compare-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 12px; margin-top: 16px;
+}
+.compare-card {
+  display: flex; flex-direction: column; gap: 4px;
+  border: 1.5px solid #E2E8F0; border-radius: 12px;
+  padding: 14px 16px; text-decoration: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  background: white;
+}
+.compare-card:hover { border-color: #003F88; box-shadow: 0 4px 16px rgba(0,63,136,0.10); }
+.compare-city  { font-weight: 800; font-size: 0.95rem; color: #0F172A; }
+.compare-code  { font-size: 0.72rem; color: #9CA3AF; font-weight: 600; }
+.compare-price { font-size: 1rem; font-weight: 700; color: #003F88; margin-top: 4px; }
+
+/* ── Featured route link (comparison page highlight) ──────────────────────── */
+.trl-featured {
+  border-color: #003F88 !important;
+  background: linear-gradient(135deg, rgba(0,63,136,0.04), rgba(0,63,136,0.01));
+}
+.trl-featured .trl-label { color: #003F88; }

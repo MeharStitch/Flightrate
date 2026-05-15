@@ -27,6 +27,12 @@ export default function TopRoutesGrid() {
       <h2 className="section-title reveal">Popular Flight Routes from Pakistan</h2>
       <p className="section-sub reveal">Click any route to see live PKR prices, airlines, and baggage info</p>
       <div className="top-routes-grid reveal">
+        {/* Comparison page — Tier 3 internal link */}
+        <Link href="/flights/cheapest-airlines-pakistan-to-dubai" className="top-route-link trl-featured">
+          <span className="trl-label">Cheapest Airlines to Dubai</span>
+          <span className="trl-code">All cities compared</span>
+          <span className="trl-arrow">→</span>
+        </Link>
         {TOP_ROUTES.map(r => (
           <Link key={r.slug} href={`/flights/${r.slug}`} className="top-route-link">
             <span className="trl-label">{r.label}</span>

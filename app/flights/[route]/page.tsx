@@ -23,45 +23,50 @@ export async function generateMetadata(
   if (!parsed) return { title: 'Route Not Found' }
 
   const { from, to } = parsed
-  const isReverse  = to.country === 'Pakistan'                     // Gulf → Pakistan
+  const isReverse  = to.country === 'Pakistan'
   const isDiaspora = from.country === 'Pakistan' && !['UAE','Qatar','Saudi Arabia','Kuwait','Oman','Bahrain'].includes(to.country)
 
-  const title = isReverse
-    ? `${from.name} to ${to.name} Flights — Cheap Tickets for Expats | FlightRate`
-    : isDiaspora
-      ? `${from.name} to ${to.name} Flights — Cheapest Fares in PKR | FlightRate`
-      : `${from.name} to ${to.name} Cheap Flights — PKR Prices, All Airlines | FlightRate`
+  // Fetch live price — Next.js deduplicates this with the page component's call
+  const priceData = await getLivePrice(from.code, to.code)
+  const priceNum  = priceData?.minPrice ? priceData.minPrice + 7000 : null
+  const priceStr  = priceNum ? `PKR ${priceNum.toLocaleString('en-PK')}` : null
 
-  const description = isReverse
-    ? `Flying from ${from.name} back to ${to.name}? Compare all airlines, PKR prices. Book via WhatsApp in 7 minutes. No hidden fees.`
-    : isDiaspora
-      ? `Cheapest ${from.name} to ${to.name} flights. Compare Qatar Airways, Emirates, PIA & more. PKR prices. Book via WhatsApp.`
-      : `Cheapest ${from.name} to ${to.name} flights in PKR. Compare PIA, Emirates, flydubai & more. Confirm price & book via WhatsApp in 7 minutes. No hidden fees.`
+  // Price-enriched title → targets "ticket price today" Tier-1 keywords
+  const title = priceStr
+    ? `${from.name} to ${to.name} Flights — ${priceStr} Today | FlightRate`
+    : isReverse
+      ? `${from.name} to ${to.name} Flights — Cheap Expat Tickets in PKR | FlightRate`
+      : isDiaspora
+        ? `${from.name} to ${to.name} Flights — Cheapest Fares in PKR | FlightRate`
+        : `${from.name} to ${to.name} Cheap Flights — PKR Prices, All Airlines | FlightRate`
 
-  const keywords = isReverse ? [
+  const description = priceStr
+    ? `${from.name} to ${to.name} flights from ${priceStr} today. Compare PIA, Emirates, flydubai & more. All prices in PKR. Book via WhatsApp in 7 minutes. No hidden fees.`
+    : isReverse
+      ? `Flying from ${from.name} back to ${to.name}? Compare all airlines in PKR. Book via WhatsApp in 7 minutes. No hidden fees.`
+      : isDiaspora
+        ? `Cheapest ${from.name} to ${to.name} flights in PKR. Compare Qatar Airways, Emirates, PIA & more. Book via WhatsApp.`
+        : `Cheapest ${from.name} to ${to.name} flights in PKR. Compare PIA, Emirates, flydubai & more. Book via WhatsApp in 7 minutes. No hidden fees.`
+
+  const keywords = [
     `${from.name} to ${to.name} flights`,
-    `${from.code} to ${to.code} cheap ticket`,
-    `${from.name} ${to.name} flight price`,
-    `fly from ${from.country} to Pakistan`,
-    `expat flights ${from.name} Pakistan`,
-    `${to.name} se ${from.name} flight`,
-  ] : isDiaspora ? [
-    `${from.name} to ${to.name} flights`,
-    `cheap flights Pakistan ${to.name}`,
-    `${from.code} ${to.code} ticket price`,
-    `Pakistan to ${to.country} flights`,
-    `${from.name} ${to.name} flight PKR`,
-    `Qatar Airways ${from.name} ${to.name}`,
-    `Emirates ${from.name} ${to.name}`,
-  ] : [
-    `${from.name} to ${to.name} flights`,
-    `cheap flights ${from.name} ${to.name}`,
+    `${from.name} to ${to.name} ticket price`,
+    `${from.name} to ${to.name} ticket price today`,
     `${from.code} to ${to.code}`,
-    `${from.name} ${to.name} ticket price`,
-    `${from.name} ${to.country} flights`,
-    `Pakistan to ${to.country} flights`,
-    `flights from ${from.name}`,
-    `${to.name} se ${from.name} flight`,
+    `${from.name} ${to.name} flight price in PKR`,
+    `cheapest airline from ${from.name} to ${to.name}`,
+    `${from.name} to ${to.name} cheap flights`,
+    ...(isReverse ? [
+      `fly from ${from.country} to Pakistan`,
+      `expat flights ${from.name} to ${to.name}`,
+    ] : []),
+    ...(isDiaspora ? [
+      `Pakistan to ${to.country} flights`,
+      `${from.name} to ${to.name} flight PKR`,
+    ] : [
+      `${from.name} to ${to.country} flights`,
+      `Pakistan to ${to.country} flights`,
+    ]),
   ]
 
   return {
@@ -128,30 +133,74 @@ function getCheapestMonth(history: { date: string; minPrice: number }[]): string
   return new Date(+y, +mo - 1, 1).toLocaleString('en', { month: 'long', year: 'numeric' })
 }
 
-// ─── FAQ data per route ───────────────────────────────────────────────────────
-function getFAQs(from: { name: string; code: string }, to: { name: string; code: string }) {
-  const airlines = getRouteAirlines(from.code, to.code)
-  const duration = getRouteDuration(from.code, to.code)
+// ─── FAQ data per route — 12 questions for PAA + Tier 1-4 keyword coverage ───
+function getFAQs(
+  from: { name: string; code: string; country: string },
+  to:   { name: string; code: string; country: string },
+  livePrice: number | null,
+  cheapestMonth: string | null,
+) {
+  const airlines  = getRouteAirlines(from.code, to.code)
+  const duration  = getRouteDuration(from.code, to.code)
+  const cheapest  = airlines[0] ?? 'PIA'
+  const priceStr  = livePrice ? `PKR ${(livePrice + 7000).toLocaleString('en-PK')}` : null
+  const isGulf    = ['UAE','Qatar','Saudi Arabia','Kuwait','Oman','Bahrain'].includes(to.country)
+  const isPakDest = to.country === 'Pakistan'
+
   return [
     {
+      q: `What is today's ${from.name} to ${to.name} ticket price in PKR?`,
+      a: priceStr
+        ? `Today's lowest ${from.name} to ${to.name} fare is ${priceStr} (PKR). Prices are scraped daily from all airlines and updated automatically. Final price is confirmed via WhatsApp before you pay.`
+        : `${from.name} to ${to.name} ticket prices are updated daily. Message us on WhatsApp for today's exact fare in PKR — our agent responds within 7 minutes.`,
+    },
+    {
+      q: `Which is the cheapest airline from ${from.name} to ${to.name}?`,
+      a: `${cheapest} frequently offers the lowest fares on ${from.name}–${to.name}. Other competitive options include ${airlines.slice(1, 3).join(' and ')}. Prices vary by date — FlightRate compares all carriers daily so you always see the best rate.`,
+    },
+    {
       q: `Which airlines fly from ${from.name} to ${to.name}?`,
-      a: `${airlines.join(', ')} operate flights on the ${from.name}–${to.name} route. Availability varies by season.`,
+      a: `${airlines.join(', ')} operate flights on the ${from.name}–${to.name} route. Availability and frequency vary by season.`,
     },
     {
       q: `How long is the flight from ${from.name} to ${to.name}?`,
-      a: `Direct flights typically take around ${duration}. Connecting flights may take 4–8 hours depending on layover.`,
+      a: `Direct flights take around ${duration}. Connecting flights via a hub (Dubai, Doha, Istanbul) may take 5–10 hours depending on the layover.`,
+    },
+    {
+      q: `Is there a direct flight from ${from.name} to ${to.name}?`,
+      a: `Yes, direct (non-stop) flights operate on ${from.name}–${to.name}. ${cheapest} and other carriers offer non-stop services. Search above to filter by direct flights only.`,
+    },
+    {
+      q: `What is the cheapest month to fly from ${from.name} to ${to.name}?`,
+      a: cheapestMonth
+        ? `Based on 30 days of price data, ${cheapestMonth} tends to have the lowest fares on this route. Eid seasons (Eid-ul-Fitr and Eid-ul-Adha) and summer school holidays are typically the most expensive periods.`
+        : `January, February, and September are generally off-peak months with lower fares. Prices peak during Eid holidays and June–August school holidays. Book 3–6 weeks ahead for best rates.`,
+    },
+    {
+      q: `How much baggage am I allowed on ${from.name} to ${to.name} flights?`,
+      a: `Economy baggage varies by airline: Emirates allows 30 kg check-in, while most others (PIA, Qatar Airways, Saudia, Oman Air) allow 23 kg. Budget carriers like flydubai, Air Arabia, and FlyJinnah allow 20 kg. Cabin baggage is typically 7–10 kg. Always verify on your ticket.`,
     },
     {
       q: `What is the cheapest time to fly from ${from.name} to ${to.name}?`,
-      a: `Tuesday and Wednesday departures are usually cheapest. Avoid school holidays and Eid periods. Book 3–6 weeks in advance for best fares.`,
+      a: `Tuesday and Wednesday departures are typically cheapest. Early morning flights (before 7 AM) also tend to be lower priced. Avoid booking for Friday or Sunday travel. Book 3–6 weeks in advance for the best fares.`,
     },
+    {
+      q: `Can I pay for my ${from.name} to ${to.name} ticket in Pakistani Rupees?`,
+      a: `Yes. FlightRate shows all fares in PKR with no hidden currency conversion fees. Payment is made directly via bank transfer — the price you see is the price you pay.`,
+    },
+    ...(isGulf || isPakDest ? [{
+      q: `Do I need a visa to travel from ${from.name} to ${to.name}?`,
+      a: isPakDest
+        ? `Pakistani nationals returning home do not need a visa for Pakistan. Ensure your CNIC or Pakistani passport is valid. Foreign nationals may require a Pakistani visa — check with the relevant embassy.`
+        : `Pakistani passport holders travelling to ${to.country} typically need a visa. ${to.country === 'UAE' ? 'UAE issues 30-day and 90-day visas on arrival for some passport holders, but Pakistani nationals must apply in advance.' : `Contact the ${to.country} embassy or your travel agent for current requirements.`} FlightRate can assist with visa guidance via WhatsApp.`,
+    }] : []),
     {
       q: `How do I book a ${from.name} to ${to.name} flight via FlightRate?`,
-      a: `Search your route and date above, pick your preferred flight, then click "Book via WhatsApp". Our agent confirms the exact price and books your ticket within 7 minutes.`,
+      a: `Search your route and departure date above. Browse fares, then click "Book via WhatsApp." Our agent confirms the exact fare in PKR and completes the booking within 7 minutes. You receive your ticket directly from the airline.`,
     },
     {
-      q: `Are prices shown in PKR?`,
-      a: `Yes. All fares are displayed in Pakistani Rupees (PKR) including an estimated tax buffer. Final price is confirmed via WhatsApp before payment.`,
+      q: `Is FlightRate safe and legitimate?`,
+      a: `Yes. FlightRate is a Pakistan-based flight price comparison service. We never ask for card details over WhatsApp — you pay directly via bank transfer. Your ticket comes directly from the airline and is fully verifiable. Our agents are available 7 days a week.`,
     },
   ]
 }
@@ -181,7 +230,6 @@ export default async function RoutePage(
   const { from, to } = parsed
   const airlines  = getRouteAirlines(from.code, to.code)
   const duration  = getRouteDuration(from.code, to.code)
-  const faqs      = getFAQs(from, to)
 
   // Fetch live scraped price
   const priceData  = await getLivePrice(from.code, to.code)
@@ -195,6 +243,7 @@ export default async function RoutePage(
   const history       = priceData?.history ?? []
   const priceTrend    = getPriceTrend(history)
   const cheapestMonth = getCheapestMonth(history)
+  const faqs          = getFAQs(from, to, livePrice, cheapestMonth)
 
   // Search date 7 days from now
   const tomorrow = new Date()
@@ -213,8 +262,8 @@ export default async function RoutePage(
         '@type': 'WebPage',
         '@id': `https://www.flightrate.pk/flights/${route}`,
         url: `https://www.flightrate.pk/flights/${route}`,
-        name: `${from.name} to ${to.name} Flights — FlightRate`,
-        description: `Compare cheap flights ${from.name} to ${to.name}. Book via WhatsApp.`,
+        name: `${from.name} to ${to.name} Flights — ${livePrice ? `from PKR ${(livePrice+7000).toLocaleString('en-PK')} ` : ''}FlightRate`,
+        description: `Compare cheap ${from.name} to ${to.name} flights in PKR. Book via WhatsApp.`,
         dateModified: scrapedAt ?? new Date().toISOString(),
         ...(livePrice ? {
           offers: {
@@ -285,12 +334,24 @@ export default async function RoutePage(
         {/* Hero */}
         <div className="route-hero">
           <h1 className="route-h1">
-            Cheap Flights: {from.name} to {to.name}
+            {from.name} to {to.name} Flights
+            {livePrice && (
+              <span className="route-live-price">
+                {' '}— from PKR {(livePrice + 7000).toLocaleString('en-PK')} today
+              </span>
+            )}
             <span className="route-codes">({from.code} → {to.code})</span>
           </h1>
           <p className="route-sub">
-            Compare all airlines · PKR prices · Book via WhatsApp in 7 minutes
+            Compare all airlines in PKR · Book via WhatsApp in 7 minutes · No hidden fees
           </p>
+          {scrapedAt && (
+            <p className="route-freshness">
+              <time dateTime={scrapedAt}>
+                ✓ Prices updated {hoursAgo !== null && hoursAgo < 24 ? `${hoursAgo}h ago` : 'today'} — scraped daily from all airlines
+              </time>
+            </p>
+          )}
         </div>
 
         {/* CTA bar */}
