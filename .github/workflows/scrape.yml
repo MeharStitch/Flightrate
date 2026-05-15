@@ -131,9 +131,56 @@ jobs:
           SITE_URL:              https://www.flightrate.pk
           REVALIDATE_SECRET:     ${{ secrets.REVALIDATE_SECRET }}
 
-# ── Job 4: Notify after both jobs complete ─────────────────────────────────────
+  scrape-c:
+    needs: setup
+    # Chunk C: third parallel job for full runs — covers remaining ~70 Tier-3 routes
+    if: needs.setup.outputs.run_type == 'full'
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers (Chromium only)
+        run: npx playwright install chromium --with-deps
+
+      - name: Setup proxy bridge (gost)
+        run: |
+          curl -fsSL https://github.com/go-gost/gost/releases/download/v3.0.0/gost_3.0.0_linux_amd64.tar.gz \
+            | tar xz -C /usr/local/bin gost
+          chmod +x /usr/local/bin/gost
+          gost -L "socks5://:1080" \
+               -F "socks5://${{ secrets.PROXY_USER }}:${{ secrets.PROXY_PASS }}@${{ secrets.PROXY_HOST }}:1080" \
+               > /tmp/gost.log 2>&1 &
+          sleep 3
+          curl --socks5 localhost:1080 https://ipv4.webshare.io/ --max-time 10 || echo "Proxy test failed — will run without proxy"
+
+      - name: Run scraper (chunk C)
+        run: npx ts-node --project tsconfig.scraper.json scraper/index.ts full --chunk c
+        env:
+          PROXY_HOST:            localhost
+          PROXY_PORT:            '1080'
+          PROXY_USER:            ''
+          PROXY_PASS:            ''
+          R2_ACCOUNT_ID:         ${{ secrets.R2_ACCOUNT_ID }}
+          R2_ACCESS_KEY_ID:      ${{ secrets.R2_ACCESS_KEY_ID }}
+          R2_SECRET_ACCESS_KEY:  ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          R2_BUCKET_NAME:        ${{ secrets.R2_BUCKET_NAME }}
+          SITE_URL:              https://www.flightrate.pk
+          REVALIDATE_SECRET:     ${{ secrets.REVALIDATE_SECRET }}
+
+# ── Notify after all three jobs complete ───────────────────────────────────────
   notify:
-    needs: [setup, scrape-a, scrape-b]
+    needs: [setup, scrape-a, scrape-b, scrape-c]
     if: always()
     runs-on: ubuntu-latest
     steps:
@@ -141,18 +188,25 @@ jobs:
         run: |
           A="${{ needs.scrape-a.result }}"
           B="${{ needs.scrape-b.result }}"
+          C="${{ needs.scrape-c.result }}"
           TYPE="${{ needs.setup.outputs.run_type }}"
 
-          if [ "$A" = "success" ] && ([ "$B" = "success" ] || [ "$B" = "skipped" ]); then
+          ALL_OK=true
+          # For top runs, B and C are skipped — that's fine
+          [ "$A" != "success" ] && ALL_OK=false
+          [ "$B" != "success" ] && [ "$B" != "skipped" ] && ALL_OK=false
+          [ "$C" != "success" ] && [ "$C" != "skipped" ] && ALL_OK=false
+
+          if [ "$ALL_OK" = "true" ]; then
             curl -s -X POST https://ntfy.sh/flightrate-scraper \
               -H "Title: ✅ Scraper Done ($TYPE)" \
               -H "Priority: default" \
               -H "Tags: white_check_mark" \
-              -d "Both chunks complete | $(date -u '+%d %b %H:%M UTC')" || true
+              -d "All chunks complete (212 routes) | $(date -u '+%d %b %H:%M UTC')" || true
           else
             curl -s -X POST https://ntfy.sh/flightrate-scraper \
               -H "Title: ❌ Scraper FAILED ($TYPE)" \
               -H "Priority: high" \
               -H "Tags: x,rotating_light" \
-              -d "A=$A B=$B | Check GitHub Actions logs" || true
+              -d "A=$A B=$B C=$C | Check GitHub Actions logs" || true
           fi

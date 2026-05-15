@@ -180,6 +180,89 @@ export const SCRAPE_ROUTES: ScrapeRoute[] = [
   { from: 'DMM', to: 'LHE', fromCity: 'Dammam',    toCity: 'Lahore',       tier: 3 },
   { from: 'MED', to: 'KHI', fromCity: 'Madinah',   toCity: 'Karachi',      tier: 3 },
   { from: 'MED', to: 'LHE', fromCity: 'Madinah',   toCity: 'Lahore',       tier: 3 },
+
+  // ── TIER 3: Previously missing forward PK → Gulf ──────────────────
+  { from: 'LHE', to: 'KWI', fromCity: 'Lahore',     toCity: 'Kuwait City', tier: 3 },
+  { from: 'LHE', to: 'BAH', fromCity: 'Lahore',     toCity: 'Manama',      tier: 3 },
+
+  // ── TIER 3: Previously missing Gulf → Pakistan (full coverage) ─────
+  // DXB → smaller PK cities
+  { from: 'DXB', to: 'UET', fromCity: 'Dubai',      toCity: 'Quetta',      tier: 3 },
+
+  // AUH → PK
+  { from: 'AUH', to: 'PEW', fromCity: 'Abu Dhabi',  toCity: 'Peshawar',    tier: 3 },
+  { from: 'AUH', to: 'SKT', fromCity: 'Abu Dhabi',  toCity: 'Sialkot',     tier: 3 },
+  { from: 'AUH', to: 'MUX', fromCity: 'Abu Dhabi',  toCity: 'Multan',      tier: 3 },
+  { from: 'AUH', to: 'LYP', fromCity: 'Abu Dhabi',  toCity: 'Faisalabad',  tier: 3 },
+  { from: 'AUH', to: 'UET', fromCity: 'Abu Dhabi',  toCity: 'Quetta',      tier: 3 },
+
+  // SHJ → PK
+  { from: 'SHJ', to: 'PEW', fromCity: 'Sharjah',    toCity: 'Peshawar',    tier: 3 },
+  { from: 'SHJ', to: 'SKT', fromCity: 'Sharjah',    toCity: 'Sialkot',     tier: 3 },
+  { from: 'SHJ', to: 'MUX', fromCity: 'Sharjah',    toCity: 'Multan',      tier: 3 },
+  { from: 'SHJ', to: 'LYP', fromCity: 'Sharjah',    toCity: 'Faisalabad',  tier: 3 },
+  { from: 'SHJ', to: 'UET', fromCity: 'Sharjah',    toCity: 'Quetta',      tier: 3 },
+
+  // DOH → PK
+  { from: 'DOH', to: 'PEW', fromCity: 'Doha',       toCity: 'Peshawar',    tier: 3 },
+  { from: 'DOH', to: 'SKT', fromCity: 'Doha',       toCity: 'Sialkot',     tier: 3 },
+  { from: 'DOH', to: 'MUX', fromCity: 'Doha',       toCity: 'Multan',      tier: 3 },
+  { from: 'DOH', to: 'LYP', fromCity: 'Doha',       toCity: 'Faisalabad',  tier: 3 },
+  { from: 'DOH', to: 'UET', fromCity: 'Doha',       toCity: 'Quetta',      tier: 3 },
+
+  // RUH → PK
+  { from: 'RUH', to: 'SKT', fromCity: 'Riyadh',     toCity: 'Sialkot',     tier: 3 },
+  { from: 'RUH', to: 'LYP', fromCity: 'Riyadh',     toCity: 'Faisalabad',  tier: 3 },
+  { from: 'RUH', to: 'UET', fromCity: 'Riyadh',     toCity: 'Quetta',      tier: 3 },
+
+  // JED → PK
+  { from: 'JED', to: 'PEW', fromCity: 'Jeddah',     toCity: 'Peshawar',    tier: 3 },
+  { from: 'JED', to: 'SKT', fromCity: 'Jeddah',     toCity: 'Sialkot',     tier: 3 },
+  { from: 'JED', to: 'MUX', fromCity: 'Jeddah',     toCity: 'Multan',      tier: 3 },
+  { from: 'JED', to: 'LYP', fromCity: 'Jeddah',     toCity: 'Faisalabad',  tier: 3 },
+  { from: 'JED', to: 'UET', fromCity: 'Jeddah',     toCity: 'Quetta',      tier: 3 },
+
+  // DMM → PK
+  { from: 'DMM', to: 'ISB', fromCity: 'Dammam',     toCity: 'Islamabad',   tier: 3 },
+  { from: 'DMM', to: 'PEW', fromCity: 'Dammam',     toCity: 'Peshawar',    tier: 3 },
+  { from: 'DMM', to: 'SKT', fromCity: 'Dammam',     toCity: 'Sialkot',     tier: 3 },
+  { from: 'DMM', to: 'MUX', fromCity: 'Dammam',     toCity: 'Multan',      tier: 3 },
+  { from: 'DMM', to: 'LYP', fromCity: 'Dammam',     toCity: 'Faisalabad',  tier: 3 },
+  { from: 'DMM', to: 'UET', fromCity: 'Dammam',     toCity: 'Quetta',      tier: 3 },
+
+  // MED → PK
+  { from: 'MED', to: 'ISB', fromCity: 'Madinah',    toCity: 'Islamabad',   tier: 3 },
+  { from: 'MED', to: 'PEW', fromCity: 'Madinah',    toCity: 'Peshawar',    tier: 3 },
+  { from: 'MED', to: 'SKT', fromCity: 'Madinah',    toCity: 'Sialkot',     tier: 3 },
+  { from: 'MED', to: 'MUX', fromCity: 'Madinah',    toCity: 'Multan',      tier: 3 },
+  { from: 'MED', to: 'LYP', fromCity: 'Madinah',    toCity: 'Faisalabad',  tier: 3 },
+  { from: 'MED', to: 'UET', fromCity: 'Madinah',    toCity: 'Quetta',      tier: 3 },
+
+  // KWI → PK
+  { from: 'KWI', to: 'LHE', fromCity: 'Kuwait City',toCity: 'Lahore',      tier: 3 },
+  { from: 'KWI', to: 'ISB', fromCity: 'Kuwait City',toCity: 'Islamabad',   tier: 3 },
+  { from: 'KWI', to: 'PEW', fromCity: 'Kuwait City',toCity: 'Peshawar',    tier: 3 },
+  { from: 'KWI', to: 'SKT', fromCity: 'Kuwait City',toCity: 'Sialkot',     tier: 3 },
+  { from: 'KWI', to: 'MUX', fromCity: 'Kuwait City',toCity: 'Multan',      tier: 3 },
+  { from: 'KWI', to: 'LYP', fromCity: 'Kuwait City',toCity: 'Faisalabad',  tier: 3 },
+  { from: 'KWI', to: 'UET', fromCity: 'Kuwait City',toCity: 'Quetta',      tier: 3 },
+
+  // MCT → PK
+  { from: 'MCT', to: 'ISB', fromCity: 'Muscat',     toCity: 'Islamabad',   tier: 3 },
+  { from: 'MCT', to: 'PEW', fromCity: 'Muscat',     toCity: 'Peshawar',    tier: 3 },
+  { from: 'MCT', to: 'SKT', fromCity: 'Muscat',     toCity: 'Sialkot',     tier: 3 },
+  { from: 'MCT', to: 'MUX', fromCity: 'Muscat',     toCity: 'Multan',      tier: 3 },
+  { from: 'MCT', to: 'LYP', fromCity: 'Muscat',     toCity: 'Faisalabad',  tier: 3 },
+  { from: 'MCT', to: 'UET', fromCity: 'Muscat',     toCity: 'Quetta',      tier: 3 },
+
+  // BAH → PK
+  { from: 'BAH', to: 'LHE', fromCity: 'Manama',     toCity: 'Lahore',      tier: 3 },
+  { from: 'BAH', to: 'ISB', fromCity: 'Manama',     toCity: 'Islamabad',   tier: 3 },
+  { from: 'BAH', to: 'PEW', fromCity: 'Manama',     toCity: 'Peshawar',    tier: 3 },
+  { from: 'BAH', to: 'SKT', fromCity: 'Manama',     toCity: 'Sialkot',     tier: 3 },
+  { from: 'BAH', to: 'MUX', fromCity: 'Manama',     toCity: 'Multan',      tier: 3 },
+  { from: 'BAH', to: 'LYP', fromCity: 'Manama',     toCity: 'Faisalabad',  tier: 3 },
+  { from: 'BAH', to: 'UET', fromCity: 'Manama',     toCity: 'Quetta',      tier: 3 },
 ]
 
 // Tier 1 routes for frequent refresh runs
@@ -187,13 +270,15 @@ export function getTopRoutes(): ScrapeRoute[] {
   return SCRAPE_ROUTES.filter(r => r.tier === 1)
 }
 
-// Chunk support for parallel GitHub Actions jobs (A = first half, B = second half)
+// Chunk support for parallel GitHub Actions jobs (A/B/C = thirds of full run)
 export function getRoutesForRun(
   runType: 'full' | 'top',
-  chunk?: 'a' | 'b'
+  chunk?: 'a' | 'b' | 'c'
 ): ScrapeRoute[] {
   const all = runType === 'top' ? getTopRoutes() : SCRAPE_ROUTES
   if (!chunk) return all
-  const mid = Math.ceil(all.length / 2)
-  return chunk === 'a' ? all.slice(0, mid) : all.slice(mid)
+  const size = Math.ceil(all.length / 3)
+  if (chunk === 'a') return all.slice(0, size)
+  if (chunk === 'b') return all.slice(size, size * 2)
+  return all.slice(size * 2) // chunk c
 }
