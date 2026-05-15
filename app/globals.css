@@ -3021,3 +3021,273 @@ footer::before {
   background: linear-gradient(135deg, rgba(0,63,136,0.04), rgba(0,63,136,0.01));
 }
 .trl-featured .trl-label { color: #003F88; }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   BLOG / GUIDE PAGES
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Blog post layout ──────────────────────────────────────────────────── */
+.blog-post {
+  max-width: 100%;
+  padding: 40px clamp(16px, 5vw, 80px) 80px;
+}
+.blog-post-inner {
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+/* ── Blog headings ─────────────────────────────────────────────────────── */
+.blog-tag {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #003F88;
+  background: rgba(0,63,136,0.08);
+  border-radius: 20px;
+  padding: 3px 10px;
+  margin-bottom: 12px;
+}
+.blog-h1 {
+  font-size: clamp(1.4rem, 4vw, 2.1rem);
+  font-weight: 800;
+  color: #0F172A;
+  line-height: 1.22;
+  margin: 0 0 10px;
+}
+.blog-meta {
+  font-size: 0.82rem;
+  color: #64748B;
+  margin: 0 0 24px;
+}
+
+/* ── Callout box ───────────────────────────────────────────────────────── */
+.blog-data-callout {
+  background: rgba(0,63,136,0.05);
+  border-left: 3px solid #003F88;
+  border-radius: 0 8px 8px 0;
+  padding: 14px 18px;
+  margin: 0 0 32px;
+  font-size: 0.92rem;
+  color: #1E293B;
+  line-height: 1.6;
+}
+.blog-data-callout ul {
+  margin: 8px 0 0 16px;
+  padding: 0;
+}
+.blog-data-callout li {
+  margin-bottom: 4px;
+}
+
+/* ── Blog body prose ───────────────────────────────────────────────────── */
+.blog-body h2 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #0F172A;
+  margin: 36px 0 10px;
+  padding-bottom: 6px;
+  border-bottom: 2px solid #F1F5F9;
+}
+.blog-body p {
+  font-size: 0.94rem;
+  color: #334155;
+  line-height: 1.72;
+  margin: 0 0 14px;
+}
+.blog-body ul, .blog-body ol {
+  padding-left: 20px;
+  margin: 0 0 18px;
+}
+.blog-body li {
+  font-size: 0.93rem;
+  color: #334155;
+  line-height: 1.65;
+  margin-bottom: 6px;
+}
+
+/* ── Month guide ───────────────────────────────────────────────────────── */
+.month-guide {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 16px 0 24px;
+}
+.month-row {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  padding: 9px 14px;
+  border-radius: 8px;
+  background: #F8FAFC;
+  font-size: 0.88rem;
+}
+.month-name  { font-weight: 700; color: #0F172A; width: 90px; flex-shrink: 0; }
+.month-level { font-weight: 700; width: 80px; flex-shrink: 0; }
+.month-reason { color: #475569; flex: 1; }
+
+/* ── Airline cards ─────────────────────────────────────────────────────── */
+.airline-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin: 16px 0 28px;
+}
+.airline-card {
+  border: 1px solid #E2E8F0;
+  border-radius: 12px;
+  overflow: hidden;
+  background: white;
+}
+.airline-card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: #F8FAFC;
+  border-bottom: 1px solid #E2E8F0;
+}
+.airline-rank  { font-size: 0.75rem; font-weight: 800; color: #94A3B8; }
+.airline-name  { font-weight: 800; font-size: 1rem; color: #0F172A; flex: 1; }
+.airline-rating { font-size: 0.85rem; color: #F59E0B; }
+.airline-card-body {
+  padding: 14px 16px;
+}
+.airline-stat {
+  font-size: 0.85rem;
+  color: #475569;
+  margin-bottom: 5px;
+  line-height: 1.5;
+}
+.airline-stat strong { color: #0F172A; }
+.airline-verdict {
+  font-size: 0.88rem;
+  color: #334155;
+  margin-top: 8px;
+  margin-bottom: 0;
+  line-height: 1.6;
+  border-top: 1px solid #F1F5F9;
+  padding-top: 8px;
+}
+
+/* ── Tips list ─────────────────────────────────────────────────────────── */
+.tips-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin: 16px 0 28px;
+}
+.tip-card {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  padding: 16px;
+  border: 1px solid #E2E8F0;
+  border-radius: 12px;
+  background: white;
+}
+.tip-number {
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: #E2E8F0;
+  flex-shrink: 0;
+  line-height: 1;
+  padding-top: 2px;
+}
+.tip-content { flex: 1; }
+.tip-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #0F172A;
+  margin: 0 0 6px;
+}
+.tip-body {
+  font-size: 0.88rem;
+  color: #475569;
+  line-height: 1.65;
+  margin: 0;
+}
+
+/* ── Blog CTA ──────────────────────────────────────────────────────────── */
+.blog-cta {
+  background: linear-gradient(135deg, #003F88, #0066CC);
+  border-radius: 16px;
+  padding: 28px 28px;
+  margin-top: 48px;
+  text-align: center;
+  color: white;
+}
+.blog-cta h3 {
+  font-size: 1.15rem;
+  font-weight: 800;
+  margin: 0 0 8px;
+  color: white;
+}
+.blog-cta p {
+  font-size: 0.88rem;
+  color: rgba(255,255,255,0.82);
+  margin: 0 0 20px;
+}
+.blog-cta a { margin: 6px; }
+
+/* ── Blog index ────────────────────────────────────────────────────────── */
+.blog-index {
+  padding: 40px clamp(16px, 5vw, 80px) 80px;
+}
+.blog-index-inner {
+  max-width: 900px;
+  margin: 0 auto;
+}
+.blog-index-h1 {
+  font-size: clamp(1.4rem, 4vw, 2rem);
+  font-weight: 800;
+  color: #0F172A;
+  margin: 12px 0 6px;
+}
+.blog-index-sub {
+  font-size: 0.92rem;
+  color: #64748B;
+  margin: 0 0 32px;
+}
+.blog-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+.blog-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 20px;
+  border: 1px solid #E2E8F0;
+  border-radius: 14px;
+  background: white;
+  text-decoration: none;
+  transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s;
+}
+.blog-card:hover {
+  border-color: #003F88;
+  box-shadow: 0 4px 20px rgba(0,63,136,0.10);
+  transform: translateY(-2px);
+}
+.blog-card-title {
+  font-size: 0.97rem;
+  font-weight: 700;
+  color: #0F172A;
+  line-height: 1.35;
+  margin: 0;
+}
+.blog-card-excerpt {
+  font-size: 0.84rem;
+  color: #64748B;
+  line-height: 1.55;
+  margin: 0;
+  flex: 1;
+}
+.blog-card-cta {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #003F88;
+  margin-top: 4px;
+}

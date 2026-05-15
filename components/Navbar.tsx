@@ -19,6 +19,7 @@ export default function Navbar() {
   const links = [
     { label: 'Search Flights', href: '/search' },
     { label: 'Routes',         href: '/flights' },
+    { label: 'Guides',         href: '/blog' },
     { label: 'About',          href: '/about' },
     { label: 'Contact',        href: 'https://wa.me/923240763099' },
   ]
