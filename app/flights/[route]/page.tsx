@@ -195,6 +195,12 @@ function getFAQs(
         : `Pakistani passport holders travelling to ${to.country} typically need a visa. ${to.country === 'UAE' ? 'UAE issues 30-day and 90-day visas on arrival for some passport holders, but Pakistani nationals must apply in advance.' : `Contact the ${to.country} embassy or your travel agent for current requirements.`} FlightRate can assist with visa guidance via WhatsApp.`,
     }] : []),
     {
+      q: `What documents do I need at ${from.name} airport?`,
+      a: isPakDest
+        ? `Flying into Pakistan: valid passport (or NICOP/CNIC for Pakistani nationals), your boarding pass, and return/onward ticket. International arrivals complete immigration and customs at the destination. No separate airport entry document required.`
+        : `Flying from ${from.name}: valid passport (at least 6 months validity), printed or digital boarding pass, and your visa/residency permit for ${to.country} if applicable. Pakistanis travelling to ${to.country} must have a valid UAE/Saudi/Qatar/Kuwait visa before arriving at the airport — no visa on arrival for Pakistani passport holders to most Gulf countries.`,
+    },
+    {
       q: `How do I book a ${from.name} to ${to.name} flight via FlightRate?`,
       a: `Search your route and departure date above. Browse fares, then click "Book via WhatsApp." Our agent confirms the exact fare in PKR and completes the booking within 7 minutes. You receive your ticket directly from the airline.`,
     },
@@ -335,11 +341,16 @@ export default async function RoutePage(
         <div className="route-hero">
           <h1 className="route-h1">
             {from.name} to {to.name} Flights
-            {livePrice && (
-              <span className="route-live-price">
-                {' '}— from PKR {(livePrice + 7000).toLocaleString('en-PK')} today
-              </span>
-            )}
+            {livePrice
+              ? (
+                <span className="route-live-price">
+                  {' '}— from PKR {(livePrice + 7000).toLocaleString('en-PK')} today
+                </span>
+              ) : (
+                <span className="route-live-price route-live-price--fallback">
+                  {' '}— Cheap Fares in PKR
+                </span>
+              )}
             <span className="route-codes">({from.code} → {to.code})</span>
           </h1>
           <p className="route-sub">
