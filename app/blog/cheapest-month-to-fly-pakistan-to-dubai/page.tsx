@@ -82,8 +82,17 @@ const schema = {
       url: 'https://www.flightrate.pk/blog/cheapest-month-to-fly-pakistan-to-dubai',
       datePublished: '2026-05-15',
       dateModified: new Date().toISOString(),
-      author: { '@type': 'Organization', name: 'FlightRate', url: 'https://www.flightrate.pk' },
-      publisher: { '@type': 'Organization', name: 'FlightRate', url: 'https://www.flightrate.pk' },
+      image: { '@type': 'ImageObject', url: 'https://www.flightrate.pk/opengraph-image', width: 1200, height: 630 },
+      author: { '@type': 'Organization', '@id': 'https://www.flightrate.pk/#organization', name: 'FlightRate', url: 'https://www.flightrate.pk' },
+      publisher: { '@type': 'Organization', '@id': 'https://www.flightrate.pk/#organization', name: 'FlightRate', url: 'https://www.flightrate.pk', logo: { '@type': 'ImageObject', url: 'https://www.flightrate.pk/opengraph-image', width: 1200, height: 630 } },
+    },
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Home',   item: 'https://www.flightrate.pk' },
+        { '@type': 'ListItem', position: 2, name: 'Guides', item: 'https://www.flightrate.pk/blog' },
+        { '@type': 'ListItem', position: 3, name: 'Cheapest Month to Fly Pakistan to Dubai', item: 'https://www.flightrate.pk/blog/cheapest-month-to-fly-pakistan-to-dubai' },
+      ],
     },
     {
       '@type': 'FAQPage',

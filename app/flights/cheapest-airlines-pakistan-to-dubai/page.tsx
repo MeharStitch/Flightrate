@@ -108,6 +108,17 @@ export default async function CheapestAirlinesDubaiPage() {
         },
       },
       {
+        '@type': 'Article',
+        headline: 'Cheapest Airlines from Pakistan to Dubai — Live PKR Price Comparison',
+        description: 'Real-time PKR prices for all airlines flying Pakistan to Dubai. Compare Emirates, flydubai, Air Arabia, PIA and more. Updated daily.',
+        url: 'https://www.flightrate.pk/flights/cheapest-airlines-pakistan-to-dubai',
+        datePublished: '2026-05-15',
+        dateModified: new Date().toISOString(),
+        image: { '@type': 'ImageObject', url: 'https://www.flightrate.pk/opengraph-image', width: 1200, height: 630 },
+        author: { '@type': 'Organization', '@id': 'https://www.flightrate.pk/#organization', name: 'FlightRate', url: 'https://www.flightrate.pk' },
+        publisher: { '@type': 'Organization', '@id': 'https://www.flightrate.pk/#organization', name: 'FlightRate', url: 'https://www.flightrate.pk', logo: { '@type': 'ImageObject', url: 'https://www.flightrate.pk/opengraph-image', width: 1200, height: 630 } },
+      },
+      {
         '@type': 'FAQPage',
         mainEntity: FAQ.map(f => ({
           '@type': 'Question',
