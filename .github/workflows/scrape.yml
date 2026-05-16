@@ -12,7 +12,10 @@ on:
         required: false
         default: 'full'
 
-# ── Job 1: Determine run type (shared between A and B) ─────────────────────────
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true   # silence Node.js 20 deprecation warnings
+
+# ── Job 1: Determine run type ──────────────────────────────────────────────────
 jobs:
   setup:
     runs-on: ubuntu-latest
@@ -32,28 +35,18 @@ jobs:
             echo "type=top" >> $GITHUB_OUTPUT
           fi
 
-# ── Shared step template (used by both scrape jobs) ────────────────────────────
+# ── Shared proxy + scraper setup (reused by all 4 chunks) ─────────────────────
   scrape-a:
     needs: setup
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    timeout-minutes: 75
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '24'
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Install Playwright browsers (Chromium only)
-        run: npx playwright install chromium --with-deps
-
-      - name: Setup proxy bridge (gost)
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '24', cache: 'npm' }
+      - run: npm ci
+      - run: npx playwright install chromium --with-deps
+      - name: Setup proxy
         run: |
           curl -fsSL https://github.com/go-gost/gost/releases/download/v3.0.0/gost_3.0.0_linux_amd64.tar.gz \
             | tar xz -C /usr/local/bin gost
@@ -62,51 +55,38 @@ jobs:
                -F "socks5://${{ secrets.PROXY_USER }}:${{ secrets.PROXY_PASS }}@${{ secrets.PROXY_HOST }}:1080" \
                > /tmp/gost.log 2>&1 &
           sleep 3
-          curl --socks5 localhost:1080 https://ipv4.webshare.io/ --max-time 10 || echo "Proxy test failed — will run without proxy"
-
+          curl --socks5 localhost:1080 https://ipv4.webshare.io/ --max-time 10 || echo "Proxy test failed — running without proxy"
       - name: Run scraper (chunk A)
         run: |
-          TYPE="${{ needs.setup.outputs.run_type }}"
-          if [ "$TYPE" = "full" ]; then
+          if [ "${{ needs.setup.outputs.run_type }}" = "full" ]; then
             npx ts-node --project tsconfig.scraper.json scraper/index.ts full --chunk a
           else
             npx ts-node --project tsconfig.scraper.json scraper/index.ts top
           fi
         env:
-          PROXY_HOST:            localhost
-          PROXY_PORT:            '1080'
-          PROXY_USER:            ''
-          PROXY_PASS:            ''
-          R2_ACCOUNT_ID:         ${{ secrets.R2_ACCOUNT_ID }}
-          R2_ACCESS_KEY_ID:      ${{ secrets.R2_ACCESS_KEY_ID }}
-          R2_SECRET_ACCESS_KEY:  ${{ secrets.R2_SECRET_ACCESS_KEY }}
-          R2_BUCKET_NAME:        ${{ secrets.R2_BUCKET_NAME }}
-          SITE_URL:              https://www.flightrate.pk
-          REVALIDATE_SECRET:     ${{ secrets.REVALIDATE_SECRET }}
+          PROXY_HOST:           localhost
+          PROXY_PORT:           '1080'
+          PROXY_USER:           ''
+          PROXY_PASS:           ''
+          R2_ACCOUNT_ID:        ${{ secrets.R2_ACCOUNT_ID }}
+          R2_ACCESS_KEY_ID:     ${{ secrets.R2_ACCESS_KEY_ID }}
+          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          R2_BUCKET_NAME:       ${{ secrets.R2_BUCKET_NAME }}
+          SITE_URL:             https://www.flightrate.pk
+          REVALIDATE_SECRET:    ${{ secrets.REVALIDATE_SECRET }}
 
   scrape-b:
     needs: setup
-    # Only run chunk B for full runs — top runs are small enough for one job
     if: needs.setup.outputs.run_type == 'full'
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    timeout-minutes: 75
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '24'
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Install Playwright browsers (Chromium only)
-        run: npx playwright install chromium --with-deps
-
-      - name: Setup proxy bridge (gost)
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '24', cache: 'npm' }
+      - run: npm ci
+      - run: npx playwright install chromium --with-deps
+      - name: Setup proxy
         run: |
           curl -fsSL https://github.com/go-gost/gost/releases/download/v3.0.0/gost_3.0.0_linux_amd64.tar.gz \
             | tar xz -C /usr/local/bin gost
@@ -115,45 +95,33 @@ jobs:
                -F "socks5://${{ secrets.PROXY_USER }}:${{ secrets.PROXY_PASS }}@${{ secrets.PROXY_HOST }}:1080" \
                > /tmp/gost.log 2>&1 &
           sleep 3
-          curl --socks5 localhost:1080 https://ipv4.webshare.io/ --max-time 10 || echo "Proxy test failed — will run without proxy"
-
+          curl --socks5 localhost:1080 https://ipv4.webshare.io/ --max-time 10 || echo "Proxy test failed — running without proxy"
       - name: Run scraper (chunk B)
         run: npx ts-node --project tsconfig.scraper.json scraper/index.ts full --chunk b
         env:
-          PROXY_HOST:            localhost
-          PROXY_PORT:            '1080'
-          PROXY_USER:            ''
-          PROXY_PASS:            ''
-          R2_ACCOUNT_ID:         ${{ secrets.R2_ACCOUNT_ID }}
-          R2_ACCESS_KEY_ID:      ${{ secrets.R2_ACCESS_KEY_ID }}
-          R2_SECRET_ACCESS_KEY:  ${{ secrets.R2_SECRET_ACCESS_KEY }}
-          R2_BUCKET_NAME:        ${{ secrets.R2_BUCKET_NAME }}
-          SITE_URL:              https://www.flightrate.pk
-          REVALIDATE_SECRET:     ${{ secrets.REVALIDATE_SECRET }}
+          PROXY_HOST:           localhost
+          PROXY_PORT:           '1080'
+          PROXY_USER:           ''
+          PROXY_PASS:           ''
+          R2_ACCOUNT_ID:        ${{ secrets.R2_ACCOUNT_ID }}
+          R2_ACCESS_KEY_ID:     ${{ secrets.R2_ACCESS_KEY_ID }}
+          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          R2_BUCKET_NAME:       ${{ secrets.R2_BUCKET_NAME }}
+          SITE_URL:             https://www.flightrate.pk
+          REVALIDATE_SECRET:    ${{ secrets.REVALIDATE_SECRET }}
 
   scrape-c:
     needs: setup
-    # Chunk C: third parallel job for full runs — covers remaining ~70 Tier-3 routes
     if: needs.setup.outputs.run_type == 'full'
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    timeout-minutes: 75
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '24'
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Install Playwright browsers (Chromium only)
-        run: npx playwright install chromium --with-deps
-
-      - name: Setup proxy bridge (gost)
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '24', cache: 'npm' }
+      - run: npm ci
+      - run: npx playwright install chromium --with-deps
+      - name: Setup proxy
         run: |
           curl -fsSL https://github.com/go-gost/gost/releases/download/v3.0.0/gost_3.0.0_linux_amd64.tar.gz \
             | tar xz -C /usr/local/bin gost
@@ -162,25 +130,59 @@ jobs:
                -F "socks5://${{ secrets.PROXY_USER }}:${{ secrets.PROXY_PASS }}@${{ secrets.PROXY_HOST }}:1080" \
                > /tmp/gost.log 2>&1 &
           sleep 3
-          curl --socks5 localhost:1080 https://ipv4.webshare.io/ --max-time 10 || echo "Proxy test failed — will run without proxy"
-
+          curl --socks5 localhost:1080 https://ipv4.webshare.io/ --max-time 10 || echo "Proxy test failed — running without proxy"
       - name: Run scraper (chunk C)
         run: npx ts-node --project tsconfig.scraper.json scraper/index.ts full --chunk c
         env:
-          PROXY_HOST:            localhost
-          PROXY_PORT:            '1080'
-          PROXY_USER:            ''
-          PROXY_PASS:            ''
-          R2_ACCOUNT_ID:         ${{ secrets.R2_ACCOUNT_ID }}
-          R2_ACCESS_KEY_ID:      ${{ secrets.R2_ACCESS_KEY_ID }}
-          R2_SECRET_ACCESS_KEY:  ${{ secrets.R2_SECRET_ACCESS_KEY }}
-          R2_BUCKET_NAME:        ${{ secrets.R2_BUCKET_NAME }}
-          SITE_URL:              https://www.flightrate.pk
-          REVALIDATE_SECRET:     ${{ secrets.REVALIDATE_SECRET }}
+          PROXY_HOST:           localhost
+          PROXY_PORT:           '1080'
+          PROXY_USER:           ''
+          PROXY_PASS:           ''
+          R2_ACCOUNT_ID:        ${{ secrets.R2_ACCOUNT_ID }}
+          R2_ACCESS_KEY_ID:     ${{ secrets.R2_ACCESS_KEY_ID }}
+          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          R2_BUCKET_NAME:       ${{ secrets.R2_BUCKET_NAME }}
+          SITE_URL:             https://www.flightrate.pk
+          REVALIDATE_SECRET:    ${{ secrets.REVALIDATE_SECRET }}
 
-# ── Notify after all three jobs complete ───────────────────────────────────────
+  scrape-d:
+    needs: setup
+    if: needs.setup.outputs.run_type == 'full'
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '24', cache: 'npm' }
+      - run: npm ci
+      - run: npx playwright install chromium --with-deps
+      - name: Setup proxy
+        run: |
+          curl -fsSL https://github.com/go-gost/gost/releases/download/v3.0.0/gost_3.0.0_linux_amd64.tar.gz \
+            | tar xz -C /usr/local/bin gost
+          chmod +x /usr/local/bin/gost
+          gost -L "socks5://:1080" \
+               -F "socks5://${{ secrets.PROXY_USER }}:${{ secrets.PROXY_PASS }}@${{ secrets.PROXY_HOST }}:1080" \
+               > /tmp/gost.log 2>&1 &
+          sleep 3
+          curl --socks5 localhost:1080 https://ipv4.webshare.io/ --max-time 10 || echo "Proxy test failed — running without proxy"
+      - name: Run scraper (chunk D)
+        run: npx ts-node --project tsconfig.scraper.json scraper/index.ts full --chunk d
+        env:
+          PROXY_HOST:           localhost
+          PROXY_PORT:           '1080'
+          PROXY_USER:           ''
+          PROXY_PASS:           ''
+          R2_ACCOUNT_ID:        ${{ secrets.R2_ACCOUNT_ID }}
+          R2_ACCESS_KEY_ID:     ${{ secrets.R2_ACCESS_KEY_ID }}
+          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          R2_BUCKET_NAME:       ${{ secrets.R2_BUCKET_NAME }}
+          SITE_URL:             https://www.flightrate.pk
+          REVALIDATE_SECRET:    ${{ secrets.REVALIDATE_SECRET }}
+
+# ── Notify after all 4 jobs complete ──────────────────────────────────────────
   notify:
-    needs: [setup, scrape-a, scrape-b, scrape-c]
+    needs: [setup, scrape-a, scrape-b, scrape-c, scrape-d]
     if: always()
     runs-on: ubuntu-latest
     steps:
@@ -189,24 +191,25 @@ jobs:
           A="${{ needs.scrape-a.result }}"
           B="${{ needs.scrape-b.result }}"
           C="${{ needs.scrape-c.result }}"
+          D="${{ needs.scrape-d.result }}"
           TYPE="${{ needs.setup.outputs.run_type }}"
 
           ALL_OK=true
-          # For top runs, B and C are skipped — that's fine
           [ "$A" != "success" ] && ALL_OK=false
           [ "$B" != "success" ] && [ "$B" != "skipped" ] && ALL_OK=false
           [ "$C" != "success" ] && [ "$C" != "skipped" ] && ALL_OK=false
+          [ "$D" != "success" ] && [ "$D" != "skipped" ] && ALL_OK=false
 
           if [ "$ALL_OK" = "true" ]; then
             curl -s -X POST https://ntfy.sh/flightrate-scraper \
               -H "Title: ✅ Scraper Done ($TYPE)" \
               -H "Priority: default" \
               -H "Tags: white_check_mark" \
-              -d "All chunks complete (212 routes) | $(date -u '+%d %b %H:%M UTC')" || true
+              -d "A=$A B=$B C=$C D=$D | 212 routes | $(date -u '+%d %b %H:%M UTC')" || true
           else
             curl -s -X POST https://ntfy.sh/flightrate-scraper \
               -H "Title: ❌ Scraper FAILED ($TYPE)" \
               -H "Priority: high" \
               -H "Tags: x,rotating_light" \
-              -d "A=$A B=$B C=$C | Check GitHub Actions logs" || true
+              -d "A=$A B=$B C=$C D=$D | Check GitHub Actions logs" || true
           fi
