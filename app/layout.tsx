@@ -32,6 +32,7 @@ export const metadata: Metadata = {
     title:       'Cheap Flights from Pakistan — Compare All Airlines | FlightRate',
     description: 'Compare all airlines. PKR prices. Book via WhatsApp in 7 minutes.',
     url:         'https://www.flightrate.pk',
+    images: [{ url: '/opengraph-image', width: 1200, height: 630, alt: 'FlightRate — Cheap Flights from Pakistan in PKR' }],
   },
   twitter: {
     card:        'summary',
@@ -55,9 +56,9 @@ const ORG_SCHEMA = {
       url: 'https://www.flightrate.pk',
       logo: {
         '@type': 'ImageObject',
-        url: 'https://www.flightrate.pk/logo.png',
-        width: 200,
-        height: 60,
+        url: 'https://www.flightrate.pk/opengraph-image',
+        width: 1200,
+        height: 630,
       },
       description: "Pakistan's flight price comparison platform. Compare all airlines in PKR and book via WhatsApp in 7 minutes. No hidden fees.",
       areaServed: 'PK',

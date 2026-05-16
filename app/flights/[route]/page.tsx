@@ -290,6 +290,13 @@ export default async function RoutePage(
         '@id': `https://www.flightrate.pk/flights/${route}#product`,
         name: `${from.name} to ${to.name} Flight Ticket`,
         description: `Cheapest ${from.name} to ${to.name} flights in PKR. Compare ${airlines.slice(0,3).join(', ')} and more. Book via WhatsApp in 7 minutes.`,
+        // image is REQUIRED for Google Product rich results eligibility
+        image: {
+          '@type': 'ImageObject',
+          url: 'https://www.flightrate.pk/opengraph-image',
+          width: 1200,
+          height: 630,
+        },
         brand: { '@type': 'Brand', name: 'FlightRate' },
         url: `https://www.flightrate.pk/flights/${route}`,
         ...(livePrice ? {
