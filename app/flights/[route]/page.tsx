@@ -260,10 +260,13 @@ export default async function RoutePage(
   const relatedDest = DEST_CITIES.filter(c => c.code !== to.code).slice(0, 5)
   const relatedFrom = PK_CITIES.filter(c => c.code !== from.code).slice(0, 4)
 
+  const priceValidUntil = new Date(Date.now() + 86400000).toISOString().split('T')[0]
+
   // JSON-LD schema
   const schema = {
     '@context': 'https://schema.org',
     '@graph': [
+      // WebPage — clean, no offers here (Google ignores Offer on WebPage)
       {
         '@type': 'WebPage',
         '@id': `https://www.flightrate.pk/flights/${route}`,
@@ -271,15 +274,6 @@ export default async function RoutePage(
         name: `${from.name} to ${to.name} Flights — ${livePrice ? `from PKR ${(livePrice+7000).toLocaleString('en-PK')} ` : ''}FlightRate`,
         description: `Compare cheap ${from.name} to ${to.name} flights in PKR. Book via WhatsApp.`,
         dateModified: scrapedAt ?? new Date().toISOString(),
-        ...(livePrice ? {
-          offers: {
-            '@type': 'Offer',
-            priceCurrency: 'PKR',
-            price: String(livePrice + 7000),
-            priceValidUntil: new Date(Date.now() + 86400000).toISOString().split('T')[0],
-            availability: 'https://schema.org/InStock',
-          }
-        } : {}),
         breadcrumb: {
           '@type': 'BreadcrumbList',
           itemListElement: [
@@ -288,6 +282,42 @@ export default async function RoutePage(
             { '@type': 'ListItem', position: 3, name: `${from.name} to ${to.name}`, item: `https://www.flightrate.pk/flights/${route}` },
           ],
         },
+      },
+      // Product + Offer — THIS is what Google uses for price rich snippets in SERP
+      // (same pattern Sastaticket, Booking.com, Skyscanner use)
+      {
+        '@type': 'Product',
+        '@id': `https://www.flightrate.pk/flights/${route}#product`,
+        name: `${from.name} to ${to.name} Flight Ticket`,
+        description: `Cheapest ${from.name} to ${to.name} flights in PKR. Compare ${airlines.slice(0,3).join(', ')} and more. Book via WhatsApp in 7 minutes.`,
+        brand: { '@type': 'Brand', name: 'FlightRate' },
+        url: `https://www.flightrate.pk/flights/${route}`,
+        ...(livePrice ? {
+          offers: {
+            '@type': 'Offer',
+            '@id': `https://www.flightrate.pk/flights/${route}#offer`,
+            priceCurrency: 'PKR',
+            price: String(livePrice + 7000),
+            priceValidUntil,
+            availability: 'https://schema.org/InStock',
+            url: `https://www.flightrate.pk/flights/${route}`,
+            seller: {
+              '@type': 'Organization',
+              name: 'FlightRate',
+              url: 'https://www.flightrate.pk',
+            },
+          },
+        } : {
+          offers: {
+            '@type': 'AggregateOffer',
+            priceCurrency: 'PKR',
+            lowPrice: '30000',
+            highPrice: '120000',
+            offerCount: String(airlines.length),
+            availability: 'https://schema.org/InStock',
+            url: `https://www.flightrate.pk/flights/${route}`,
+          },
+        }),
       },
       {
         '@type': 'FAQPage',

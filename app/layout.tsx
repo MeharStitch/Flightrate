@@ -66,6 +66,17 @@ const ORG_SCHEMA = {
         contactType: 'customer service',
         availableLanguage: ['English', 'Urdu'],
       },
+      makesOffer: {
+        '@type': 'Offer',
+        itemOffered: {
+          '@type': 'Service',
+          name: 'Flight Price Comparison & Booking',
+          description: 'Compare Pakistan to Gulf, UK, and USA flight prices in PKR. Book via WhatsApp.',
+        },
+      },
+      sameAs: [
+        'https://wa.me/923240763099',
+      ],
     },
     {
       '@type': 'WebSite',
