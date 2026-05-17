@@ -271,16 +271,18 @@ export function getTopRoutes(): ScrapeRoute[] {
 }
 
 // Chunk support for parallel GitHub Actions jobs (A/B/C/D = quarters of full run)
-// 4-way split keeps each chunk ~53 routes → ~58 min worst-case (well under 90-min timeout)
+//
+// IMPORTANT: routes are interleaved by position, NOT sliced sequentially.
+// Sequential slicing put all Tier 3 routes in chunks C/D → they timed out
+// because Tier 3 routes fail more often (no direct flights) → 3 retry cycles each.
+// Interleaving (0,4,8... | 1,5,9... | 2,6,10... | 3,7,11...) gives each chunk
+// an equal T1/T2/T3 mix → predictable ~35-45 min runtime per chunk.
 export function getRoutesForRun(
   runType: 'full' | 'top',
   chunk?: 'a' | 'b' | 'c' | 'd'
 ): ScrapeRoute[] {
   const all = runType === 'top' ? getTopRoutes() : SCRAPE_ROUTES
   if (!chunk) return all
-  const size = Math.ceil(all.length / 4)
-  if (chunk === 'a') return all.slice(0, size)
-  if (chunk === 'b') return all.slice(size, size * 2)
-  if (chunk === 'c') return all.slice(size * 2, size * 3)
-  return all.slice(size * 3) // chunk d
+  const idx = { a: 0, b: 1, c: 2, d: 3 }[chunk]
+  return all.filter((_, i) => i % 4 === idx)
 }

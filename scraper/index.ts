@@ -36,13 +36,15 @@ async function triggerRevalidation(routes: string[]): Promise<void> {
   }
 }
 
-const MAX_RETRIES    = 3
-const DELAY_BETWEEN  = { min: 8000, max: 20000 }  // ms between routes
+const MAX_RETRIES    = 3   // Tier 1/2
+const MAX_RETRIES_T3 = 1   // Tier 3 — low-priority, many have no direct flights → fail fast
+const DELAY_BETWEEN  = { min: 8000, max: 18000 }  // ms between routes
+const DELAY_T3       = { min: 4000, max: 9000  }  // faster for tier 3
 const ROTATE_BROWSER = 8                            // new browser every N routes
 
 async function scrapeWithRetry(
   route: ScrapeRoute,
-  retries = MAX_RETRIES
+  retries = route.tier === 3 ? MAX_RETRIES_T3 : MAX_RETRIES
 ): Promise<{ minPrice: number; flights: Awaited<ReturnType<typeof scrapeRoute>> } | null> {
 
   for (let attempt = 1; attempt <= retries; attempt++) {
@@ -132,11 +134,12 @@ async function main() {
       failed++
     }
 
-    // Human-like delay between routes
+    // Human-like delay between routes — Tier 3 routes use shorter delay
     if (i < routes.length - 1) {
-      const delay = Math.floor(Math.random() * (DELAY_BETWEEN.max - DELAY_BETWEEN.min) + DELAY_BETWEEN.min)
+      const range = route.tier === 3 ? DELAY_T3 : DELAY_BETWEEN
+      const delay = Math.floor(Math.random() * (range.max - range.min) + range.min)
       console.log(`  ⏳ Waiting ${(delay / 1000).toFixed(1)}s before next route...`)
-      await randomDelay(delay, delay + 2000)
+      await randomDelay(delay, delay + 1000)
     }
   }
 
