@@ -1,5 +1,5 @@
 import type { MetadataRoute } from 'next'
-import { getForwardRoutes, getReverseRoutes, getDiasporaRoutes, getReverseDiasporaRoutes } from '@/lib/routes'
+import { getForwardRoutes, getReverseRoutes, getDiasporaRoutes, getReverseDiasporaRoutes, getAllRoutes, parseRouteSlug, getRouteAirlines } from '@/lib/routes'
 
 const BASE = 'https://www.flightrate.pk'
 
@@ -63,5 +63,34 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority:        0.75,
   }))
 
-  return [...staticPages, ...forwardPages, ...diasporaPages, ...reverseDiasporaPages, ...reversePages]
+  // Airline-specific route pages (~848 pages targeting "Emirates Karachi to Dubai" etc)
+  const AIRLINE_SLUGS: Record<string, string> = {
+    'Emirates': 'emirates', 'flydubai': 'flydubai', 'PIA': 'pia',
+    'Air Arabia': 'air-arabia', 'Qatar Airways': 'qatar-airways',
+    'Saudia': 'saudia', 'Etihad Airways': 'etihad-airways',
+    'flynas': 'flynas', 'Kuwait Airways': 'kuwait-airways',
+    'Oman Air': 'oman-air', 'Gulf Air': 'gulf-air',
+    'Airblue': 'airblue', 'Serene Air': 'serene-air',
+    'FlyJinnah': 'flyjinnah', 'Jazeera Airways': 'jazeera-airways',
+    'British Airways': 'british-airways', 'Turkish Airlines': 'turkish-airlines',
+    'Air Canada': 'air-canada', 'United Airlines': 'united-airlines',
+  }
+  const airlinePages: MetadataRoute.Sitemap = []
+  for (const r of getAllRoutes()) {
+    const parsed = parseRouteSlug(r.slug)
+    if (!parsed) continue
+    const airlines = getRouteAirlines(parsed.from.code, parsed.to.code)
+    for (const airlineName of airlines) {
+      const slug = AIRLINE_SLUGS[airlineName]
+      if (!slug) continue
+      airlinePages.push({
+        url:             `${BASE}/flights/${r.slug}/${slug}`,
+        lastModified:    now,
+        changeFrequency: 'weekly' as const,
+        priority:        TOP_ROUTES.has(r.slug) ? 0.75 : 0.65,
+      })
+    }
+  }
+
+  return [...staticPages, ...forwardPages, ...diasporaPages, ...reverseDiasporaPages, ...reversePages, ...airlinePages]
 }

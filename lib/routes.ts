@@ -189,3 +189,26 @@ export function getRouteDuration(fromCode: string, toCode: string): string {
   const m = mins % 60
   return m > 0 ? `${h}h ${m}m` : `${h}h`
 }
+
+// ─── Baggage allowances by airline ───────────────────────────────────────────
+export const BAGGAGE: Record<string, { checkin: string; cabin: string }> = {
+  'Emirates':         { checkin: '30 kg', cabin: '7 kg' },
+  'Etihad Airways':   { checkin: '23 kg', cabin: '7 kg' },
+  'Qatar Airways':    { checkin: '23 kg', cabin: '7 kg' },
+  'PIA':              { checkin: '23 kg', cabin: '7 kg' },
+  'Saudia':           { checkin: '23 kg', cabin: '7 kg' },
+  'Oman Air':         { checkin: '23 kg', cabin: '7 kg' },
+  'Kuwait Airways':   { checkin: '23 kg', cabin: '7 kg' },
+  'Gulf Air':         { checkin: '23 kg', cabin: '7 kg' },
+  'British Airways':  { checkin: '23 kg', cabin: '12 kg' },
+  'Air Canada':       { checkin: '23 kg', cabin: '10 kg' },
+  'United Airlines':  { checkin: '23 kg', cabin: '9 kg' },
+  'Turkish Airlines': { checkin: '20 kg', cabin: '8 kg' },
+  'flydubai':         { checkin: '20 kg', cabin: '7 kg' },
+  'Air Arabia':       { checkin: '20 kg', cabin: '10 kg' },
+  'flynas':           { checkin: '20 kg', cabin: '7 kg' },
+  'Airblue':          { checkin: '20 kg', cabin: '7 kg' },
+  'Serene Air':       { checkin: '20 kg', cabin: '7 kg' },
+  'FlyJinnah':        { checkin: '20 kg', cabin: '7 kg' },
+  'Jazeera Airways':  { checkin: '20 kg', cabin: '7 kg' },
+}

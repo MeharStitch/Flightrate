@@ -4,7 +4,7 @@ import Link from 'next/link'
 import {
   getAllRoutes, parseRouteSlug,
   getRouteAirlines, getRouteDuration,
-  PK_CITIES, DEST_CITIES,
+  PK_CITIES, DEST_CITIES, BAGGAGE,
 } from '@/lib/routes'
 import PriceGraph from '@/components/PriceGraph'
 import PriceInsight from '@/components/PriceInsight'
@@ -31,24 +31,26 @@ export async function generateMetadata(
   const priceNum  = priceData?.minPrice ? priceData.minPrice + 7000 : null
   const priceStr  = priceNum ? `PKR ${priceNum.toLocaleString('en-PK')}` : null
 
-  // Price-enriched title → targets "ticket price today" Tier-1 keywords
+  // Title format matches #1 search query: "cheap flights from X to Y"
+  // Sastaticket pattern: "Cheap Flights from Karachi to Dubai (PKR 45,015) | ..."
   const title = priceStr
-    ? `${from.name} to ${to.name} Flights — ${priceStr} Today | FlightRate`
+    ? `Cheap Flights from ${from.name} to ${to.name} (${priceStr}) | FlightRate`
     : isReverse
-      ? `${from.name} to ${to.name} Flights — Cheap Expat Tickets in PKR | FlightRate`
+      ? `Cheap Flights from ${from.name} to ${to.name} | Expat Fares in PKR | FlightRate`
       : isDiaspora
-        ? `${from.name} to ${to.name} Flights — Cheapest Fares in PKR | FlightRate`
-        : `${from.name} to ${to.name} Cheap Flights — PKR Prices, All Airlines | FlightRate`
+        ? `Cheap Flights from ${from.name} to ${to.name} | PKR Prices | FlightRate`
+        : `Cheap Flights from ${from.name} to ${to.name} | All Airlines in PKR | FlightRate`
 
   const description = priceStr
-    ? `${from.name} to ${to.name} flights from ${priceStr} today. Compare PIA, Emirates, flydubai & more. All prices in PKR. Book via WhatsApp in 7 minutes. No hidden fees.`
+    ? `Cheap flights from ${from.name} to ${to.name} from ${priceStr} today. Compare all airlines in PKR. Book via WhatsApp in 7 minutes.`
     : isReverse
-      ? `Flying from ${from.name} back to ${to.name}? Compare all airlines in PKR. Book via WhatsApp in 7 minutes. No hidden fees.`
+      ? `Cheap flights from ${from.name} to ${to.name}. Compare all airlines in PKR. Book via WhatsApp in 7 minutes. No hidden fees.`
       : isDiaspora
-        ? `Cheapest ${from.name} to ${to.name} flights in PKR. Compare Qatar Airways, Emirates, PIA & more. Book via WhatsApp.`
-        : `Cheapest ${from.name} to ${to.name} flights in PKR. Compare PIA, Emirates, flydubai & more. Book via WhatsApp in 7 minutes. No hidden fees.`
+        ? `Cheap flights from ${from.name} to ${to.name} in PKR. Compare Qatar Airways, Emirates, PIA & more. Book via WhatsApp.`
+        : `Cheap flights from ${from.name} to ${to.name} in PKR. Compare PIA, Emirates, flydubai & more. Book via WhatsApp in 7 minutes.`
 
   const keywords = [
+    `cheap flights from ${from.name} to ${to.name}`,
     `${from.name} to ${to.name} flights`,
     `${from.name} to ${to.name} ticket price`,
     `${from.name} to ${to.name} ticket price today`,
@@ -81,29 +83,6 @@ export async function generateMetadata(
       type: 'website',
     },
   }
-}
-
-// ─── Baggage allowances by airline ───────────────────────────────────────────
-const BAGGAGE: Record<string, { checkin: string; cabin: string }> = {
-  'Emirates':         { checkin: '30 kg', cabin: '7 kg' },
-  'Etihad Airways':   { checkin: '23 kg', cabin: '7 kg' },
-  'Qatar Airways':    { checkin: '23 kg', cabin: '7 kg' },
-  'PIA':              { checkin: '23 kg', cabin: '7 kg' },
-  'Saudia':           { checkin: '23 kg', cabin: '7 kg' },
-  'Oman Air':         { checkin: '23 kg', cabin: '7 kg' },
-  'Kuwait Airways':   { checkin: '23 kg', cabin: '7 kg' },
-  'Gulf Air':         { checkin: '23 kg', cabin: '7 kg' },
-  'British Airways':  { checkin: '23 kg', cabin: '12 kg' },
-  'Air Canada':       { checkin: '23 kg', cabin: '10 kg' },
-  'United Airlines':  { checkin: '23 kg', cabin: '9 kg' },
-  'Turkish Airlines': { checkin: '20 kg', cabin: '8 kg' },
-  'flydubai':         { checkin: '20 kg', cabin: '7 kg' },
-  'Air Arabia':       { checkin: '20 kg', cabin: '10 kg' },
-  'flynas':           { checkin: '20 kg', cabin: '7 kg' },
-  'Airblue':          { checkin: '20 kg', cabin: '7 kg' },
-  'Serene Air':       { checkin: '20 kg', cabin: '7 kg' },
-  'FlyJinnah':        { checkin: '20 kg', cabin: '7 kg' },
-  'Jazeera Airways':  { checkin: '20 kg', cabin: '7 kg' },
 }
 
 function getPriceTrend(history: { date: string; minPrice: number }[]): { pct: number; dir: 'down' | 'up' } | null {
@@ -551,6 +530,32 @@ export default async function RoutePage(
                 <p>{f.a}</p>
               </details>
             ))}
+          </div>
+        </section>
+
+        {/* Airline-specific pages for this route */}
+        <section className="route-section">
+          <h2>Airline Guide — {from.name} to {to.name}</h2>
+          <div className="route-related">
+            {airlines.map(airlineName => {
+              const SLUG_MAP: Record<string, string> = {
+                'Emirates': 'emirates', 'flydubai': 'flydubai', 'PIA': 'pia',
+                'Air Arabia': 'air-arabia', 'Qatar Airways': 'qatar-airways',
+                'Saudia': 'saudia', 'Etihad Airways': 'etihad-airways',
+                'flynas': 'flynas', 'Kuwait Airways': 'kuwait-airways',
+                'Oman Air': 'oman-air', 'Gulf Air': 'gulf-air',
+                'Airblue': 'airblue', 'Serene Air': 'serene-air',
+                'FlyJinnah': 'flyjinnah', 'Jazeera Airways': 'jazeera-airways',
+                'British Airways': 'british-airways', 'Turkish Airlines': 'turkish-airlines',
+                'Air Canada': 'air-canada', 'United Airlines': 'united-airlines',
+              }
+              const s = SLUG_MAP[airlineName]
+              return s ? (
+                <Link key={s} href={`/flights/${route}/${s}`} className="route-related-link">
+                  {airlineName} — {from.name} → {to.name}
+                </Link>
+              ) : null
+            })}
           </div>
         </section>
 
