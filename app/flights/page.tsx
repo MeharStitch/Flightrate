@@ -22,6 +22,19 @@ export default function FlightsHubPage() {
         <p className="route-sub">Compare fares on all routes to Gulf, Middle East & beyond. Book via WhatsApp.</p>
       </div>
 
+      {/* Destination guides */}
+      <section className="route-section">
+        <h2>Compare Cheapest Airlines by Destination</h2>
+        <div className="route-related">
+          <Link href="/flights/cheapest-airlines-pakistan-to-dubai"   className="route-related-link">Pakistan → Dubai</Link>
+          <Link href="/flights/cheapest-airlines-pakistan-to-riyadh"  className="route-related-link">Pakistan → Riyadh</Link>
+          <Link href="/flights/cheapest-airlines-pakistan-to-jeddah"  className="route-related-link">Pakistan → Jeddah</Link>
+          <Link href="/flights/cheapest-airlines-pakistan-to-doha"    className="route-related-link">Pakistan → Doha</Link>
+          <Link href="/flights/cheapest-airlines-pakistan-to-london"  className="route-related-link">Pakistan → London</Link>
+          <Link href="/flights/cheapest-airlines-pakistan-to-toronto" className="route-related-link">Pakistan → Toronto</Link>
+        </div>
+      </section>
+
       {PK_CITIES.map(from => (
         <section key={from.code} className="route-section">
           <h2>Flights from {from.name} ({from.code})</h2>

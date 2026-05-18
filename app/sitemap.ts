@@ -20,7 +20,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${BASE}/flights`,             lastModified: now, changeFrequency: 'weekly',  priority: 0.9 },
     { url: `${BASE}/search`,              lastModified: now, changeFrequency: 'daily',   priority: 0.8 },
     { url: `${BASE}/about`,              lastModified: now, changeFrequency: 'monthly', priority: 0.6 },
-    { url: `${BASE}/flights/cheapest-airlines-pakistan-to-dubai`, lastModified: now, changeFrequency: 'daily', priority: 0.85 },
+    { url: `${BASE}/flights/cheapest-airlines-pakistan-to-dubai`,   lastModified: now, changeFrequency: 'daily', priority: 0.85 },
+    { url: `${BASE}/flights/cheapest-airlines-pakistan-to-riyadh`,  lastModified: now, changeFrequency: 'daily', priority: 0.85 },
+    { url: `${BASE}/flights/cheapest-airlines-pakistan-to-jeddah`,  lastModified: now, changeFrequency: 'daily', priority: 0.85 },
+    { url: `${BASE}/flights/cheapest-airlines-pakistan-to-doha`,    lastModified: now, changeFrequency: 'daily', priority: 0.82 },
+    { url: `${BASE}/flights/cheapest-airlines-pakistan-to-london`,  lastModified: now, changeFrequency: 'weekly', priority: 0.82 },
+    { url: `${BASE}/flights/cheapest-airlines-pakistan-to-toronto`, lastModified: now, changeFrequency: 'weekly', priority: 0.80 },
     // Blog / guide pages
     { url: `${BASE}/blog`,                                                          lastModified: now, changeFrequency: 'weekly',  priority: 0.75 },
     { url: `${BASE}/blog/cheapest-month-to-fly-pakistan-to-dubai`,                  lastModified: now, changeFrequency: 'daily',   priority: 0.80 },
