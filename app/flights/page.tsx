@@ -31,7 +31,9 @@ export default function FlightsHubPage() {
           <Link href="/flights/cheapest-airlines-pakistan-to-jeddah"  className="route-related-link">Pakistan → Jeddah</Link>
           <Link href="/flights/cheapest-airlines-pakistan-to-doha"    className="route-related-link">Pakistan → Doha</Link>
           <Link href="/flights/cheapest-airlines-pakistan-to-london"  className="route-related-link">Pakistan → London</Link>
-          <Link href="/flights/cheapest-airlines-pakistan-to-toronto" className="route-related-link">Pakistan → Toronto</Link>
+          <Link href="/flights/cheapest-airlines-pakistan-to-toronto"    className="route-related-link">Pakistan → Toronto</Link>
+          <Link href="/flights/cheapest-airlines-pakistan-to-manchester" className="route-related-link">Pakistan → Manchester</Link>
+          <Link href="/flights/cheapest-airlines-pakistan-to-birmingham" className="route-related-link">Pakistan → Birmingham</Link>
         </div>
       </section>
 
