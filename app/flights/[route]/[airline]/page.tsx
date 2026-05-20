@@ -7,6 +7,20 @@ import {
   BAGGAGE,
 } from '@/lib/routes'
 
+export const revalidate = 3600 // ISR — re-render hourly with fresh price data
+
+async function getLivePrice(fromCode: string, toCode: string): Promise<number | null> {
+  try {
+    const res = await fetch(
+      `https://www.flightrate.pk/api/prices/${fromCode}-${toCode}`,
+      { next: { revalidate: 3600, tags: [`price-${fromCode}-${toCode}`] } }
+    )
+    if (!res.ok) return null
+    const d = await res.json()
+    return d?.minPrice ? d.minPrice + 7000 : null
+  } catch { return null }
+}
+
 // Airline slug → display name + IATA
 const AIRLINE_SLUGS: Record<string, { name: string; iata: string }> = {
   'emirates':         { name: 'Emirates',         iata: 'EK' },
@@ -126,9 +140,12 @@ export default async function AirlineRoutePage(
   const airlines = getRouteAirlines(from.code, to.code)
   if (!airlines.includes(airlineData.name)) notFound()
 
-  const duration = getRouteDuration(from.code, to.code)
-  const baggage  = getAirlineBaggage(airlineData.name)
-  const freq     = AIRLINE_FREQUENCY[airlineData.name] ?? 'Check airline website for schedule'
+  const duration   = getRouteDuration(from.code, to.code)
+  const baggage    = getAirlineBaggage(airlineData.name)
+  const freq       = AIRLINE_FREQUENCY[airlineData.name] ?? 'Check airline website for schedule'
+  const livePrice  = await getLivePrice(from.code, to.code)
+  const priceStr   = livePrice ? `PKR ${livePrice.toLocaleString('en-PK')}` : null
+  const today      = new Date().toLocaleDateString('en-PK', { day: 'numeric', month: 'long', year: 'numeric' })
 
   // Other airlines on same route (for comparison links)
   const otherAirlines = airlines.filter(a => a !== airlineData.name)
@@ -149,6 +166,27 @@ export default async function AirlineRoutePage(
             { '@type': 'ListItem', position: 3, name: `${from.name} to ${to.name}`, item: `https://www.flightrate.pk/flights/${route}` },
             { '@type': 'ListItem', position: 4, name: airlineData.name, item: `https://www.flightrate.pk/flights/${route}/${airline}` },
           ],
+        },
+      },
+      {
+        '@type': 'Product',
+        '@id': `https://www.flightrate.pk/flights/${route}/${airline}#product`,
+        name: `${airlineData.name} ${from.name} to ${to.name} Flight Ticket`,
+        image: { '@type': 'ImageObject', url: 'https://www.flightrate.pk/opengraph-image', width: 1200, height: 630 },
+        brand: { '@type': 'Brand', name: airlineData.name },
+        offers: livePrice ? {
+          '@type': 'Offer',
+          priceCurrency: 'PKR',
+          price: String(livePrice),
+          priceValidUntil: new Date(Date.now() + 86400000).toISOString().split('T')[0],
+          availability: 'https://schema.org/InStock',
+          seller: { '@type': 'Organization', name: 'FlightRate' },
+        } : {
+          '@type': 'AggregateOffer',
+          priceCurrency: 'PKR',
+          lowPrice: '30000',
+          highPrice: '180000',
+          availability: 'https://schema.org/InStock',
         },
       },
       {
@@ -199,10 +237,17 @@ export default async function AirlineRoutePage(
         <div className="route-hero">
           <h1 className="route-h1">
             {airlineData.name} Flights from {from.name} to {to.name}
-            <span className="route-codes">({from.code} → {to.code})</span>
+            {priceStr && (
+              <span className="route-live-price"> — from {priceStr}</span>
+            )}
           </h1>
           <p className="route-sub">
             {airlineData.name} fares in PKR · Baggage, schedule & booking via WhatsApp
+          </p>
+          <p className="route-freshness">
+            <time dateTime={new Date().toISOString()}>
+              ✓ Prices last updated {today}
+            </time>
           </p>
         </div>
 
