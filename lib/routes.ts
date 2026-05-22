@@ -113,6 +113,7 @@ export const ROUTE_DURATION: Record<string, number> = {
   'KHI-BAH': 220, 'LHE-BAH': 245, 'ISB-BAH': 245,
   'KHI-DMM': 235, 'LHE-DMM': 255, 'ISB-DMM': 255,
   'KHI-MED': 255, 'LHE-MED': 275, 'ISB-MED': 275,
+  'MUX-MED': 265, 'PEW-MED': 270, 'SKT-MED': 270, 'LYP-MED': 265, 'UET-MED': 260,
   // Gulf → Pakistan (same duration, reversed)
   'DXB-KHI': 185, 'DXB-LHE': 210, 'DXB-ISB': 210, 'DXB-PEW': 195,
   'DXB-MUX': 210, 'DXB-SKT': 215, 'DXB-LYP': 220, 'DXB-UET': 200,
@@ -153,6 +154,30 @@ export const ROUTE_AIRLINES: Record<string, string[]> = {
   'ISB-RUH': ['Saudia', 'PIA', 'flynas'],
   'KHI-JED': ['Saudia', 'PIA', 'flynas'],
   'LHE-JED': ['Saudia', 'PIA', 'flynas'],
+  'ISB-JED': ['Saudia', 'PIA', 'flynas'],
+  'MUX-JED': ['Saudia', 'PIA'],
+  'PEW-JED': ['Saudia', 'PIA'],
+  // Madinah routes (Umrah/Hajj pilgrimage)
+  'KHI-MED': ['Saudia', 'PIA', 'flynas'],
+  'LHE-MED': ['Saudia', 'PIA', 'flynas'],
+  'ISB-MED': ['Saudia', 'PIA', 'flynas'],
+  'MUX-MED': ['Saudia', 'PIA'],
+  'PEW-MED': ['Saudia', 'PIA'],
+  'SKT-MED': ['Saudia', 'PIA'],
+  'LYP-MED': ['Saudia', 'PIA'],
+  // Dammam routes
+  'KHI-DMM': ['Saudia', 'PIA', 'flynas'],
+  'LHE-DMM': ['Saudia', 'PIA', 'flynas'],
+  'ISB-DMM': ['Saudia', 'PIA'],
+  // Bahrain routes
+  'KHI-BAH': ['Gulf Air', 'PIA'],
+  'LHE-BAH': ['Gulf Air', 'PIA'],
+  // Muscat routes
+  'LHE-MCT': ['Oman Air', 'PIA'],
+  'ISB-MCT': ['Oman Air', 'PIA'],
+  // Kuwait extra cities
+  'LHE-KWI': ['Kuwait Airways', 'PIA', 'Jazeera Airways'],
+  'ISB-KWI': ['Kuwait Airways', 'PIA'],
   'KHI-KWI': ['Kuwait Airways', 'PIA', 'Jazeera Airways'],
   'KHI-MCT': ['Oman Air', 'PIA'],
   // Diaspora → UK

@@ -14,7 +14,7 @@ const plusJakarta = Plus_Jakarta_Sans({
 export const metadata: Metadata = {
   title: {
     default:  'Cheap Flights from Pakistan — Compare All Airlines | FlightRate',
-    template: '%s | FlightRate',
+    template: '%s',
   },
   description: 'Find cheapest flights from Karachi, Lahore, Islamabad to Dubai, Riyadh, Doha & more. Compare all airlines in PKR. Book via WhatsApp in 7 minutes.',
   keywords: [
