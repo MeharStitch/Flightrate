@@ -1,0 +1,41 @@
+name: Social Media Auto-Post
+
+on:
+  schedule:
+    - cron: '0 4 * * *'   # 4:00 AM UTC = 9:00 AM PKT — daily
+  workflow_dispatch:        # manual trigger for testing
+
+jobs:
+  post:
+    name: Post Next Queued Item
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    permissions:
+      contents: write       # needed to commit updated queue back to repo
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GH_PAT }}   # PAT so the commit push works
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Run social poster
+        env:
+          FB_PAGE_ID:           ${{ secrets.FB_PAGE_ID }}
+          FB_PAGE_ACCESS_TOKEN: ${{ secrets.FB_PAGE_ACCESS_TOKEN }}
+          IG_USER_ID:           ${{ secrets.IG_USER_ID }}
+        run: node social/post-social.mjs
+
+      - name: Commit updated queue
+        run: |
+          git config user.name  "FlightRate Bot"
+          git config user.email "bot@flightrate.pk"
+          git add social/posts-queue.json
+          git diff --staged --quiet || git commit -m "chore: mark post #$(date +%Y-%m-%d) as published"
+          git push
