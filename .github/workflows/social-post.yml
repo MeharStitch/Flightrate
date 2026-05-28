@@ -18,7 +18,7 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.GH_PAT }}   # PAT so the commit push works
+          token: ${{ secrets.GITHUB_TOKEN }}   # built-in token, no manual secret needed
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
