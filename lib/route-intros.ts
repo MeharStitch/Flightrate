@@ -123,6 +123,111 @@ export const ROUTE_INTROS: Record<string, RouteIntro> = {
       },
     ],
   },
+
+  // ─── Karachi → Doha ─────────────────────────────────────────────────────────
+  'karachi-to-doha': {
+    heading: 'Karachi to Doha Flights — Qatar Airways Home Route from Pakistan',
+    paragraphs: [
+      'Karachi to Doha is one of the most strategically important Pakistani routes — Doha is not only a destination but the primary one-stop hub for Pakistanis flying to the UK, Canada, USA and onward to Europe and Africa. Qatar Airways operates this 3 hour 15 minute corridor multiple times daily from Jinnah International (KHI) to Hamad International (DOH), with PIA running competing direct service.',
+      'Qatar Airways dominates this route both in frequency and reputation. Their 30 kg economy baggage, full meal service, on-time record and award-winning ground experience at Hamad mean QR fares typically sit PKR 8,000–18,000 above PIA on the same dates — but most Pakistani business and connection travellers consider the premium worth paying. For point-to-point Karachi–Doha travellers (workers, families visiting Qatar), PIA remains the value pick at PKR 50,000–80,000 round-trip equivalent in normal months.',
+      'The hidden value on Karachi–Doha is the connecting market. Qatar Airways consistently offers among the lowest one-stop fares from Pakistan to London, Manchester, Birmingham, Toronto and New York — often cheaper than Emirates via Dubai. If your end destination is the UK, Canada or US east coast, always price the Qatar Airways via-DOH itinerary before booking — savings of PKR 15,000–35,000 are common compared to Emirates DXB transit.',
+      'For Qatari work-visa holders (QID) returning to Doha after leave, Qatar Airways often releases reduced fares 6–10 weeks ahead — particularly out of Karachi. Booking 30–60 days out lands the best prices for both point-to-point and connecting Karachi–Doha tickets.',
+    ],
+    subsections: [
+      {
+        h3: 'Qatar Airways vs PIA — when does PIA actually win?',
+        body: 'PIA wins on Karachi–Doha when you are a price-sensitive traveller with light luggage, departing on midweek dates, and only need to reach Doha (not connect onward). For everyone else — and especially for travellers connecting through DOH to UK/Canada/USA — Qatar Airways wins on baggage, schedule reliability, transit experience and total trip price.',
+      },
+      {
+        h3: 'Hamad International transit — what to expect on a layover',
+        body: 'Hamad International (DOH) is consistently ranked among the world\'s top airports. For Pakistani travellers connecting onward, the transit experience is excellent: free showers, prayer rooms with separate facilities, quiet zones, halal dining options throughout, and clear English/Urdu signage. Layovers under 4 hours are easy. For 6+ hour layovers, Qatar Airways offers transit hotels and even free Doha city tours on some itineraries.',
+      },
+    ],
+  },
+
+  // ─── Lahore → Jeddah ────────────────────────────────────────────────────────
+  'lahore-to-jeddah': {
+    heading: 'Lahore to Jeddah Flights — Direct Umrah Service from Allama Iqbal Airport',
+    paragraphs: [
+      'Lahore to Jeddah is the second-busiest Umrah corridor from Pakistan and a major route for Punjabi pilgrims, Iqama holders working in Jeddah/Makkah/Madinah, and overseas Pakistanis returning to family in Saudi Arabia. Saudia, PIA and flynas operate this 4 hour 10 minute direct service from Allama Iqbal International (LHE) to King Abdulaziz International (JED), with combined weekly frequency of 18–25 flights depending on season.',
+      'Lahore–Jeddah fares run PKR 5,000–10,000 above Karachi–Jeddah for the same dates because LHE has lower carrier frequency than KHI. The cheapest option is consistently flynas, with promotional fares dropping to PKR 60,000–80,000 in non-peak months. Saudia is the most reliable carrier and the preferred choice for Umrah pilgrims who value experienced cabin crew and Halal meal service. PIA sits in the middle with 23 kg baggage and includes meals.',
+      'Pricing on this route is entirely driven by Umrah demand. Cheapest months: January, early February, June and September. Peak periods: the final two weeks of Ramadan (PKR 150,000–200,000+), and the weeks immediately before and after Hajj (when non-Hajj Umrah pilgrims cannot enter Makkah, so flights briefly soften, then surge for Hajj returners).',
+      'Many Punjabi pilgrims combine Jeddah and Madinah travel: fly Lahore → Jeddah for Makkah Umrah, take a bus or private car (4–5 hours) to Madinah for ziyarat, then fly Madinah → Lahore on return. Book each leg separately on FlightRate for the lowest combined PKR fare.',
+    ],
+    subsections: [
+      {
+        h3: 'How early should I book Lahore–Jeddah for Umrah?',
+        body: 'For shoulder-season Umrah (June, September, January), 4–8 weeks ahead delivers the best fares. For Ramadan Umrah, 12–16 weeks ahead is essential — many Lahore-based pilgrims book Ramadan flights in October or November of the prior year. Last-minute Ramadan fares from Lahore routinely exceed PKR 180,000 one-way.',
+      },
+      {
+        h3: 'Lahore–Jeddah direct or via Islamabad/Karachi?',
+        body: 'Always fly direct from Lahore if available — the price difference vs connecting via ISB or KHI is rarely worth the extra 4–6 hours of travel time. The only exception is Hajj season, when Saudi authorities restrict charter slots and direct LHE fares may briefly spike above PKR 200,000.',
+      },
+    ],
+  },
+
+  // ─── Islamabad → Jeddah ─────────────────────────────────────────────────────
+  'islamabad-to-jeddah': {
+    heading: 'Islamabad to Jeddah Flights — Saudia, PIA & flynas Compared',
+    paragraphs: [
+      'Islamabad to Jeddah is the third-busiest Umrah corridor from Pakistan and the primary Saudi route for travellers in northern Pakistan — Islamabad, Rawalpindi, KPK, Azad Kashmir and Gilgit-Baltistan. Saudia, PIA and flynas operate this 4 hour 15 minute direct service from Islamabad International (ISB) to King Abdulaziz International (JED).',
+      'ISB–JED fares track closely with Lahore–Jeddah fares — usually within PKR 3,000–5,000. Saudia is the dominant carrier with the most reliable schedule and Halal meal service. PIA offers strong value with 23 kg baggage included. flynas is the budget option with fares often 15–20% below Saudia in non-peak months, but with 20 kg baggage and no meals — factor extra baggage cost (PKR 8,000–12,000 if you carry 25 kg) into the total comparison.',
+      'For travellers in KPK and northern Punjab, Islamabad is the cheapest gateway to Saudi Arabia — Peshawar has very limited Jeddah service and it is usually more economical to drive to ISB than to fly via PEW or connect through LHE/KHI. The same applies to passengers from Muzaffarabad, Mirpur and other Azad Kashmir cities.',
+      'Cheapest months: January, February, June and September. Most expensive periods: final 14 days of Ramadan, and the immediate post-Eid al-Fitr window when many pilgrims return. Booking 30–60 days ahead delivers the best prices for shoulder-season Umrah; Ramadan travel requires 3+ months of lead time.',
+    ],
+    subsections: [
+      {
+        h3: 'Is ISB–JED ever cheaper than ISB–MED (Madinah)?',
+        body: 'Yes, almost always. Jeddah has more carrier competition and higher frequency than Madinah, so JED fares typically run PKR 5,000–15,000 below MED on the same dates. Most ISB pilgrims fly into Jeddah for the lower fare and either take a bus to Madinah after Makkah Umrah, or fly back to Pakistan from Madinah on an open-jaw ticket.',
+      },
+      {
+        h3: 'Which airline is most pilgrim-friendly for Islamabad–Jeddah?',
+        body: 'Saudia and PIA are both highly experienced with Pakistani pilgrim traffic — Ihram-friendly cabins, Halal meals, prayer-timing announcements, and crew familiar with Umrah procedures. flynas works fine for budget pilgrims but offers a more no-frills experience. For first-time Umrah travellers, Saudia or PIA is recommended even if PKR 8,000–15,000 more expensive.',
+      },
+    ],
+  },
+
+  // ─── Karachi → London ───────────────────────────────────────────────────────
+  'karachi-to-london': {
+    heading: 'Karachi to London Flights — PIA Direct vs One-Stop via Doha, Dubai or Istanbul',
+    paragraphs: [
+      'Karachi to London is the highest-value diaspora route from Pakistan, used by students heading to UK universities, families visiting relatives in the UK, business travellers and dual nationals. PIA is currently the only direct carrier on this 8 hour 30 minute corridor, flying KHI to London Heathrow (LHR) and seasonally Manchester (MAN). Qatar Airways via Doha, Emirates via Dubai and Turkish Airlines via Istanbul provide the major one-stop alternatives.',
+      'Pricing on Karachi–London is genuinely competitive: PIA direct sits around PKR 180,000–280,000 economy round-trip equivalent, while Qatar Airways, Emirates and Turkish Airlines one-stop options often match or undercut PIA direct, especially 60+ days out. For most non-time-sensitive travellers, the one-stop Gulf or Istanbul routing is the better value — Qatar Airways frequently runs the lowest fares with 30 kg baggage, a smooth DOH transit and a total journey time of 11–14 hours.',
+      'For students starting UK university programmes in September, book in May or June to access the cheapest fares — last-minute August bookings can run PKR 350,000+ one-way. The cheapest baggage allowance for student travel is on Qatar Airways or Turkish Airlines (both 30 kg), which is meaningfully better than PIA\'s 23 kg when you are shipping a year\'s worth of belongings.',
+      'For UK-based Pakistanis returning to Karachi for the winter holiday season (November–January) or Eid, prices spike significantly. Booking 12–16 weeks ahead for Christmas/New Year travel is essential. The cheapest direction of travel during these peaks is usually KHI → LHR rather than LHR → KHI, so couples or families travelling in pairs may save by booking one-way segments separately.',
+    ],
+    subsections: [
+      {
+        h3: 'Is PIA direct worth the extra time savings vs Qatar Airways via Doha?',
+        body: 'For business travellers and elderly passengers, yes — saving 3–5 hours of transit and avoiding a connection is worth a moderate fare premium. For students, families and budget-conscious travellers, the one-stop Qatar Airways routing usually wins on total trip cost and baggage allowance. Compare the live fares on this page before deciding.',
+      },
+      {
+        h3: 'Karachi to London Heathrow vs Manchester vs Birmingham — which is cheapest?',
+        body: 'Heathrow has the highest carrier competition and frequency, so LHR fares are often the cheapest. Manchester and Birmingham fares are typically PKR 10,000–25,000 higher per ticket but may save you money if your final destination is in the Midlands or North — train and bus costs from LHR to those cities can wipe out the saving from flying into LHR.',
+      },
+    ],
+  },
+
+  // ─── Lahore → London ───────────────────────────────────────────────────────
+  'lahore-to-london': {
+    heading: 'Lahore to London Flights — PIA Direct, Qatar Airways & Turkish Airlines',
+    paragraphs: [
+      'Lahore to London is the largest diaspora corridor from Punjab and one of the top three Pakistan–UK routes by volume. PIA operates the only direct service from Allama Iqbal International (LHE) to London Heathrow (LHR), with seasonal Manchester and Birmingham flights. Qatar Airways via Doha, Emirates via Dubai, Turkish Airlines via Istanbul and Etihad via Abu Dhabi all serve LHE–LON with one-stop itineraries.',
+      'Lahore–London fares broadly mirror Karachi–London but with slightly lower frequency on PIA direct. Qatar Airways consistently offers the most competitive Lahore–LHR fares in the PKR 180,000–260,000 round-trip range, with 30 kg baggage and the strongest DOH transit experience. Turkish Airlines is often the cheapest of all carriers, particularly for travellers willing to accept a longer 4–8 hour Istanbul layover — IST itself is a comfortable airport with good Halal dining options.',
+      'For Pakistani students heading to UK universities, Lahore–LHR or LHE–MAN are the most popular departures. Book 12–16 weeks before September intake for the cheapest fares; ideal carriers are Qatar Airways or Turkish Airlines (30 kg baggage). Some students also fly LHE → Sharjah or Dubai → London, but the multi-hop fare rarely beats a single one-stop QR or TK ticket.',
+      'For UK-based Punjabi families returning to Lahore for Eid or weddings, book 12+ weeks ahead. Wedding-season fares (October–February) can be 40–60% above off-peak prices. Lahore is also a key gateway for the UK Mirpuri/Kashmiri diaspora — many travellers fly LHE then drive or take a domestic connection to Mirpur or Muzaffarabad.',
+    ],
+    subsections: [
+      {
+        h3: 'Is Turkish Airlines really worth the longer layover from Lahore?',
+        body: 'For price-sensitive travellers, yes — Turkish Airlines is frequently the cheapest carrier on LHE–LHR and the 30 kg baggage matches Qatar Airways. The downside is the longer 4–8 hour IST layover, which adds significant fatigue on what is already a 14–17 hour total trip. Best for younger travellers and students; less ideal for families with young children or elderly passengers.',
+      },
+      {
+        h3: 'PIA direct Lahore–Heathrow vs one-stop — when is direct genuinely cheaper?',
+        body: 'PIA direct is rarely the absolute cheapest option on LHE–LHR, but it is the fastest at 8.5 hours nose-to-nose. It wins on convenience for business travellers, elderly family members and anyone with a tight UK arrival schedule. For most diaspora travel, the time saving does not justify the typical PKR 15,000–30,000 premium over Qatar Airways or Turkish Airlines.',
+      },
+    ],
+  },
 }
 
 export function getRouteIntro(routeSlug: string): RouteIntro | null {
