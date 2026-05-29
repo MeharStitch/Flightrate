@@ -333,6 +333,111 @@ export const ROUTE_INTROS: Record<string, RouteIntro> = {
       },
     ],
   },
+
+  // ─── Karachi → Kuwait City ──────────────────────────────────────────────────
+  'karachi-to-kuwait-city': {
+    heading: 'Karachi to Kuwait City Flights — For Workers, Families & Visit Visas',
+    paragraphs: [
+      'Karachi to Kuwait City is a major Gulf labour route, carrying a large population of Pakistani workers, domestic staff, drivers and skilled professionals employed in Kuwait, alongside families on visit visas. Kuwait Airways, Jazeera Airways and PIA operate this 3 hour 30 minute corridor from Jinnah International (KHI) to Kuwait International Airport (KWI), with combined frequency of 12–18 weekly flights.',
+      'Jazeera Airways is the budget carrier on this route and consistently the cheapest option, with promotional fares dropping to PKR 45,000–60,000 in low season. Kuwait Airways is the full-service flag carrier with better baggage and meals, typically PKR 8,000–15,000 more. PIA offers competing direct service with 23 kg baggage included. For workers carrying tools or families with heavy luggage, compare the total cost including baggage — Jazeera\'s base fare advantage can disappear once excess-baggage fees are added.',
+      'Kuwait–Pakistan demand is driven by the work cycle and visit-visa seasons rather than tourism. Fares are cheapest in the late spring and early autumn shoulder months, and spike around Eid in both directions and during summer when families travel. Visit-visa holders should note that Kuwait periodically tightens entry rules, so confirm current visa status before booking non-refundable fares.',
+      'Booking 30–60 days ahead delivers the best Karachi–Kuwait prices. Midweek departures (Tuesday–Thursday) are noticeably cheaper than weekend flights, and early-morning departures tend to carry the lowest fares of the day.',
+    ],
+    subsections: [
+      {
+        h3: 'Jazeera Airways vs Kuwait Airways — which to pick from Karachi?',
+        body: 'Jazeera Airways wins on price for light-luggage travellers; it is a modern low-cost carrier with a good safety and punctuality record. Kuwait Airways wins on baggage allowance, meals and seat comfort, making it the better pick for families and workers carrying significant luggage. Compare the all-in cost (fare + baggage) on this page before deciding.',
+      },
+      {
+        h3: 'Is there a direct flight from Karachi to Kuwait?',
+        body: 'Yes — Kuwait Airways, Jazeera Airways and PIA all operate direct Karachi–Kuwait City flights, with a flight time of around 3 hours 30 minutes. One-stop alternatives via Dubai or Bahrain exist but are rarely cheaper and add 4–8 hours, so the direct flight is almost always the best choice.',
+      },
+    ],
+  },
+
+  // ─── Lahore → Doha ──────────────────────────────────────────────────────────
+  'lahore-to-doha': {
+    heading: 'Lahore to Doha Flights — Qatar Airways & PIA from Punjab',
+    paragraphs: [
+      'Lahore to Doha is a key Pakistan–Qatar route and an important one-stop gateway for Punjabi travellers heading onward to the UK, Canada, USA and Europe via Hamad International. Qatar Airways operates frequent direct service from Allama Iqbal International (LHE) to Hamad International (DOH), with PIA running competing flights. Flight time is around 3 hours 30 minutes.',
+      'Qatar Airways dominates this route on frequency, baggage (30 kg economy) and transit experience. For point-to-point Lahore–Doha travellers — workers on QID visas, families visiting Qatar — Qatar Airways fares sit around PKR 55,000–90,000 round-trip equivalent, with PIA usually PKR 5,000–15,000 cheaper but with fewer frequencies. For travellers connecting onward, Qatar Airways via Doha frequently offers among the lowest one-stop fares from Lahore to London, Manchester, Birmingham and Toronto.',
+      'The real value of Lahore–Doha for many travellers is as a connection rather than a destination. If your end point is the UK or Canada, always compare the Qatar Airways via-DOH itinerary against Emirates via Dubai — Qatar frequently undercuts Emirates by PKR 15,000–35,000 on these long-haul routes, with comparable comfort and the excellent Hamad transit experience.',
+      'For QID work-visa holders returning to Doha after leave, Qatar Airways releases reduced fares 6–10 weeks ahead. Booking 30–60 days out delivers the best Lahore–Doha prices for both point-to-point and connecting tickets.',
+    ],
+    subsections: [
+      {
+        h3: 'Lahore to Doha direct, or via Karachi?',
+        body: 'Fly direct from Lahore if a suitable flight is available — the fare difference versus connecting through Karachi is rarely worth the extra time. Qatar Airways and PIA both serve LHE–DOH directly, so most Punjabi travellers have no need to route through KHI.',
+      },
+      {
+        h3: 'Is Qatar Airways worth more than PIA on Lahore–Doha?',
+        body: 'For point-to-point travel, PIA can be the value pick if you have light luggage and flexible timing. For anyone connecting onward through Doha, or carrying significant baggage, Qatar Airways wins clearly — 30 kg allowance, more frequencies, a superior transit at Hamad, and frequently the lowest total fare to UK/Canada destinations.',
+      },
+    ],
+  },
+
+  // ─── Islamabad → Riyadh ─────────────────────────────────────────────────────
+  'islamabad-to-riyadh': {
+    heading: 'Islamabad to Riyadh Flights — Saudia, PIA & flynas for Northern Pakistan',
+    paragraphs: [
+      'Islamabad to Riyadh is the primary Saudi work route for travellers in northern Pakistan — Islamabad, Rawalpindi, KPK, Azad Kashmir and Gilgit-Baltistan. It carries a heavy mix of Iqama (work-visa) holders, businesspeople and families. Saudia, PIA and flynas operate this 4 hour 10 minute direct corridor from Islamabad International (ISB) to King Khalid International (RUH).',
+      'Saudia is the dominant carrier for Iqama holders returning to Riyadh, offering a reliable schedule, 23 kg baggage and Halal meals. PIA is a strong second and frequently undercuts Saudia midweek. flynas is the budget option with 20 kg baggage and no meals, but promotional fares can drop to PKR 52,000–66,000 — about 30% below Saudia in low season. As always, factor extra-baggage cost into the comparison if you carry more than 20 kg.',
+      'ISB–RUH fares track Lahore–Riyadh closely, usually within PKR 3,000–5,000. Demand is driven by the Saudi work cycle: cheapest in May, June and September; most expensive in October–November (return after summer leave) and during Ramadan. The Saudi weekend (Friday–Saturday) creates directional price spikes, so returning to Riyadh on Thursday or Friday costs more than midweek.',
+      'For KPK and northern-Punjab workers, Islamabad is the cheapest Saudi gateway — Peshawar has limited Riyadh service and it is usually more economical to drive to ISB. Book 30–60 days ahead for the best Islamabad–Riyadh fares.',
+    ],
+    subsections: [
+      {
+        h3: 'Which airline is cheapest for Islamabad–Riyadh?',
+        body: 'flynas is usually the cheapest on headline fare, but only worth it if your luggage is within 20 kg — otherwise excess-baggage fees can make Saudia or PIA (23 kg included) the better total value. FlightRate compares all three carriers live; check the price card above for today\'s cheapest option in PKR.',
+      },
+      {
+        h3: 'Direct vs one-stop for Islamabad–Riyadh?',
+        body: 'Direct flights with Saudia and PIA are almost always the same price as one-stop options via Dubai, Sharjah or Doha — and save 4–7 hours. Connecting itineraries are only worth considering when the direct fare is unusually high and a Gulf carrier is running a strong promotion, which is rare on this route.',
+      },
+    ],
+  },
+
+  // ─── Multan → Jeddah ────────────────────────────────────────────────────────
+  'multan-to-jeddah': {
+    heading: 'Multan to Jeddah Flights — Direct Umrah Service from South Punjab',
+    paragraphs: [
+      'Multan to Jeddah is the key Umrah and Saudi-work route for South Punjab — Multan, Bahawalpur, Dera Ghazi Khan, Rahim Yar Khan and surrounding districts. Saudia and PIA operate direct service from Multan International (MUX) to King Abdulaziz International (JED), particularly busy during Umrah season. Flight time is around 4 hours 30 minutes.',
+      'Multan–Jeddah fares typically run PKR 5,000–10,000 above Lahore–Jeddah for the same dates, due to lower flight frequency from MUX. Saudia is the most reliable carrier and the preferred choice for Umrah pilgrims, with Halal meals and experienced cabin crew. PIA offers competing direct service with 23 kg baggage included. flynas service from Multan is limited compared with Karachi or Lahore, so the practical choice is usually Saudia or PIA.',
+      'Pricing is driven entirely by Umrah demand. Cheapest months are January, February, June and September. The final two weeks of Ramadan are the most expensive, with one-way fares often exceeding PKR 150,000. South Punjab sends a large number of pilgrims, so MUX–JED flights fill quickly during peak Umrah windows — early booking is essential.',
+      'For South Punjab pilgrims, flying direct from Multan saves the 4–5 hour road trip to Lahore. However, when MUX direct fares spike during peak season, it can occasionally be cheaper to travel to Lahore and fly LHE–JED — compare both before booking. Book 4–8 weeks ahead for shoulder-season Umrah; 12+ weeks for Ramadan.',
+    ],
+    subsections: [
+      {
+        h3: 'Is it cheaper to fly Multan–Jeddah direct or via Lahore?',
+        body: 'In normal months, Multan–Jeddah direct is the best choice — the PKR 5,000–10,000 premium over Lahore is far less than the cost and time of a road trip to LHE. During peak Ramadan, when MUX direct fares spike sharply, it can occasionally pay to travel to Lahore for a cheaper flight. Compare both options on FlightRate before deciding.',
+      },
+      {
+        h3: 'Which airlines fly direct from Multan to Jeddah?',
+        body: 'Saudia and PIA both operate direct Multan–Jeddah flights, especially during Umrah season. Saudia is the more pilgrim-friendly choice with Halal meals and crew experienced in Umrah procedures. PIA includes 23 kg baggage and meals. flynas service from Multan is limited, so most South Punjab pilgrims choose Saudia or PIA.',
+      },
+    ],
+  },
+
+  // ─── Peshawar → Dubai ───────────────────────────────────────────────────────
+  'peshawar-to-dubai': {
+    heading: 'Peshawar to Dubai Flights — Airlines & Options for KPK Travellers',
+    paragraphs: [
+      'Peshawar to Dubai is the main international route for Khyber Pakhtunkhwa, serving the large population of KPK workers in the UAE, families, and traders. PIA and flydubai are the principal carriers on this 3-hour direct corridor from Bacha Khan International (PEW) to Dubai International (DXB), though frequency is lower than from Karachi, Lahore or Islamabad.',
+      'Because PEW has fewer airlines and flights than the major Pakistani gateways, fares tend to run PKR 5,000–12,000 higher than Karachi–Dubai for the same dates. flydubai is usually the cheapest option from Peshawar, with PIA competing on direct service and 23 kg baggage. Emirates and Air Arabia service from PEW is limited or routed via other cities, so the realistic choice for most KPK travellers is flydubai or PIA.',
+      'A common decision for KPK passengers is whether to fly from Peshawar or drive ~2 hours to Islamabad, which has more airlines, higher frequency and often lower fares. For travellers in Peshawar city the convenience of PEW usually wins; for those in southern KPK or near the motorway, Islamabad can be the cheaper and more flexible option once you factor in the wider airline choice.',
+      'Peshawar–Dubai demand peaks around Eid and the summer family-travel season, when fares can rise sharply. Booking 30–45 days ahead delivers the best prices. Midweek departures are cheaper than weekend flights, as on every Pakistan–Dubai route.',
+    ],
+    subsections: [
+      {
+        h3: 'Should I fly from Peshawar or drive to Islamabad for a Dubai flight?',
+        body: 'If you live in or near Peshawar, the convenience of flying from PEW usually outweighs the PKR 5,000–12,000 fare premium versus Islamabad. If you are in southern KPK, near the motorway, or travelling on dates when PEW fares are unusually high, driving ~2 hours to Islamabad opens up more airlines (Emirates, Air Arabia, more flydubai/PIA frequencies) and often lower fares. Compare both on FlightRate.',
+      },
+      {
+        h3: 'Which airlines fly direct from Peshawar to Dubai?',
+        body: 'flydubai and PIA are the main carriers offering direct Peshawar–Dubai flights. flydubai is typically the cheapest with 20 kg baggage; PIA includes 23 kg and meals. Service from other carriers is limited from PEW, so these two are the realistic options for most KPK travellers.',
+      },
+    ],
+  },
 }
 
 export function getRouteIntro(routeSlug: string): RouteIntro | null {

@@ -59,6 +59,39 @@ function getAllSlugs(): string[] {
   }
 }
 
+// Old hand-written static blog posts (app/blog/<slug>/page.tsx) — for cross-linking
+const STATIC_GUIDES: { slug: string; title: string }[] = [
+  { slug: 'cheapest-month-to-fly-pakistan-to-dubai', title: 'Cheapest Month to Fly from Pakistan to Dubai' },
+  { slug: 'dubai-visa-requirements-pakistan',        title: 'Dubai Visa Requirements for Pakistanis' },
+  { slug: 'cheapest-airlines-pakistan-gulf',         title: 'Cheapest Airlines from Pakistan to Gulf' },
+  { slug: 'how-to-book-cheap-flights-pakistan',      title: 'How to Book Cheap Flights from Pakistan' },
+]
+
+// Sibling guides for cross-linking — other JSON posts + static guides, minus current
+function getSiblingGuides(currentSlug: string, limit = 4): { slug: string; title: string }[] {
+  const out: { slug: string; title: string }[] = []
+  const seen = new Set<string>([currentSlug])
+  try {
+    const dir = path.join(process.cwd(), 'blog-content')
+    for (const file of fs.readdirSync(dir)) {
+      if (!file.endsWith('.json')) continue
+      const s = file.replace('.json', '')
+      if (seen.has(s)) continue
+      try {
+        const j = JSON.parse(fs.readFileSync(path.join(dir, file), 'utf8'))
+        out.push({ slug: s, title: j.title })
+        seen.add(s)
+      } catch {}
+    }
+  } catch {}
+  for (const g of STATIC_GUIDES) {
+    if (seen.has(g.slug)) continue
+    out.push(g)
+    seen.add(g.slug)
+  }
+  return out.slice(0, limit)
+}
+
 // ─── Static params — build all auto-blog pages at deploy ─────────────────────
 export function generateStaticParams() {
   return getAllSlugs().map(slug => ({ slug }))
@@ -196,6 +229,25 @@ export default async function AutoBlogPage(
             </div>
           </section>
         )}
+
+        {/* Cross-link to other guides */}
+        {(() => {
+          const siblings = getSiblingGuides(post.slug)
+          if (!siblings.length) return null
+          return (
+            <section className="blog-post-section">
+              <h2>More Pakistan Flight Guides</h2>
+              <div className="route-guides">
+                {siblings.map(g => (
+                  <Link key={g.slug} href={`/blog/${g.slug}`} className="route-guide-link">
+                    <span className="route-guide-arrow">📖</span>
+                    <span>{g.title}</span>
+                  </Link>
+                ))}
+              </div>
+            </section>
+          )
+        })()}
 
         {/* CTA */}
         <div className="route-final-cta">

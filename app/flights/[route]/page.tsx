@@ -10,6 +10,7 @@ import PriceGraph from '@/components/PriceGraph'
 import PriceInsight from '@/components/PriceInsight'
 import { fetchPriceData } from '@/lib/prices'
 import { getRouteIntro } from '@/lib/route-intros'
+import { getRelatedGuides } from '@/lib/related-guides'
 
 // ─── Static params — build all 88 route pages at deploy ─────────────────────
 export function generateStaticParams() {
@@ -589,6 +590,25 @@ export default async function RoutePage(
             ))}
           </div>
         </section>
+
+        {/* Related guides — interlink to blog posts */}
+        {(() => {
+          const guides = getRelatedGuides(to.code)
+          if (!guides.length) return null
+          return (
+            <section className="route-section">
+              <h2>Guides for Flying {from.name} to {to.name}</h2>
+              <div className="route-guides">
+                {guides.map(g => (
+                  <Link key={g.slug} href={`/blog/${g.slug}`} className="route-guide-link">
+                    <span className="route-guide-arrow">📖</span>
+                    <span>{g.title}</span>
+                  </Link>
+                ))}
+              </div>
+            </section>
+          )
+        })()}
 
         {/* Final CTA */}
         <div className="route-final-cta">
