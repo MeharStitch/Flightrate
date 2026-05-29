@@ -228,6 +228,111 @@ export const ROUTE_INTROS: Record<string, RouteIntro> = {
       },
     ],
   },
+
+  // ─── Islamabad → London ─────────────────────────────────────────────────────
+  'islamabad-to-london': {
+    heading: 'Islamabad to London Flights — PIA Direct & One-Stop via Gulf Hubs',
+    paragraphs: [
+      'Islamabad to London is the primary Pakistan–UK route for travellers in northern Pakistan — Islamabad, Rawalpindi, KPK, Azad Kashmir and Gilgit-Baltistan. It carries a heavy mix of students, dual nationals, families visiting relatives, and the large Mirpuri/Kashmiri diaspora whose UK community is one of the oldest South Asian populations in Britain. PIA operates direct service from Islamabad International (ISB) to London Heathrow (LHR), with Qatar Airways via Doha, Emirates via Dubai and Turkish Airlines via Istanbul providing the major one-stop alternatives.',
+      'ISB–LON fares track closely with Lahore–London, generally within PKR 5,000–15,000. PIA direct runs around PKR 185,000–290,000 round-trip equivalent, while Qatar Airways and Turkish Airlines one-stop fares frequently match or undercut PIA direct when booked 60+ days ahead. Qatar Airways is the strongest one-stop pick with 30 kg baggage and a smooth Doha transit; Turkish Airlines is often the outright cheapest for travellers who accept a longer Istanbul layover.',
+      'Islamabad is the natural gateway for the UK Kashmiri diaspora travelling to Mirpur, Muzaffarabad and surrounding Azad Kashmir districts — most fly into ISB and continue by road. For these travellers, ISB direct or one-stop is almost always more practical than routing through Lahore or Karachi.',
+      'For students heading to UK universities for the September intake, book in May–June. The cheapest baggage allowance for student travel is Qatar Airways or Turkish Airlines (30 kg vs PIA\'s 23 kg) — meaningful when shipping a year of belongings. For winter holiday and Eid returns, book 12–16 weeks ahead as fares spike 40–60% in peak windows.',
+    ],
+    subsections: [
+      {
+        h3: 'Is Islamabad–London direct (PIA) worth it over a Gulf connection?',
+        body: 'PIA direct saves 3–5 hours versus a one-stop routing and avoids a connection — valuable for elderly travellers, families with young children, and business travellers. But it is rarely the cheapest option. For students and budget-conscious diaspora travellers, Qatar Airways via Doha or Turkish Airlines via Istanbul usually wins on total cost and offers more generous baggage.',
+      },
+      {
+        h3: 'Where is the cheapest live Islamabad–London fare today?',
+        body: 'The price card at the top of this page shows the lowest live fare across PIA, Qatar Airways, Emirates and Turkish Airlines, updated three times daily by our scraper. Tap WhatsApp to confirm the current fare and complete booking in PKR within 7 minutes — no card or foreign currency required.',
+      },
+    ],
+  },
+
+  // ─── Karachi → Toronto ──────────────────────────────────────────────────────
+  'karachi-to-toronto': {
+    heading: 'Karachi to Toronto Flights — Cheapest Hub for Pakistan to Canada',
+    paragraphs: [
+      'Karachi to Toronto is the leading Pakistan–Canada route, driven by the large and fast-growing Pakistani-Canadian community, students at Ontario universities, and new immigrants under Canada\'s Express Entry programme. There is no direct flight; the journey is a one-stop, 16–19 hour trip via a Gulf or European hub. The three main routings are Qatar Airways via Doha, Emirates via Dubai and Turkish Airlines via Istanbul, all into Toronto Pearson (YYZ).',
+      'Hub choice is the single biggest factor in Karachi–Toronto pricing. Qatar Airways via Doha is consistently among the cheapest and offers the shortest total journey for most dates, with 30 kg economy baggage. Turkish Airlines via Istanbul is frequently the lowest headline fare but with longer layovers. Emirates via Dubai is the premium option — reliable, comfortable, with strong baggage — but usually PKR 20,000–50,000 more than Qatar Airways on the same dates.',
+      'Typical Karachi–Toronto economy fares run PKR 230,000–380,000 round-trip equivalent, with wide swings by season and booking window. The cheapest fares appear when booked 2–4 months ahead. For new immigrants travelling one-way with maximum luggage, the baggage allowance becomes critical — Qatar Airways and Emirates (30 kg) beat carriers with 23 kg, and many immigrant travellers pre-purchase a second bag, which is far cheaper than excess at the airport or shipping.',
+      'For students starting at Canadian universities (September and January intakes), book 3–4 months ahead. The student-friendly carriers are Qatar Airways and Emirates for baggage; Turkish Airlines for outright price. Avoid last-minute August/December booking, when one-way fares can exceed PKR 450,000.',
+    ],
+    subsections: [
+      {
+        h3: 'Which hub is cheapest for Karachi to Toronto — Doha, Dubai or Istanbul?',
+        body: 'Across our six-month dataset, Qatar Airways via Doha and Turkish Airlines via Istanbul trade the cheapest-fare position depending on the date. Qatar usually wins on shorter total journey time and better transit experience at Hamad; Turkish often wins on the absolute lowest fare but with longer Istanbul layovers. Emirates via Dubai is rarely cheapest but is the most comfortable. Always compare all three live fares before booking.',
+      },
+      {
+        h3: 'How much luggage can I bring from Karachi to Toronto?',
+        body: 'On long-haul economy to Canada, Qatar Airways and Emirates typically allow 30 kg (sometimes 2×23 kg piece concept on certain fare types — check at booking). This is significantly better than carriers offering 23 kg. For immigrants relocating, pre-purchasing an extra bag online (PKR 15,000–30,000) is far cheaper than airport excess rates or international courier shipping.',
+      },
+    ],
+  },
+
+  // ─── Lahore → Toronto ───────────────────────────────────────────────────────
+  'lahore-to-toronto': {
+    heading: 'Lahore to Toronto Flights — One-Stop Routes & Cheapest Hub for Canada',
+    paragraphs: [
+      'Lahore to Toronto is one of the top Pakistan–Canada corridors, serving Punjab\'s large emigrant community, students at Ontario institutions, and families reuniting under Canadian immigration streams. As with all Pakistan–Canada travel, there is no direct flight — the trip is a one-stop journey of 16–19 hours via Doha (Qatar Airways), Dubai (Emirates) or Istanbul (Turkish Airlines) into Toronto Pearson (YYZ).',
+      'Lahore–Toronto fares mirror Karachi–Toronto, usually within PKR 5,000–15,000, and the same hub logic applies: Qatar Airways via Doha and Turkish Airlines via Istanbul compete for the cheapest fare, while Emirates via Dubai is the premium-comfort option. Typical economy fares run PKR 235,000–385,000 round-trip equivalent, cheapest when booked 2–4 months ahead.',
+      'Punjab sends a large share of Pakistan\'s skilled-worker immigrants to Canada, so the one-way maximum-luggage market is significant on this route. Baggage allowance matters as much as fare: Qatar Airways and Emirates (30 kg) are the practical picks for relocation travel. Many immigrant families pre-book a second checked bag online to avoid airport excess rates, which on long-haul can exceed PKR 40,000 per extra bag.',
+      'For students bound for Canadian universities, book the September intake in May–June and the January intake in September–October. Turkish Airlines is often cheapest for price-focused students; Qatar Airways and Emirates win for those carrying heavy luggage. Last-minute fares in peak intake months routinely exceed PKR 450,000 one-way.',
+    ],
+    subsections: [
+      {
+        h3: 'Is Lahore–Toronto cheaper than flying Karachi or Islamabad to Toronto?',
+        body: 'The three Pakistani gateways price within PKR 5,000–15,000 of each other on the same dates, so it is rarely worth travelling to a different city to depart. Fly from whichever airport is closest to you — the small fare difference will not offset domestic travel, time and overnight-stay costs.',
+      },
+      {
+        h3: 'Doha vs Istanbul vs Dubai for Lahore to Toronto?',
+        body: 'Qatar Airways via Doha offers the best balance of price, journey time and transit comfort. Turkish Airlines via Istanbul is often the cheapest but with longer layovers. Emirates via Dubai is the most comfortable and reliable but usually the most expensive. For families with children or elderly passengers, Qatar Airways or Emirates is recommended; for budget solo travellers and students, Turkish Airlines often wins.',
+      },
+    ],
+  },
+
+  // ─── Karachi → New York ─────────────────────────────────────────────────────
+  'karachi-to-new-york': {
+    heading: 'Karachi to New York Flights — Cheapest One-Stop Routes to the USA',
+    paragraphs: [
+      'Karachi to New York is the flagship Pakistan–USA route, serving the large Pakistani-American community concentrated in New York, New Jersey and the wider tri-state area, plus students, business travellers and immigrant families. There is no direct flight; the journey is a one-stop trip of 16–18 hours via Doha (Qatar Airways), Dubai (Emirates), Istanbul (Turkish Airlines) or Abu Dhabi (Etihad) into either JFK or Newark (EWR).',
+      'Hub and carrier choice drives Karachi–New York pricing more than any other factor. Qatar Airways via Doha and Turkish Airlines via Istanbul are usually the cheapest, with Emirates via Dubai and Etihad via Abu Dhabi as premium alternatives. Typical economy fares run PKR 260,000–420,000 round-trip equivalent, with the lowest prices appearing when booked 2–4 months ahead. US-bound travel also peaks around summer holidays and the December–January window.',
+      'A unique consideration on US routes is the pre-clearance and security layer: Qatar Airways, Emirates and Etihad all offer smooth transit at their hubs, and Etihad historically offered US pre-clearance at Abu Dhabi (check current status at booking), which can speed arrival at JFK/EWR. For first-time US travellers and families, the more reliable full-service carriers reduce the stress of a long, multi-segment journey.',
+      'For students starting at US universities and immigrants travelling one-way with maximum luggage, the 30 kg baggage allowance on Qatar Airways and Emirates is a major advantage over 23 kg carriers. Book 3–4 months ahead for the August/September university intake; last-minute one-way fares can exceed PKR 480,000.',
+    ],
+    subsections: [
+      {
+        h3: 'Which is the cheapest airline from Karachi to New York?',
+        body: 'Qatar Airways via Doha and Turkish Airlines via Istanbul are typically the cheapest on Karachi–New York, trading positions depending on the date. Emirates via Dubai and Etihad via Abu Dhabi are usually more expensive but offer excellent transit experiences. FlightRate compares all major one-stop fares live — check the price card above before booking.',
+      },
+      {
+        h3: 'JFK or Newark (EWR) — does it matter which New York airport?',
+        body: 'For fares, the difference is usually small — carriers price JFK and EWR similarly. Choose based on your final destination: JFK is better for Long Island, Queens and Brooklyn; Newark is better for New Jersey, where a large share of the Pakistani-American community lives. Factor ground transport cost and time into your decision, not just the headline fare.',
+      },
+    ],
+  },
+
+  // ─── Lahore → Riyadh ────────────────────────────────────────────────────────
+  'lahore-to-riyadh': {
+    heading: 'Lahore to Riyadh Flights — Saudia, PIA & flynas for Iqama Holders',
+    paragraphs: [
+      'Lahore to Riyadh is a core Pakistan–Saudi Arabia route, carrying a heavy mix of Iqama (work-visa) holders, businesspeople and families travelling between Punjab and the Saudi capital. Saudia, PIA and flynas operate this 4-hour direct corridor from Allama Iqbal International (LHE) to King Khalid International (RUH), with combined weekly frequency of 15–20 flights.',
+      'For Iqama holders returning to Riyadh, Saudia is the dominant carrier — reliable schedule, 23 kg baggage included, and Halal meal service. PIA is a strong second and frequently undercuts Saudia on midweek dates. flynas is the budget option with 20 kg baggage and no meals, but promotional fares can drop to PKR 52,000–65,000 — around 30% below Saudia in low season. Factor extra-baggage cost into the comparison if you carry more than 20 kg, as flynas excess fees can erase the saving.',
+      'Lahore–Riyadh demand is driven by the Saudi work cycle rather than tourism. The cheapest fares appear in May, June and September. Peak fares come in October–November (workers returning after summer leave) and during Ramadan. The Saudi weekend (Friday–Saturday) drives directional price spikes — returning to Riyadh on a Thursday or Friday is more expensive than midweek.',
+      'For families on Iqama re-entry trips carrying substantial luggage, Saudia\'s 23 kg allowance versus flynas\'s 20 kg matters: a 25 kg bag on flynas at the airport costs roughly PKR 18,000–22,000, which usually wipes out any fare saving. Book 30–60 days ahead for the best Lahore–Riyadh prices.',
+    ],
+    subsections: [
+      {
+        h3: 'Which day is cheapest for Lahore–Riyadh?',
+        body: 'Our dataset shows Wednesday and Thursday departures from Lahore to Riyadh are 12–18% cheaper than Friday, Saturday or Sunday. The expensive days are driven by the Saudi weekend, when workers return to Riyadh after time off — fares in that direction spike sharply on Thursday evening and Friday.',
+      },
+      {
+        h3: 'Direct vs one-stop for Lahore–Riyadh?',
+        body: 'Direct flights with Saudia and PIA are almost always priced the same as one-stop alternatives via Dubai, Sharjah or Doha — and save 4–7 hours. Only consider connecting itineraries if the direct fare is unusually high (above PKR 100,000) and you can find a strong Gulf-carrier promotion. In most months, direct is both cheaper and faster.',
+      },
+    ],
+  },
 }
 
 export function getRouteIntro(routeSlug: string): RouteIntro | null {
