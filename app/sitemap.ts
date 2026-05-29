@@ -1,7 +1,27 @@
 import type { MetadataRoute } from 'next'
+import fs from 'fs'
+import path from 'path'
 import { getForwardRoutes, getReverseRoutes, getDiasporaRoutes, getReverseDiasporaRoutes, getAllRoutes, parseRouteSlug, getRouteAirlines } from '@/lib/routes'
 
 const BASE = 'https://www.flightrate.pk'
+
+// Read JSON-based blog posts from disk + old static-page blog slugs
+function getBlogSlugs(): string[] {
+  const slugs = new Set<string>([
+    // Old hardcoded static blog pages (app/blog/<slug>/page.tsx)
+    'cheapest-month-to-fly-pakistan-to-dubai',
+    'dubai-visa-requirements-pakistan',
+    'cheapest-airlines-pakistan-gulf',
+    'how-to-book-cheap-flights-pakistan',
+  ])
+  try {
+    const dir = path.join(process.cwd(), 'blog-content')
+    for (const file of fs.readdirSync(dir)) {
+      if (file.endsWith('.json')) slugs.add(file.replace(/\.json$/, ''))
+    }
+  } catch {}
+  return Array.from(slugs)
+}
 
 // Top-traffic forward routes get highest priority
 const TOP_ROUTES = new Set([
@@ -28,15 +48,19 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${BASE}/flights/cheapest-airlines-pakistan-to-toronto`,    lastModified: now, changeFrequency: 'weekly', priority: 0.80 },
     { url: `${BASE}/flights/cheapest-airlines-pakistan-to-manchester`, lastModified: now, changeFrequency: 'weekly', priority: 0.82 },
     { url: `${BASE}/flights/cheapest-airlines-pakistan-to-birmingham`, lastModified: now, changeFrequency: 'weekly', priority: 0.80 },
-    // Blog / guide pages
-    { url: `${BASE}/blog`,                                                          lastModified: now, changeFrequency: 'weekly',  priority: 0.75 },
-    { url: `${BASE}/blog/cheapest-month-to-fly-pakistan-to-dubai`,                  lastModified: now, changeFrequency: 'daily',   priority: 0.80 },
-    { url: `${BASE}/blog/dubai-visa-requirements-pakistan`,                         lastModified: now, changeFrequency: 'monthly', priority: 0.75 },
-    { url: `${BASE}/blog/cheapest-airlines-pakistan-gulf`,                          lastModified: now, changeFrequency: 'weekly',  priority: 0.78 },
-    { url: `${BASE}/blog/how-to-book-cheap-flights-pakistan`,                       lastModified: now, changeFrequency: 'monthly', priority: 0.72 },
+    // Blog index
+    { url: `${BASE}/blog`,               lastModified: now, changeFrequency: 'weekly',  priority: 0.75 },
     { url: `${BASE}/privacy-policy`,     lastModified: now, changeFrequency: 'monthly', priority: 0.3 },
     { url: `${BASE}/terms`,              lastModified: now, changeFrequency: 'monthly', priority: 0.3 },
   ]
+
+  // Blog posts (auto-discovered from blog-content/*.json + old static dirs)
+  const blogPages: MetadataRoute.Sitemap = getBlogSlugs().map(slug => ({
+    url:             `${BASE}/blog/${slug}`,
+    lastModified:    now,
+    changeFrequency: 'monthly' as const,
+    priority:        0.78,
+  }))
 
   // Pakistan → Gulf: highest priority (core product)
   const forwardPages: MetadataRoute.Sitemap = getForwardRoutes().map(r => ({
@@ -90,14 +114,16 @@ export default function sitemap(): MetadataRoute.Sitemap {
     for (const airlineName of airlines) {
       const slug = AIRLINE_SLUGS[airlineName]
       if (!slug) continue
+      // Low priority — these are long-tail and dilute crawl budget if too high.
+      // Better to let Google focus on core route pages first.
       airlinePages.push({
         url:             `${BASE}/flights/${r.slug}/${slug}`,
         lastModified:    now,
-        changeFrequency: 'weekly' as const,
-        priority:        TOP_ROUTES.has(r.slug) ? 0.75 : 0.65,
+        changeFrequency: 'monthly' as const,
+        priority:        TOP_ROUTES.has(r.slug) ? 0.4 : 0.3,
       })
     }
   }
 
-  return [...staticPages, ...forwardPages, ...diasporaPages, ...reverseDiasporaPages, ...reversePages, ...airlinePages]
+  return [...staticPages, ...blogPages, ...forwardPages, ...diasporaPages, ...reverseDiasporaPages, ...reversePages, ...airlinePages]
 }

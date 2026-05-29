@@ -1,5 +1,9 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import fs from 'fs'
+import path from 'path'
+
+export const revalidate = 3600 // 1h — picks up new auto-generated posts
 
 export const metadata: Metadata = {
   title: 'Pakistan Flight Guides & Tips — Save Money on Every Booking | FlightRate',
@@ -7,38 +11,83 @@ export const metadata: Metadata = {
   alternates: { canonical: 'https://www.flightrate.pk/blog' },
 }
 
-const POSTS = [
+interface BlogCard {
+  slug:    string
+  title:   string
+  excerpt: string
+  tag:     string
+  date:    string
+}
+
+// Old static posts (hand-written in app/blog/<slug>/page.tsx)
+const STATIC_POSTS: BlogCard[] = [
   {
-    slug: 'cheapest-month-to-fly-pakistan-to-dubai',
-    title: 'Cheapest Month to Fly from Pakistan to Dubai (2026 Price Data)',
+    slug:    'cheapest-month-to-fly-pakistan-to-dubai',
+    title:   'Cheapest Month to Fly from Pakistan to Dubai (2026 Price Data)',
     excerpt: 'Based on 30 days of daily price scraping, we reveal exactly which month offers the lowest Pakistan–Dubai fares — and when to avoid booking.',
-    tag: 'Price Guide',
-    date: '2026-05-15',
+    tag:     'Price Guide',
+    date:    '2026-05-15',
   },
   {
-    slug: 'dubai-visa-requirements-pakistan',
-    title: 'Dubai Visa Requirements for Pakistani Passport Holders (2026)',
+    slug:    'dubai-visa-requirements-pakistan',
+    title:   'Dubai Visa Requirements for Pakistani Passport Holders (2026)',
     excerpt: 'Step-by-step guide to getting a UAE tourist or visit visa from Pakistan. Costs, processing time, required documents, and how to apply.',
-    tag: 'Visa Guide',
-    date: '2026-05-15',
+    tag:     'Visa Guide',
+    date:    '2026-05-15',
   },
   {
-    slug: 'cheapest-airlines-pakistan-gulf',
-    title: 'Cheapest Airlines Flying from Pakistan to Gulf Countries (Ranked)',
+    slug:    'cheapest-airlines-pakistan-gulf',
+    title:   'Cheapest Airlines Flying from Pakistan to Gulf Countries (Ranked)',
     excerpt: 'We compare PIA, Emirates, flydubai, Air Arabia, Qatar Airways, Saudia and more across all Gulf routes to find who really offers the best value.',
-    tag: 'Airline Guide',
-    date: '2026-05-15',
+    tag:     'Airline Guide',
+    date:    '2026-05-15',
   },
   {
-    slug: 'how-to-book-cheap-flights-pakistan',
-    title: 'How to Book Cheap Flights from Pakistan: 9 Proven Tips',
+    slug:    'how-to-book-cheap-flights-pakistan',
+    title:   'How to Book Cheap Flights from Pakistan: 9 Proven Tips',
     excerpt: 'Exact strategies Pakistani travellers use to save PKR 10,000–30,000 per booking. Includes best booking windows, airline tricks, and WhatsApp booking guide.',
-    tag: 'Booking Tips',
-    date: '2026-05-15',
+    tag:     'Booking Tips',
+    date:    '2026-05-15',
   },
 ]
 
+// Auto-load posts from blog-content/*.json
+function loadDynamicPosts(): BlogCard[] {
+  try {
+    const dir = path.join(process.cwd(), 'blog-content')
+    const files = fs.readdirSync(dir).filter(f => f.endsWith('.json'))
+    return files.map(file => {
+      const raw  = fs.readFileSync(path.join(dir, file), 'utf8')
+      const j    = JSON.parse(raw)
+      const tag  =
+        /baggage|allowance/i.test(j.title)            ? 'Baggage Guide'    :
+        /vs|compare/i.test(j.title)                   ? 'Airline Compare'  :
+        /umrah|hajj|jeddah|madinah/i.test(j.title)    ? 'Umrah / Hajj'     :
+        /visa/i.test(j.title)                         ? 'Visa Guide'       :
+        /cheapest|month|day|booking/i.test(j.title)   ? 'Price Guide'      :
+        /review/i.test(j.title)                       ? 'Airline Review'   :
+                                                        'Flight Guide'
+      return {
+        slug:    j.slug,
+        title:   j.title,
+        excerpt: j.description ?? j.intro?.slice(0, 180) ?? '',
+        tag,
+        date:    j.datePublished ?? '',
+      } as BlogCard
+    })
+  } catch {
+    return []
+  }
+}
+
 export default function BlogIndex() {
+  const dynamic = loadDynamicPosts()
+  // Merge + de-dupe by slug, newest first
+  const seen = new Set<string>()
+  const all = [...dynamic, ...STATIC_POSTS]
+    .filter(p => (seen.has(p.slug) ? false : (seen.add(p.slug), true)))
+    .sort((a, b) => (b.date || '').localeCompare(a.date || ''))
+
   return (
     <div className="blog-index">
       <div className="blog-index-inner">
@@ -48,7 +97,7 @@ export default function BlogIndex() {
         <h1 className="blog-index-h1">Pakistan Flight Guides</h1>
         <p className="blog-index-sub">Data-driven guides to help you fly smarter from Pakistan — all prices in PKR.</p>
         <div className="blog-grid">
-          {POSTS.map(p => (
+          {all.map(p => (
             <Link key={p.slug} href={`/blog/${p.slug}`} className="blog-card">
               <span className="blog-tag">{p.tag}</span>
               <h2 className="blog-card-title">{p.title}</h2>

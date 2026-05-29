@@ -8,6 +8,8 @@ import {
 } from '@/lib/routes'
 import PriceGraph from '@/components/PriceGraph'
 import PriceInsight from '@/components/PriceInsight'
+import { fetchPriceData } from '@/lib/prices'
+import { getRouteIntro } from '@/lib/route-intros'
 
 // ─── Static params — build all 88 route pages at deploy ─────────────────────
 export function generateStaticParams() {
@@ -27,7 +29,7 @@ export async function generateMetadata(
   const isDiaspora = from.country === 'Pakistan' && !['UAE','Qatar','Saudi Arabia','Kuwait','Oman','Bahrain'].includes(to.country)
 
   // Fetch live price — Next.js deduplicates this with the page component's call
-  const priceData = await getLivePrice(from.code, to.code)
+  const priceData = await fetchPriceData(from.code, to.code)
   const priceNum  = priceData?.minPrice ? priceData.minPrice + 7000 : null
   const priceStr  = priceNum ? `PKR ${priceNum.toLocaleString('en-PK')}` : null
 
@@ -190,20 +192,6 @@ function getFAQs(
   ]
 }
 
-// ─── Fetch live price from Blob (cached 1h) ───────────────────────────────────
-async function getLivePrice(fromCode: string, toCode: string) {
-  try {
-    const res = await fetch(
-      `https://www.flightrate.pk/api/prices/${fromCode}-${toCode}`,
-      { next: { revalidate: 3600, tags: [`price-${fromCode}-${toCode}`] } }
-    )
-    if (!res.ok) return null
-    return await res.json()
-  } catch {
-    return null
-  }
-}
-
 // ─── Page component ───────────────────────────────────────────────────────────
 export default async function RoutePage(
   { params }: { params: Promise<{ route: string }> }
@@ -217,7 +205,7 @@ export default async function RoutePage(
   const duration  = getRouteDuration(from.code, to.code)
 
   // Fetch live scraped price
-  const priceData  = await getLivePrice(from.code, to.code)
+  const priceData  = await fetchPriceData(from.code, to.code)
   const livePrice  = priceData?.minPrice ?? null
   const scrapedAt  = priceData?.scrapedAt ?? null
   const isFresh    = priceData?.fresh ?? false
@@ -453,6 +441,26 @@ export default async function RoutePage(
         {history.length >= 7 && (
           <PriceInsight history={history} />
         )}
+
+        {/* Long-form route intro — top-traffic routes only */}
+        {(() => {
+          const intro = getRouteIntro(route)
+          if (!intro) return null
+          return (
+            <section className="route-section route-intro-long">
+              <h2>{intro.heading}</h2>
+              {intro.paragraphs.map((p, i) => (
+                <p key={i} className="route-intro-p">{p}</p>
+              ))}
+              {intro.subsections?.map((s, i) => (
+                <div key={i} className="route-intro-sub">
+                  <h3>{s.h3}</h3>
+                  <p>{s.body}</p>
+                </div>
+              ))}
+            </section>
+          )
+        })()}
 
         {/* Airlines */}
         <section className="route-section">

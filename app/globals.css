@@ -3292,3 +3292,28 @@ footer::before {
   color: #003F88;
   margin-top: 4px;
 }
+
+/* ─── Long-form route intros (top-traffic routes) ──────────────────────────── */
+.route-intro-long .route-intro-p {
+  font-size: 1rem;
+  line-height: 1.75;
+  color: #1f2937;
+  margin: 0 0 16px;
+}
+.route-intro-long .route-intro-sub {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid #e5e7eb;
+}
+.route-intro-long .route-intro-sub h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #003F88;
+  margin: 0 0 10px;
+}
+.route-intro-long .route-intro-sub p {
+  font-size: 0.97rem;
+  line-height: 1.7;
+  color: #374151;
+  margin: 0;
+}

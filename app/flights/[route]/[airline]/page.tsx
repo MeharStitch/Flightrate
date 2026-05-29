@@ -6,19 +6,13 @@ import {
   getRouteAirlines, getRouteDuration,
   BAGGAGE,
 } from '@/lib/routes'
+import { fetchPriceData } from '@/lib/prices'
 
 export const revalidate = 3600 // ISR — re-render hourly with fresh price data
 
 async function getLivePrice(fromCode: string, toCode: string): Promise<number | null> {
-  try {
-    const res = await fetch(
-      `https://www.flightrate.pk/api/prices/${fromCode}-${toCode}`,
-      { next: { revalidate: 3600, tags: [`price-${fromCode}-${toCode}`] } }
-    )
-    if (!res.ok) return null
-    const d = await res.json()
-    return d?.minPrice ? d.minPrice + 7000 : null
-  } catch { return null }
+  const d = await fetchPriceData(fromCode, toCode)
+  return d?.minPrice ? d.minPrice + 7000 : null
 }
 
 // Airline slug → display name + IATA
