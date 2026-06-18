@@ -44,6 +44,16 @@ export async function launchBrowser(): Promise<Browser> {
   const useProxy = !!PROXY_HOST && !!PROXY_PASS
   const proxyUser = nextProxyUser()
 
+  // Fail loud if a proxy is required but not configured — otherwise the scraper
+  // silently runs from the GitHub datacenter IP, which Google Flights blocks,
+  // wasting a full ~47-min run before failing. Set REQUIRE_PROXY=1 in CI.
+  if (process.env.REQUIRE_PROXY === '1' && !useProxy) {
+    throw new Error(
+      'REQUIRE_PROXY=1 but proxy not configured. Set PROXY_HOST and PROXY_PASS ' +
+      '(residential rotating proxy). Refusing to scrape from the bare runner IP.'
+    )
+  }
+
   const launchOpts: Parameters<typeof chromium.launch>[0] = {
     headless: true,
     args: [

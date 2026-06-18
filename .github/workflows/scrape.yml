@@ -35,7 +35,11 @@ jobs:
             echo "type=top" >> $GITHUB_OUTPUT
           fi
 
-# ── Shared proxy + scraper setup (reused by all 4 chunks) ─────────────────────
+# ── Scraper chunks ────────────────────────────────────────────────────────────
+# Proxy: the scraper connects DIRECTLY to the residential rotating proxy via the
+# PROXY_* secrets (see scraper/browser.ts). REQUIRE_PROXY=1 makes the run abort
+# loudly if the proxy is misconfigured, instead of silently scraping from the
+# GitHub datacenter IP (which Google Flights blocks).
   scrape-a:
     needs: setup
     runs-on: ubuntu-latest
@@ -46,16 +50,6 @@ jobs:
         with: { node-version: '24', cache: 'npm' }
       - run: npm ci
       - run: npx playwright install chromium --with-deps
-      - name: Setup proxy
-        run: |
-          curl -fsSL https://github.com/go-gost/gost/releases/download/v3.0.0/gost_3.0.0_linux_amd64.tar.gz \
-            | tar xz -C /usr/local/bin gost
-          chmod +x /usr/local/bin/gost
-          gost -L "socks5://:1080" \
-               -F "socks5://${{ secrets.PROXY_USER }}:${{ secrets.PROXY_PASS }}@${{ secrets.PROXY_HOST }}:1080" \
-               > /tmp/gost.log 2>&1 &
-          sleep 3
-          curl --socks5 localhost:1080 https://ipv4.webshare.io/ --max-time 10 || echo "Proxy test failed — running without proxy"
       - name: Run scraper (chunk A)
         run: |
           if [ "${{ needs.setup.outputs.run_type }}" = "full" ]; then
@@ -64,10 +58,11 @@ jobs:
             npx ts-node --project tsconfig.scraper.json scraper/index.ts top
           fi
         env:
-          PROXY_HOST:           localhost
-          PROXY_PORT:           '1080'
-          PROXY_USER:           ''
-          PROXY_PASS:           ''
+          REQUIRE_PROXY:        '1'
+          PROXY_HOST:           ${{ secrets.PROXY_HOST }}
+          PROXY_PORT:           ${{ secrets.PROXY_PORT }}
+          PROXY_USER:           ${{ secrets.PROXY_USER }}
+          PROXY_PASS:           ${{ secrets.PROXY_PASS }}
           R2_ACCOUNT_ID:        ${{ secrets.R2_ACCOUNT_ID }}
           R2_ACCESS_KEY_ID:     ${{ secrets.R2_ACCESS_KEY_ID }}
           R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
@@ -86,23 +81,14 @@ jobs:
         with: { node-version: '24', cache: 'npm' }
       - run: npm ci
       - run: npx playwright install chromium --with-deps
-      - name: Setup proxy
-        run: |
-          curl -fsSL https://github.com/go-gost/gost/releases/download/v3.0.0/gost_3.0.0_linux_amd64.tar.gz \
-            | tar xz -C /usr/local/bin gost
-          chmod +x /usr/local/bin/gost
-          gost -L "socks5://:1080" \
-               -F "socks5://${{ secrets.PROXY_USER }}:${{ secrets.PROXY_PASS }}@${{ secrets.PROXY_HOST }}:1080" \
-               > /tmp/gost.log 2>&1 &
-          sleep 3
-          curl --socks5 localhost:1080 https://ipv4.webshare.io/ --max-time 10 || echo "Proxy test failed — running without proxy"
       - name: Run scraper (chunk B)
         run: npx ts-node --project tsconfig.scraper.json scraper/index.ts full --chunk b
         env:
-          PROXY_HOST:           localhost
-          PROXY_PORT:           '1080'
-          PROXY_USER:           ''
-          PROXY_PASS:           ''
+          REQUIRE_PROXY:        '1'
+          PROXY_HOST:           ${{ secrets.PROXY_HOST }}
+          PROXY_PORT:           ${{ secrets.PROXY_PORT }}
+          PROXY_USER:           ${{ secrets.PROXY_USER }}
+          PROXY_PASS:           ${{ secrets.PROXY_PASS }}
           R2_ACCOUNT_ID:        ${{ secrets.R2_ACCOUNT_ID }}
           R2_ACCESS_KEY_ID:     ${{ secrets.R2_ACCESS_KEY_ID }}
           R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
@@ -121,23 +107,14 @@ jobs:
         with: { node-version: '24', cache: 'npm' }
       - run: npm ci
       - run: npx playwright install chromium --with-deps
-      - name: Setup proxy
-        run: |
-          curl -fsSL https://github.com/go-gost/gost/releases/download/v3.0.0/gost_3.0.0_linux_amd64.tar.gz \
-            | tar xz -C /usr/local/bin gost
-          chmod +x /usr/local/bin/gost
-          gost -L "socks5://:1080" \
-               -F "socks5://${{ secrets.PROXY_USER }}:${{ secrets.PROXY_PASS }}@${{ secrets.PROXY_HOST }}:1080" \
-               > /tmp/gost.log 2>&1 &
-          sleep 3
-          curl --socks5 localhost:1080 https://ipv4.webshare.io/ --max-time 10 || echo "Proxy test failed — running without proxy"
       - name: Run scraper (chunk C)
         run: npx ts-node --project tsconfig.scraper.json scraper/index.ts full --chunk c
         env:
-          PROXY_HOST:           localhost
-          PROXY_PORT:           '1080'
-          PROXY_USER:           ''
-          PROXY_PASS:           ''
+          REQUIRE_PROXY:        '1'
+          PROXY_HOST:           ${{ secrets.PROXY_HOST }}
+          PROXY_PORT:           ${{ secrets.PROXY_PORT }}
+          PROXY_USER:           ${{ secrets.PROXY_USER }}
+          PROXY_PASS:           ${{ secrets.PROXY_PASS }}
           R2_ACCOUNT_ID:        ${{ secrets.R2_ACCOUNT_ID }}
           R2_ACCESS_KEY_ID:     ${{ secrets.R2_ACCESS_KEY_ID }}
           R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
@@ -156,23 +133,14 @@ jobs:
         with: { node-version: '24', cache: 'npm' }
       - run: npm ci
       - run: npx playwright install chromium --with-deps
-      - name: Setup proxy
-        run: |
-          curl -fsSL https://github.com/go-gost/gost/releases/download/v3.0.0/gost_3.0.0_linux_amd64.tar.gz \
-            | tar xz -C /usr/local/bin gost
-          chmod +x /usr/local/bin/gost
-          gost -L "socks5://:1080" \
-               -F "socks5://${{ secrets.PROXY_USER }}:${{ secrets.PROXY_PASS }}@${{ secrets.PROXY_HOST }}:1080" \
-               > /tmp/gost.log 2>&1 &
-          sleep 3
-          curl --socks5 localhost:1080 https://ipv4.webshare.io/ --max-time 10 || echo "Proxy test failed — running without proxy"
       - name: Run scraper (chunk D)
         run: npx ts-node --project tsconfig.scraper.json scraper/index.ts full --chunk d
         env:
-          PROXY_HOST:           localhost
-          PROXY_PORT:           '1080'
-          PROXY_USER:           ''
-          PROXY_PASS:           ''
+          REQUIRE_PROXY:        '1'
+          PROXY_HOST:           ${{ secrets.PROXY_HOST }}
+          PROXY_PORT:           ${{ secrets.PROXY_PORT }}
+          PROXY_USER:           ${{ secrets.PROXY_USER }}
+          PROXY_PASS:           ${{ secrets.PROXY_PASS }}
           R2_ACCOUNT_ID:        ${{ secrets.R2_ACCOUNT_ID }}
           R2_ACCESS_KEY_ID:     ${{ secrets.R2_ACCESS_KEY_ID }}
           R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
