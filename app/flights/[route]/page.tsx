@@ -368,6 +368,13 @@ export default async function RoutePage(
               </time>
             </p>
           )}
+          {livePrice && (
+            <p className="route-price-note">
+              💡 <strong>&ldquo;From&rdquo;</strong> is the lowest live base fare. Your final all-in price
+              (taxes · baggage · seat) is confirmed <strong>free on WhatsApp</strong> before you pay —
+              no hidden charges, no obligation.
+            </p>
+          )}
         </div>
 
         {/* CTA bar */}
