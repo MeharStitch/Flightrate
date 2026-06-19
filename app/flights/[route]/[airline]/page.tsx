@@ -69,13 +69,15 @@ export async function generateMetadata(
   const airlines = getRouteAirlines(from.code, to.code)
   if (!airlines.includes(airlineData.name)) return { title: 'Not Found' }
 
-  const title = `${airlineData.name} Flights from ${from.name} to ${to.name} | PKR Prices | FlightRate`
-  const description = `Compare ${airlineData.name} ${from.name} to ${to.name} flight prices in PKR. Check baggage allowance, schedule, and book via WhatsApp in 7 minutes.`
+  const title = `${airlineData.name} ${from.name} to ${to.name} Ticket Price Today (PKR) | FlightRate`
+  const description = `${airlineData.name} ${from.name} to ${to.name} ticket price today in PKR. Compare live fares, baggage allowance & flight schedule. Book via WhatsApp in 7 minutes.`
 
   return {
     title,
     description,
     keywords: [
+      `${airlineData.name} ${from.name} to ${to.name} ticket price today`,
+      `${airlineData.name} ${from.name} to ${to.name} ticket price`,
       `${airlineData.name} ${from.name} to ${to.name}`,
       `${airlineData.name} ${from.name} ${to.name} flights`,
       `${airlineData.name} ${from.code} ${to.code}`,
@@ -230,7 +232,7 @@ export default async function AirlineRoutePage(
 
         <div className="route-hero">
           <h1 className="route-h1">
-            {airlineData.name} Flights from {from.name} to {to.name}
+            {airlineData.name} {from.name} to {to.name} Ticket Price Today
             {priceStr && (
               <span className="route-live-price"> — from {priceStr}</span>
             )}
