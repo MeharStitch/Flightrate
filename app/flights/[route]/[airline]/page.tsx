@@ -7,6 +7,7 @@ import {
   BAGGAGE,
 } from '@/lib/routes'
 import { fetchPriceData } from '@/lib/prices'
+import { getAirlineRouteIntro } from '@/lib/airline-route-intros'
 
 export const revalidate = 3600 // ISR — re-render hourly with fresh price data
 
@@ -135,6 +136,8 @@ export default async function AirlineRoutePage(
   const { from, to } = parsed
   const airlines = getRouteAirlines(from.code, to.code)
   if (!airlines.includes(airlineData.name)) notFound()
+
+  const intro = getAirlineRouteIntro(route, airline)
 
   const duration   = getRouteDuration(from.code, to.code)
   const baggage    = getAirlineBaggage(airlineData.name)
@@ -299,6 +302,14 @@ export default async function AirlineRoutePage(
             <span className="rf-val" style={{ fontSize: '0.8rem' }}>{freq}</span>
           </div>
         </div>
+
+        {/* Unique intro for proven-demand routes (SEO depth vs thin template) */}
+        {intro && (
+          <section className="route-section route-airline-intro">
+            <h2>{intro.heading}</h2>
+            {intro.paragraphs.map((p, i) => <p key={i}>{p}</p>)}
+          </section>
+        )}
 
         {/* Baggage table */}
         {baggage && (
