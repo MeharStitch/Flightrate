@@ -86,21 +86,28 @@ export async function newContext(browser: Browser): Promise<BrowserContext> {
     },
   })
 
-  // Block heavy resources — saves ~75% bandwidth
-  // Only block after consent page is handled (consent page needs CSS to render buttons)
+  // Block heavy resources — minimise proxy bandwidth. Prices are read from
+  // aria-labels, so CSS/images/fonts are never needed; only the document, the
+  // app JS and the flight XHR/fetch must load.
+  // Consent page is exempted because it needs CSS to render its buttons.
   await ctx.route('**/*', (route) => {
     const type = route.request().resourceType()
     const url  = route.request().url()
 
     // Never block on consent domain
-    if (route.request().url().includes('consent.google.com')) return route.continue()
+    if (url.includes('consent.google.com')) return route.continue()
 
-    // Block: images, fonts, media, analytics, ads
-    if (['image', 'font', 'media'].includes(type)) return route.abort()
+    // Block by type: images, fonts, media, stylesheets (not needed to read prices)
+    if (['image', 'font', 'media', 'stylesheet'].includes(type)) return route.abort()
+
+    // Block analytics, ads and logging beacons (never app-critical).
+    // Do NOT block by host (gstatic/apis can serve required app JS) — only
+    // these safe patterns plus the type-based blocks above.
     if (url.includes('google-analytics') ||
         url.includes('doubleclick') ||
         url.includes('googletagmanager') ||
-        url.includes('googlesyndication')) return route.abort()
+        url.includes('googlesyndication') ||
+        url.includes('/gen_204')) return route.abort()   // Google logging beacons
 
     route.continue()
   })
