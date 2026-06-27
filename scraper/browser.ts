@@ -10,22 +10,11 @@ const PROXY_PORT = process.env.PROXY_PORT || '80'
 const PROXY_USER = process.env.PROXY_USER || ''
 const PROXY_PASS = process.env.PROXY_PASS || ''
 
-// Rotate through country-specific usernames to vary IP pool
-const PROXY_USERS = [
-  'bflefkme-gb-1',
-  'bflefkme-de-3',
-  'bflefkme-fr-4',
-  'bflefkme-nl-6',
-  'bflefkme-au-5',
-]
-
-let userIndex = 0
+// Use the configured proxy username verbatim. The proxy endpoint itself
+// rotates the exit IP per connection, so we do NOT need to guess country-
+// specific usernames — guessing invalid ones causes ERR_TUNNEL_CONNECTION_FAILED.
 function nextProxyUser(): string {
-  // Use env var if set, otherwise rotate through list
-  if (PROXY_USER) return PROXY_USER
-  const user = PROXY_USERS[userIndex % PROXY_USERS.length]
-  userIndex++
-  return user
+  return PROXY_USER
 }
 
 // Random delay — human-like timing
@@ -47,10 +36,10 @@ export async function launchBrowser(): Promise<Browser> {
   // Fail loud if a proxy is required but not configured — otherwise the scraper
   // silently runs from the GitHub datacenter IP, which Google Flights blocks,
   // wasting a full ~47-min run before failing. Set REQUIRE_PROXY=1 in CI.
-  if (process.env.REQUIRE_PROXY === '1' && !useProxy) {
+  if (process.env.REQUIRE_PROXY === '1' && (!useProxy || (PROXY_PASS && !proxyUser))) {
     throw new Error(
-      'REQUIRE_PROXY=1 but proxy not configured. Set PROXY_HOST and PROXY_PASS ' +
-      '(residential rotating proxy). Refusing to scrape from the bare runner IP.'
+      'REQUIRE_PROXY=1 but proxy not fully configured. Set PROXY_HOST, PROXY_PORT, ' +
+      'PROXY_USER and PROXY_PASS. Refusing to scrape from the bare runner IP.'
     )
   }
 
