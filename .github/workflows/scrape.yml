@@ -58,11 +58,9 @@ jobs:
             npx ts-node --project tsconfig.scraper.json scraper/index.ts top
           fi
         env:
-          REQUIRE_PROXY:        '1'
-          PROXY_HOST:           ${{ secrets.PROXY_HOST }}
-          PROXY_PORT:           ${{ secrets.PROXY_PORT }}
-          PROXY_USER:           ${{ secrets.PROXY_USER }}
-          PROXY_PASS:           ${{ secrets.PROXY_PASS }}
+          # Proxy disabled — scraper runs from the runner IP (no proxy bandwidth).
+          # To re-enable: set REQUIRE_PROXY=1 and the PROXY_* secrets below.
+          REQUIRE_PROXY:        '0'
           R2_ACCOUNT_ID:        ${{ secrets.R2_ACCOUNT_ID }}
           R2_ACCESS_KEY_ID:     ${{ secrets.R2_ACCESS_KEY_ID }}
           R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
@@ -84,11 +82,9 @@ jobs:
       - name: Run scraper (chunk B)
         run: npx ts-node --project tsconfig.scraper.json scraper/index.ts full --chunk b
         env:
-          REQUIRE_PROXY:        '1'
-          PROXY_HOST:           ${{ secrets.PROXY_HOST }}
-          PROXY_PORT:           ${{ secrets.PROXY_PORT }}
-          PROXY_USER:           ${{ secrets.PROXY_USER }}
-          PROXY_PASS:           ${{ secrets.PROXY_PASS }}
+          # Proxy disabled — scraper runs from the runner IP (no proxy bandwidth).
+          # To re-enable: set REQUIRE_PROXY=1 and the PROXY_* secrets below.
+          REQUIRE_PROXY:        '0'
           R2_ACCOUNT_ID:        ${{ secrets.R2_ACCOUNT_ID }}
           R2_ACCESS_KEY_ID:     ${{ secrets.R2_ACCESS_KEY_ID }}
           R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
@@ -110,11 +106,9 @@ jobs:
       - name: Run scraper (chunk C)
         run: npx ts-node --project tsconfig.scraper.json scraper/index.ts full --chunk c
         env:
-          REQUIRE_PROXY:        '1'
-          PROXY_HOST:           ${{ secrets.PROXY_HOST }}
-          PROXY_PORT:           ${{ secrets.PROXY_PORT }}
-          PROXY_USER:           ${{ secrets.PROXY_USER }}
-          PROXY_PASS:           ${{ secrets.PROXY_PASS }}
+          # Proxy disabled — scraper runs from the runner IP (no proxy bandwidth).
+          # To re-enable: set REQUIRE_PROXY=1 and the PROXY_* secrets below.
+          REQUIRE_PROXY:        '0'
           R2_ACCOUNT_ID:        ${{ secrets.R2_ACCOUNT_ID }}
           R2_ACCESS_KEY_ID:     ${{ secrets.R2_ACCESS_KEY_ID }}
           R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
@@ -136,11 +130,9 @@ jobs:
       - name: Run scraper (chunk D)
         run: npx ts-node --project tsconfig.scraper.json scraper/index.ts full --chunk d
         env:
-          REQUIRE_PROXY:        '1'
-          PROXY_HOST:           ${{ secrets.PROXY_HOST }}
-          PROXY_PORT:           ${{ secrets.PROXY_PORT }}
-          PROXY_USER:           ${{ secrets.PROXY_USER }}
-          PROXY_PASS:           ${{ secrets.PROXY_PASS }}
+          # Proxy disabled — scraper runs from the runner IP (no proxy bandwidth).
+          # To re-enable: set REQUIRE_PROXY=1 and the PROXY_* secrets below.
+          REQUIRE_PROXY:        '0'
           R2_ACCOUNT_ID:        ${{ secrets.R2_ACCOUNT_ID }}
           R2_ACCESS_KEY_ID:     ${{ secrets.R2_ACCESS_KEY_ID }}
           R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
