@@ -80,6 +80,42 @@ const INTROS: Record<string, AirlineRouteIntro> = {
     ],
   },
 
+  // LYP → RUH, PIA — "faisalabad to riyadh ticket price"
+  'faisalabad-to-riyadh::pia': {
+    heading: 'PIA Faisalabad to Riyadh: Fares From the Textile City',
+    paragraphs: [
+      'Faisalabad sends a steady flow of workers and families to Riyadh, and PIA is the carrier most Faisalabad travellers search for by name on this route. Flying direct from Faisalabad avoids the long road to Lahore or Islamabad, which is why demand holds up year round and rises sharply around Eid and the summer leave season when workers head home.',
+      'Riyadh is the largest Pakistani job market in Saudi Arabia, so seats on worker-heavy dates fill early and fares climb with them. PIA economy generally carries a 30 kg checked allowance on Saudi routes, valued by workers moving goods. The price above is today\'s lowest live base fare. WhatsApp us your date and we will confirm the exact all-in PKR fare and compare PIA against Saudia and flynas so you book the cheapest option for your dates.',
+    ],
+  },
+
+  // LYP → MED, PIA — "faisalabad to madinah flight ticket price pia"
+  'faisalabad-to-madinah::pia': {
+    heading: 'PIA Faisalabad to Madinah: Umrah Fares Explained',
+    paragraphs: [
+      'The Faisalabad to Madinah route is driven almost entirely by Umrah and Hajj pilgrims from central Punjab, plus families visiting relatives working in Saudi Arabia. PIA runs this sector seasonally, and both frequency and price move with the pilgrimage calendar — demand peaks through Ramadan and the Umrah season, then eases afterwards.',
+      'Because the traffic is so seasonal, fares can swing week to week, which is exactly why pilgrims check the price on the day they plan to travel. PIA economy usually allows generous checked baggage on Saudi routes, useful for Zamzam and gifts on the way home. The figure above is today\'s lowest live base fare. Send us your travel date on WhatsApp and we will confirm the final PKR price and check whether Saudia is cheaper for your dates.',
+    ],
+  },
+
+  // SKT → JED, PIA — "sialkot to jeddah ticket price pia"
+  'sialkot-to-jeddah::pia': {
+    heading: 'PIA Sialkot to Jeddah: Direct Umrah Travel From Central Punjab',
+    paragraphs: [
+      'Sialkot airport serves a densely populated part of central Punjab with strong Umrah and worker traffic to the Jeddah region, the main gateway for pilgrims heading to Makkah. A direct Sialkot to Jeddah service saves travellers the long trip to Lahore or Islamabad, so PIA stays in demand here, especially during the Umrah season and around Hajj.',
+      'Fares on this corridor rise steeply in peak pilgrimage months and settle in the off-season, so timing matters more than on year-round business routes. PIA economy generally includes a 30 kg checked allowance on Saudi routes. The price shown is today\'s lowest live base fare. Message us your dates on WhatsApp and we will confirm the exact all-in PKR fare and compare PIA against Saudia and flynas so you pay the lowest available price.',
+    ],
+  },
+
+  // LHE → DOH, PIA — "lahore to qatar ticket price pia"
+  'lahore-to-doha::pia': {
+    heading: 'PIA Lahore to Doha: Fares to Qatar',
+    paragraphs: [
+      'Doha hosts a large Pakistani community, and Lahore to Doha stays busy with workers, professionals and families all year. PIA competes on this route with Qatar Airways, so prices vary more than on routes with a single dominant carrier. That competition helps you, provided you check the live price on your travel day rather than assuming one airline is always cheaper.',
+      'Flying time is around 3.5 hours, and PIA economy typically carries a 30 kg checked allowance on Gulf fares. The number above is today\'s lowest live base fare from our scrape. Because Qatar Airways often runs promotions on this corridor, message us your date on WhatsApp and we will compare both carriers in PKR and tell you honestly which gives the best all-in price for your trip.',
+    ],
+  },
+
   // LYP → SHJ, Air Arabia — 5 impressions
   'faisalabad-to-sharjah::air-arabia': {
     heading: 'Air Arabia Faisalabad to Sharjah: Budget Travel From the Heart of Punjab',
