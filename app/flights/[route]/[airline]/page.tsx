@@ -8,6 +8,7 @@ import {
 } from '@/lib/routes'
 import { fetchPriceData } from '@/lib/prices'
 import { getAirlineRouteIntro } from '@/lib/airline-route-intros'
+import { getAffiliateLink } from '@/lib/travelpayouts'
 
 export const revalidate = 3600 // ISR — re-render hourly with fresh price data
 
@@ -138,6 +139,7 @@ export default async function AirlineRoutePage(
   if (!airlines.includes(airlineData.name)) notFound()
 
   const intro = getAirlineRouteIntro(route, airline)
+  const bookOnlineLink = getAffiliateLink(from.code, to.code)
 
   const duration   = getRouteDuration(from.code, to.code)
   const baggage    = getAirlineBaggage(airlineData.name)
@@ -270,6 +272,16 @@ export default async function AirlineRoutePage(
             </svg>
             Get {airlineData.name} Price on WhatsApp
           </a>
+          {bookOnlineLink && (
+            <a
+              href={bookOnlineLink}
+              className="route-book-online"
+              target="_blank"
+              rel="noopener nofollow sponsored"
+            >
+              🌐 Book Online
+            </a>
+          )}
           <Link href={`/flights/${route}`} className="route-search-btn">
             Compare All Airlines
           </Link>

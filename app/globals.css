@@ -2998,6 +2998,17 @@ footer::before {
   margin-top: 6px; letter-spacing: 0.01em;
 }
 
+/* Travelpayouts "Book Online" affiliate CTA — secondary to WhatsApp */
+.route-book-online {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 12px 20px; border-radius: 12px;
+  background: #0F172A; color: #fff; font-weight: 700;
+  text-decoration: none; border: 1.5px solid #0F172A;
+  transition: background 0.15s, transform 0.05s;
+}
+.route-book-online:hover { background: #1E293B; }
+.route-book-online:active { transform: translateY(1px); }
+
 /* Price-honesty note — sets expectation so the WhatsApp quote isn't a "switch" */
 .route-price-note {
   font-size: 0.82rem; color: #475569; line-height: 1.5;

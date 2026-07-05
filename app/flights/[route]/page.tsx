@@ -11,6 +11,7 @@ import PriceInsight from '@/components/PriceInsight'
 import { fetchPriceData } from '@/lib/prices'
 import { getRouteIntro } from '@/lib/route-intros'
 import { getRelatedGuides } from '@/lib/related-guides'
+import { getAffiliateLink } from '@/lib/travelpayouts'
 
 // ─── Static params — build all 88 route pages at deploy ─────────────────────
 export function generateStaticParams() {
@@ -224,6 +225,9 @@ export default async function RoutePage(
   tomorrow.setDate(tomorrow.getDate() + 7)
   const searchDate = tomorrow.toISOString().split('T')[0]
 
+  // Travelpayouts affiliate "Book Online" link (null unless marker is configured)
+  const bookOnlineLink = getAffiliateLink(from.code, to.code)
+
   // Related routes (same origin, different dest)
   const relatedDest = DEST_CITIES.filter(c => c.code !== to.code).slice(0, 5)
   const relatedFrom = PK_CITIES.filter(c => c.code !== from.code).slice(0, 4)
@@ -396,6 +400,16 @@ export default async function RoutePage(
             </svg>
             Get Best Price on WhatsApp
           </a>
+          {bookOnlineLink && (
+            <a
+              href={bookOnlineLink}
+              className="route-book-online"
+              target="_blank"
+              rel="noopener nofollow sponsored"
+            >
+              🌐 Book Online
+            </a>
+          )}
         </div>
 
         {/* Quick facts */}

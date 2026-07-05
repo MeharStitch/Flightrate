@@ -156,6 +156,27 @@ export function buildAffiliateUrl(opts: {
 }
 
 /**
+ * Route-page "Book Online" affiliate link.
+ *
+ * Reads the public marker from NEXT_PUBLIC_TRAVELPAYOUTS_MARKER and returns a
+ * one-way Aviasales search deep link departing `daysAhead` days out (default 7),
+ * 1 adult. Returns null when no marker is configured, so the button simply does
+ * not render until the marker is set in the environment.
+ */
+export function getAffiliateLink(
+  fromCode: string,
+  toCode: string,
+  daysAhead = 7
+): string | null {
+  const marker = process.env.NEXT_PUBLIC_TRAVELPAYOUTS_MARKER
+  if (!marker) return null
+  const dep = new Date()
+  dep.setDate(dep.getDate() + daysAhead)
+  const date = dep.toISOString().split('T')[0]
+  return buildAffiliateUrl({ origin: fromCode, destination: toCode, date, adults: 1, marker })
+}
+
+/**
  * Build WhatsApp pre-filled booking message URL.
  */
 export function buildWhatsAppUrl(opts: {
