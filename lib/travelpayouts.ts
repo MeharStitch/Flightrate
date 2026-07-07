@@ -136,8 +136,17 @@ export function formatPKR(amount: number): string {
 }
 
 /**
+ * Travelpayouts affiliate marker (public id — appears in every affiliate URL).
+ * Verified from the account's generated link (aviasales.tpo.lv → ?marker=716361).
+ * NOTE: this is the affiliate MARKER, distinct from the site-embed id (547351).
+ * Env var overrides it if the marker ever changes.
+ */
+export const AFFILIATE_MARKER = process.env.NEXT_PUBLIC_TRAVELPAYOUTS_MARKER || '716361'
+
+/**
  * Build Aviasales affiliate deep-link.
- * Format: https://aviasales.com/search/{origin}{DDMM}{dest}{adults}?marker=X
+ * Format: https://www.aviasales.com/search/{origin}{DDMM}{dest}{adults}?marker=X
+ * Aviasales attributes commission via the marker query param on its own domain.
  */
 export function buildAffiliateUrl(opts: {
   origin: string
@@ -146,34 +155,30 @@ export function buildAffiliateUrl(opts: {
   adults: number
   marker?: string
 }): string {
-  const { origin, destination, date, adults, marker } = opts
+  const { origin, destination, date, adults, marker = AFFILIATE_MARKER } = opts
   const d   = new Date(date)
   const dd  = String(d.getDate()).padStart(2, '0')
   const mm  = String(d.getMonth() + 1).padStart(2, '0')
   const seg = `${origin.toUpperCase()}${dd}${mm}${destination.toUpperCase()}${adults}`
-  const base = `https://aviasales.com/search/${seg}`
+  const base = `https://www.aviasales.com/search/${seg}`
   return marker ? `${base}?marker=${marker}` : base
 }
 
 /**
- * Route-page "Book Online" affiliate link.
- *
- * Reads the public marker from NEXT_PUBLIC_TRAVELPAYOUTS_MARKER and returns a
- * one-way Aviasales search deep link departing `daysAhead` days out (default 7),
- * 1 adult. Returns null when no marker is configured, so the button simply does
- * not render until the marker is set in the environment.
+ * Route-page "Book Online" affiliate link — one-way Aviasales search deep link
+ * departing `daysAhead` days out (default 7), 1 adult. Always returns a link
+ * (marker has a verified default), so the button renders on every page.
  */
 export function getAffiliateLink(
   fromCode: string,
   toCode: string,
   daysAhead = 7
 ): string | null {
-  const marker = process.env.NEXT_PUBLIC_TRAVELPAYOUTS_MARKER
-  if (!marker) return null
+  if (!AFFILIATE_MARKER) return null
   const dep = new Date()
   dep.setDate(dep.getDate() + daysAhead)
   const date = dep.toISOString().split('T')[0]
-  return buildAffiliateUrl({ origin: fromCode, destination: toCode, date, adults: 1, marker })
+  return buildAffiliateUrl({ origin: fromCode, destination: toCode, date, adults: 1, marker: AFFILIATE_MARKER })
 }
 
 /**

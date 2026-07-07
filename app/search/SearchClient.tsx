@@ -5,12 +5,12 @@ import Navbar from '@/components/Navbar'
 import AirportSearch from '@/components/AirportSearch'
 import DatePicker from '@/components/DatePicker'
 import type { SearchParams, FlightOffer } from '@/types/flight'
-import { buildAffiliateUrl } from '@/lib/travelpayouts'
+import { buildAffiliateUrl, AFFILIATE_MARKER } from '@/lib/travelpayouts'
 import React from 'react'
 
 const MARKUP = 7000
-// Public Travelpayouts marker — when set, per-flight "Book Online" links show.
-const TP_MARKER = process.env.NEXT_PUBLIC_TRAVELPAYOUTS_MARKER || ''
+// Public Travelpayouts marker (verified default 716361, env-overridable).
+const TP_MARKER = AFFILIATE_MARKER
 
 function displayPrice(raw: number) {
   return 'PKR ' + (raw + MARKUP).toLocaleString('en-PK')
