@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { Plus_Jakarta_Sans } from 'next/font/google'
+import Script from 'next/script'
 import WhatsAppFloat from '@/components/WhatsAppFloat'
 import './globals.css'
 
@@ -115,6 +116,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={plusJakarta.className}>
         {children}
         <WhatsAppFloat />
+        {/* Travelpayouts site verification + remarketing embed (account 547351) */}
+        <Script
+          id="travelpayouts-embed"
+          src="https://tpembars.com/NTQ3MzUx.js?t=547351"
+          strategy="afterInteractive"
+        />
       </body>
     </html>
   )
