@@ -5,9 +5,12 @@ import Navbar from '@/components/Navbar'
 import AirportSearch from '@/components/AirportSearch'
 import DatePicker from '@/components/DatePicker'
 import type { SearchParams, FlightOffer } from '@/types/flight'
+import { buildAffiliateUrl } from '@/lib/travelpayouts'
 import React from 'react'
 
 const MARKUP = 7000
+// Public Travelpayouts marker — when set, per-flight "Book Online" links show.
+const TP_MARKER = process.env.NEXT_PUBLIC_TRAVELPAYOUTS_MARKER || ''
 
 function displayPrice(raw: number) {
   return 'PKR ' + (raw + MARKUP).toLocaleString('en-PK')
@@ -647,11 +650,23 @@ export default function SearchClient() {
                   let cta: React.ReactNode
 
                   if (!isRoundTrip) {
-                    /* One-way: direct book */
+                    /* One-way: WhatsApp (primary) + optional Book Online affiliate */
                     cta = (
-                      <button className="srp-btn-wa" onClick={() => bookOneWayWA(f, sp)}>
-                        <WaIcon /> Book via WhatsApp
-                      </button>
+                      <>
+                        <button className="srp-btn-wa" onClick={() => bookOneWayWA(f, sp)}>
+                          <WaIcon /> Book via WhatsApp
+                        </button>
+                        {TP_MARKER && (
+                          <a
+                            className="srp-btn-online"
+                            href={buildAffiliateUrl({ origin: f.depCode, destination: f.arrCode, date, adults: 1, marker: TP_MARKER })}
+                            target="_blank"
+                            rel="noopener nofollow sponsored"
+                          >
+                            🌐 Book Online
+                          </a>
+                        )}
+                      </>
                     )
                   } else if (step === 'outbound') {
                     /* Round trip step 1: select outbound */

@@ -2081,6 +2081,15 @@ footer::before {
 }
 .srp-btn-wa:hover { background: linear-gradient(135deg, #002a5e, var(--v)); box-shadow: 0 5px 16px rgba(0,63,136,0.36); transform: translateY(-1px); }
 
+/* Per-flight "Book Online" affiliate link — secondary to WhatsApp */
+.srp-btn-online {
+  display: flex; align-items: center; gap: 5px; justify-content: center;
+  padding: 7px 13px; border-radius: 8px; margin-top: 6px; width: 100%;
+  background: #0F172A; color: #fff; border: none; text-decoration: none;
+  font-size: 0.74rem; font-weight: 700; transition: background 0.2s;
+}
+.srp-btn-online:hover { background: #1E293B; }
+
 /* Track price button removed */
 .srp-btn-track {
   display: none;

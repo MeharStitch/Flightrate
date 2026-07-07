@@ -8,6 +8,7 @@ import { notFound }       from 'next/navigation'
 import Link               from 'next/link'
 import fs                 from 'fs'
 import path               from 'path'
+import { getAffiliateLink } from '@/lib/travelpayouts'
 
 export const revalidate = 86400 // 24h — daily posts don't need hourly refresh
 
@@ -264,6 +265,19 @@ export default async function AutoBlogPage(
           <Link href="/flights" className="route-search-btn">
             Browse All Routes
           </Link>
+          {(() => {
+            const link = getAffiliateLink('KHI', post.cta.to)
+            return link ? (
+              <a
+                href={link}
+                className="route-book-online"
+                target="_blank"
+                rel="noopener nofollow sponsored"
+              >
+                🌐 Book {post.cta.destination} Flights Online
+              </a>
+            ) : null
+          })()}
         </div>
 
         {/* Back to blog */}
