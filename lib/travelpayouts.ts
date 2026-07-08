@@ -145,21 +145,25 @@ export const AFFILIATE_MARKER = process.env.NEXT_PUBLIC_TRAVELPAYOUTS_MARKER || 
 
 /**
  * Build Aviasales affiliate deep-link.
- * Format: https://www.aviasales.com/search/{origin}{DDMM}{dest}{adults}?marker=X
+ * One-way:    {origin}{DDMM}{dest}{adults}
+ * Round-trip: {origin}{DDMM}{dest}{DDMM_return}{adults}
  * Aviasales attributes commission via the marker query param on its own domain.
  */
 export function buildAffiliateUrl(opts: {
   origin: string
   destination: string
-  date: string      // YYYY-MM-DD
+  date: string          // YYYY-MM-DD (outbound)
   adults: number
+  returnDate?: string   // YYYY-MM-DD (optional; makes it round-trip)
   marker?: string
 }): string {
-  const { origin, destination, date, adults, marker = AFFILIATE_MARKER } = opts
-  const d   = new Date(date)
-  const dd  = String(d.getDate()).padStart(2, '0')
-  const mm  = String(d.getMonth() + 1).padStart(2, '0')
-  const seg = `${origin.toUpperCase()}${dd}${mm}${destination.toUpperCase()}${adults}`
+  const { origin, destination, date, adults, returnDate, marker = AFFILIATE_MARKER } = opts
+  const ddmm = (iso: string) => {
+    const d = new Date(iso)
+    return `${String(d.getDate()).padStart(2, '0')}${String(d.getMonth() + 1).padStart(2, '0')}`
+  }
+  const ret = returnDate ? ddmm(returnDate) : ''
+  const seg = `${origin.toUpperCase()}${ddmm(date)}${destination.toUpperCase()}${ret}${adults}`
   const base = `https://www.aviasales.com/search/${seg}`
   return marker ? `${base}?marker=${marker}` : base
 }

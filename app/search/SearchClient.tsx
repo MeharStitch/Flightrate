@@ -669,29 +669,53 @@ export default function SearchClient() {
                       </>
                     )
                   } else if (step === 'outbound') {
-                    /* Round trip step 1: select outbound */
+                    /* Round trip step 1: select outbound (+ optional Book Online) */
                     cta = (
-                      <button
-                        className="srp-btn-select"
-                        onClick={() => {
-                          setSelectedOutbound(f)
-                          setStep('return')
-                          setExpanded(null)
-                          window.scrollTo({ top: 0, behavior: 'smooth' })
-                        }}
-                      >
-                        Select →
-                      </button>
+                      <>
+                        <button
+                          className="srp-btn-select"
+                          onClick={() => {
+                            setSelectedOutbound(f)
+                            setStep('return')
+                            setExpanded(null)
+                            window.scrollTo({ top: 0, behavior: 'smooth' })
+                          }}
+                        >
+                          Select →
+                        </button>
+                        {TP_MARKER && (
+                          <a
+                            className="srp-btn-online"
+                            href={buildAffiliateUrl({ origin: from, destination: to, date, returnDate, adults, marker: TP_MARKER })}
+                            target="_blank"
+                            rel="noopener nofollow sponsored"
+                          >
+                            🌐 Book Online
+                          </a>
+                        )}
+                      </>
                     )
                   } else {
-                    /* Round trip step 2: book both */
+                    /* Round trip step 2: book both (+ optional Book Online) */
                     cta = (
-                      <button
-                        className="srp-btn-wa srp-btn-rt"
-                        onClick={() => selectedOutbound && bookRoundTripWA(selectedOutbound, f, sp, returnDate)}
-                      >
-                        <WaIcon /> Book Round Trip
-                      </button>
+                      <>
+                        <button
+                          className="srp-btn-wa srp-btn-rt"
+                          onClick={() => selectedOutbound && bookRoundTripWA(selectedOutbound, f, sp, returnDate)}
+                        >
+                          <WaIcon /> Book Round Trip
+                        </button>
+                        {TP_MARKER && (
+                          <a
+                            className="srp-btn-online"
+                            href={buildAffiliateUrl({ origin: from, destination: to, date, returnDate, adults, marker: TP_MARKER })}
+                            target="_blank"
+                            rel="noopener nofollow sponsored"
+                          >
+                            🌐 Book Online
+                          </a>
+                        )}
+                      </>
                     )
                   }
 
