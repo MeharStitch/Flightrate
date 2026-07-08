@@ -407,7 +407,7 @@ export default async function RoutePage(
               target="_blank"
               rel="noopener nofollow sponsored"
             >
-              🌐 Book Online
+              Book Online
             </a>
           )}
         </div>

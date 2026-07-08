@@ -663,7 +663,7 @@ export default function SearchClient() {
                             target="_blank"
                             rel="noopener nofollow sponsored"
                           >
-                            🌐 Book Online
+                            Book Online
                           </a>
                         )}
                       </>
@@ -690,7 +690,7 @@ export default function SearchClient() {
                             target="_blank"
                             rel="noopener nofollow sponsored"
                           >
-                            🌐 Book Online
+                            Book Online
                           </a>
                         )}
                       </>
@@ -712,7 +712,7 @@ export default function SearchClient() {
                             target="_blank"
                             rel="noopener nofollow sponsored"
                           >
-                            🌐 Book Online
+                            Book Online
                           </a>
                         )}
                       </>

@@ -279,7 +279,7 @@ export default async function AirlineRoutePage(
               target="_blank"
               rel="noopener nofollow sponsored"
             >
-              🌐 Book Online
+              Book Online
             </a>
           )}
           <Link href={`/flights/${route}`} className="route-search-btn">

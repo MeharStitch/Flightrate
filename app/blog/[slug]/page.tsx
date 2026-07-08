@@ -274,7 +274,7 @@ export default async function AutoBlogPage(
                 target="_blank"
                 rel="noopener nofollow sponsored"
               >
-                🌐 Book {post.cta.destination} Flights Online
+                Book {post.cta.destination} Flights Online
               </a>
             ) : null
           })()}
