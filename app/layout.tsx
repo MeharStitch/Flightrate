@@ -78,6 +78,7 @@ const ORG_SCHEMA = {
       },
       sameAs: [
         'https://wa.me/923240763099',
+        'https://www.instagram.com/flightrate.pk/',
       ],
     },
     {

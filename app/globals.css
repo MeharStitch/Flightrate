@@ -1027,6 +1027,16 @@ footer::before {
 
 .btn-wa-foot:hover { background: linear-gradient(135deg, #002a5e, var(--v)); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(0,63,136,0.38); }
 
+/* Instagram follow button — footer brand column */
+.btn-ig-foot {
+  display: inline-flex; align-items: center; gap: 8px; margin-top: 10px;
+  background: linear-gradient(135deg, #F58529, #DD2A7B 55%, #8134AF); color: #fff;
+  padding: 11px 22px; border-radius: var(--rp); font-family: inherit;
+  font-weight: 700; font-size: 0.85rem; text-decoration: none; transition: all 0.2s;
+  box-shadow: 0 4px 14px rgba(221,42,123,0.28);
+}
+.btn-ig-foot:hover { filter: brightness(1.05); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(221,42,123,0.4); }
+
 /* Column headings */
 .foot-col h5 {
   font-size: 0.70rem; font-weight: 800;
@@ -2081,14 +2091,14 @@ footer::before {
 }
 .srp-btn-wa:hover { background: linear-gradient(135deg, #002a5e, var(--v)); box-shadow: 0 5px 16px rgba(0,63,136,0.36); transform: translateY(-1px); }
 
-/* Per-flight "Book Online" affiliate link — secondary to WhatsApp */
+/* Per-flight "Book Online" affiliate link — outlined secondary to WhatsApp */
 .srp-btn-online {
   display: flex; align-items: center; gap: 5px; justify-content: center;
   padding: 7px 13px; border-radius: 8px; margin-top: 6px; width: 100%;
-  background: #0F172A; color: #fff; border: none; text-decoration: none;
-  font-size: 0.74rem; font-weight: 700; transition: background 0.2s;
+  background: #fff; color: var(--v); border: 1.5px solid var(--v); text-decoration: none;
+  font-size: 0.74rem; font-weight: 700; transition: background 0.2s, color 0.2s;
 }
-.srp-btn-online:hover { background: #1E293B; }
+.srp-btn-online:hover { background: var(--v); color: #fff; }
 
 /* Track price button removed */
 .srp-btn-track {
@@ -3007,15 +3017,15 @@ footer::before {
   margin-top: 6px; letter-spacing: 0.01em;
 }
 
-/* Travelpayouts "Book Online" affiliate CTA — secondary to WhatsApp */
+/* Travelpayouts "Book Online" affiliate CTA — outlined secondary to WhatsApp */
 .route-book-online {
   display: inline-flex; align-items: center; gap: 6px;
   padding: 12px 20px; border-radius: 12px;
-  background: #0F172A; color: #fff; font-weight: 700;
-  text-decoration: none; border: 1.5px solid #0F172A;
-  transition: background 0.15s, transform 0.05s;
+  background: #fff; color: var(--v); font-weight: 700;
+  text-decoration: none; border: 1.5px solid var(--v);
+  transition: background 0.15s, color 0.15s, transform 0.05s;
 }
-.route-book-online:hover { background: #1E293B; }
+.route-book-online:hover { background: var(--v); color: #fff; }
 .route-book-online:active { transform: translateY(1px); }
 
 /* Price-honesty note — sets expectation so the WhatsApp quote isn't a "switch" */
