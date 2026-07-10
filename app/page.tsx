@@ -2,6 +2,7 @@
 import { useEffect } from 'react'
 import Navbar from '@/components/Navbar'
 import Hero from '@/components/Hero'
+import TrustStrip from '@/components/TrustStrip'
 import AirlinePartners from '@/components/AirlinePartners'
 import TrustFeatures from '@/components/TrustFeatures'
 import HowItWorks from '@/components/HowItWorks'
@@ -31,6 +32,7 @@ export default function Home() {
       <Navbar />
       <main>
         <Hero />
+        <TrustStrip />
         <AirlinePartners />
         <TrustFeatures />
         <HowItWorks />
