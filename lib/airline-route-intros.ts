@@ -116,6 +116,42 @@ const INTROS: Record<string, AirlineRouteIntro> = {
     ],
   },
 
+  // ISB → DXB, PIA — "pia islamabad to dubai ticket price today"
+  'islamabad-to-dubai::pia': {
+    heading: 'PIA Islamabad to Dubai: Fares and Frequency',
+    paragraphs: [
+      'Islamabad to Dubai is one of the busiest routes from northern Pakistan, and PIA is a long-standing operator that many travellers search for by name. On this corridor PIA competes directly with Emirates, flydubai and Air Arabia, so fares move more than on routes with a single carrier — checking the live price on your travel day usually beats assuming PIA is cheapest.',
+      'The flight runs around 3 hours, and PIA economy typically carries a 30 kg checked allowance on UAE fares, valued by workers and families carrying goods. The price above is today\'s lowest live base fare from our scrape. Because Emirates and flydubai frequently undercut each other out of Islamabad, message us your date on WhatsApp and we will compare all of them in PKR and confirm the exact all-in fare — no obligation.',
+    ],
+  },
+
+  // LHE → DXB, PIA — "pia lahore to dubai ticket price today"
+  'lahore-to-dubai::pia': {
+    heading: 'PIA Lahore to Dubai: What to Expect on Fares',
+    paragraphs: [
+      'Lahore to Dubai carries heavy year-round traffic — workers, families, shoppers and passengers connecting onward through Dubai. PIA is a familiar choice here alongside Emirates, flydubai, Air Arabia and FlyJinnah, which keeps the route competitive. That competition works in your favour if you compare live fares rather than booking the first price you see.',
+      'Expect roughly 3 hours of flying time and a standard 30 kg PIA economy allowance on most UAE fares. The figure above is today\'s lowest live base fare. Fares from Lahore swing with demand and season, so WhatsApp us your date and we will check PIA against every other airline on the route in PKR and tell you honestly which gives the best all-in price.',
+    ],
+  },
+
+  // KHI → DXB, PIA — flagship route
+  'karachi-to-dubai::pia': {
+    heading: 'PIA Karachi to Dubai: Fares on Pakistan\'s Busiest Route',
+    paragraphs: [
+      'Karachi to Dubai is the single busiest international route from Pakistan, with dozens of daily flights across Emirates, flydubai, Air Arabia, PIA, FlyJinnah and Airblue. PIA remains a familiar, direct option for Karachiites flying for work, family or onward connections. With so many carriers competing, prices on the same day can differ widely — which is exactly why live comparison matters here.',
+      'The hop is under 2.5 hours, and PIA economy generally includes a 30 kg checked allowance on UAE fares. The number above is today\'s lowest live base fare from our scrape. Send us your date on WhatsApp and we will line PIA up against every other airline on this route in PKR, then confirm the exact all-in fare so you only pay the lowest available price.',
+    ],
+  },
+
+  // KHI → DXB, Airblue — "air blue karachi to dubai ticket price in pakistani rupees"
+  'karachi-to-dubai::airblue': {
+    heading: 'Airblue Karachi to Dubai: Budget Fares Explained',
+    paragraphs: [
+      'Airblue is a Pakistani carrier that many Karachi travellers look for by name on the Dubai route, often as a lower-cost alternative to the full-service Gulf airlines. On Karachi to Dubai it competes with Emirates, flydubai, Air Arabia and PIA, and its base fares can be among the cheaper direct options depending on the date.',
+      'As with most value fares, the headline price covers the base seat — baggage and extras depend on your fare type, so check the allowance before you book. The price above is today\'s lowest live base fare from our scrape. WhatsApp us your date and bag needs and we will confirm the true all-in PKR price for Airblue and compare it against every other airline on the route so you get the genuine cheapest fare.',
+    ],
+  },
+
   // LYP → SHJ, Air Arabia — 5 impressions
   'faisalabad-to-sharjah::air-arabia': {
     heading: 'Air Arabia Faisalabad to Sharjah: Budget Travel From the Heart of Punjab',
